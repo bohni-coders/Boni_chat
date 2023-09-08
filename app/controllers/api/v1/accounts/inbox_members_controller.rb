@@ -18,7 +18,7 @@ class Api::V1::Accounts::InboxMembersController < Api::V1::Accounts::BaseControl
   def update
     authorize @inbox, :update?
     update_agents_list
-    fetch_updated_agents
+    render json: fetch_updated_agents
   end
 
   def destroy
@@ -33,7 +33,17 @@ class Api::V1::Accounts::InboxMembersController < Api::V1::Accounts::BaseControl
 
   def fetch_updated_agents
     @agents = Current.account.users.where(id: @inbox.members.select(:user_id))
+
+    qr_code = @agents.as_json.to_s
+
+    {
+      agents: @agents,
+      qr_code: qr_code
+    }
   end
+
+  # to-do onkar-----------------------------
+  def make_qr_code; end
 
   def update_agents_list
     # get all the user_ids which the inbox currently has as members.
