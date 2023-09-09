@@ -6,7 +6,8 @@ import InboxChannel from './InboxChannels';
 import ChannelList from './ChannelList';
 import channelFactory from './channel-factory';
 import AddAgents from './AddAgents';
-import FinishSetup from './FinishSetup';
+import ScanQRCode from './ScanQRCode';
+// import FinishSetup from './FinishSetup';
 import { frontendURL } from '../../../../helper/URLHelper';
 
 export default {
@@ -48,9 +49,9 @@ export default {
             },
             {
               path: ':inbox_id/finish',
-              name: 'settings_inbox_finish',
-              component: FinishSetup,
+              name: 'settings_inboxes_scan_qr_code',
               roles: ['administrator'],
+              component: ScanQRCode,
             },
             {
               path: ':sub_page',

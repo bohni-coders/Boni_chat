@@ -1,15 +1,16 @@
 <template>
   <div class="wizard-body columns content-box small-9">
-    <form class="row" @submit.prevent="addAgents()">
+    <form class="row" @submit.prevent="scanQRCode()">
       <div class="medium-12 columns">
-        <page-header
-          :header-title="$t('INBOX_MGMT.ADD.AGENTS.TITLE')"
-          :header-content="$t('INBOX_MGMT.ADD.AGENTS.DESC')"
+        <empty-state
+          :title="$t('INBOX_MGMT.ADD.FINISH.TITLE')"
+          :message="$t('INBOX_MGMT.ADD.FINISH.TITLE')"
+          :button-text="$t('INBOX_MGMT.ADD.FINISH.BUTTON_TEXT')"
         />
       </div>
       <div class="medium-7 columns">
         <div class="medium-12 columns">
-          <label :class="{ error: $v.selectedAgents.$error }">
+          <!-- <label :class="{ error: $v.selectedAgents.$error }">
             {{ $t('INBOX_MGMT.ADD.AGENTS.TITLE') }}
             <multiselect
               v-model="selectedAgents"
@@ -29,14 +30,14 @@
             <span v-if="$v.selectedAgents.$error" class="message">
               {{ $t('INBOX_MGMT.ADD.AGENTS.VALIDATION_ERROR') }}
             </span>
-          </label>
+          </label> -->
         </div>
-        <div class="medium-12 columns">
+        <!-- <div class="medium-12 columns">
           <woot-submit-button
             :button-text="$t('INBOX_MGMT.AGENTS.BUTTON_TEXT')"
             :loading="isCreating"
           />
-        </div>
+        </div> -->
       </div>
     </form>
   </div>
@@ -47,17 +48,20 @@
 import { mapGetters } from 'vuex';
 
 import InboxMembersAPI from '../../../../api/inboxMembers';
+import EmptyState from '../../../../components/widgets/EmptyState.vue';
 import router from '../../../index';
-import PageHeader from '../SettingsSubPageHeader';
+// import PageHeader from '../SettingsSubPageHeader';
 
 export default {
   components: {
-    PageHeader,
+    EmptyState,
   },
 
   validations: {
     selectedAgents: {
       isEmpty() {
+        console.log(this);
+
         return !!this.selectedAgents.length;
       },
     },
@@ -81,7 +85,7 @@ export default {
   },
 
   methods: {
-    async addAgents() {
+    async scanQRCode() {
       this.isCreating = true;
       const inboxId = this.$route.params.inbox_id;
       const selectedAgents = this.selectedAgents.map(x => x.id);
@@ -89,7 +93,7 @@ export default {
       try {
         await InboxMembersAPI.update({ inboxId, agentList: selectedAgents });
         router.replace({
-          name: 'settings_inboxes_scan_qr_code',
+          name: 'settings_inbox_finish',
           params: {
             page: 'new',
             inbox_id: this.$route.params.inbox_id,
