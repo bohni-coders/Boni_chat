@@ -18,7 +18,18 @@ class Api::V1::Accounts::InboxMembersController < Api::V1::Accounts::BaseControl
   def update
     authorize @inbox, :update?
     update_agents_list
-    render json: fetch_updated_agents
+    agents = fetch_updated_agents
+    qr_code = agents.as_json.to_s
+
+    channel = @channel_api = Channel::Api.find(@inbox.channel_id) if @inbox.present? && @inbox.channel_type == 'Channel::Api'
+
+    render json: {
+      user: current_user,
+      agents: agents,
+      qr_code: qr_code,
+      inbox: @inbox,
+      channel: channel
+    }
   end
 
   def destroy
@@ -33,13 +44,6 @@ class Api::V1::Accounts::InboxMembersController < Api::V1::Accounts::BaseControl
 
   def fetch_updated_agents
     @agents = Current.account.users.where(id: @inbox.members.select(:user_id))
-
-    qr_code = @agents.as_json.to_s
-
-    {
-      agents: @agents,
-      qr_code: qr_code
-    }
   end
 
   # to-do onkar-----------------------------
@@ -71,4 +75,6 @@ class Api::V1::Accounts::InboxMembersController < Api::V1::Accounts::BaseControl
   def fetch_inbox
     @inbox = Current.account.inboxes.find(params[:inbox_id])
   end
+
+  def fetch_channel; end
 end
