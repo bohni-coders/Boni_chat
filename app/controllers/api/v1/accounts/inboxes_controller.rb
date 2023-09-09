@@ -63,7 +63,7 @@ class Api::V1::Accounts::InboxesController < Api::V1::Accounts::BaseController
   end
 
   def destroy
-    ::DeleteObjectJob.perform_later(@inbox) if @inbox.present?
+    ::DeleteObjectJob.perform_later(@inbox, Current.user, request.ip) if @inbox.present?
     render status: :ok, json: { message: I18n.t('messages.inbox_deletetion_response') }
   end
 
@@ -79,7 +79,9 @@ class Api::V1::Accounts::InboxesController < Api::V1::Accounts::BaseController
   end
 
   def create_channel
-    return unless %w[web_widget api email line telegram whatsapp sms].include?(permitted_params[:channel][:type])
+    # my code ................
+
+    return unless %w[web_widget api email line telegram whatsapp sms messenger].include?(permitted_params[:channel][:type])
 
     account_channels_method.create!(permitted_params(channel_type_from_params::EDITABLE_ATTRS)[:channel].except(:type))
   end
@@ -124,7 +126,7 @@ class Api::V1::Accounts::InboxesController < Api::V1::Accounts::BaseController
   def inbox_attributes
     [:name, :avatar, :greeting_enabled, :greeting_message, :enable_email_collect, :csat_survey_enabled,
      :enable_auto_assignment, :working_hours_enabled, :out_of_office_message, :timezone, :allow_messages_after_resolved,
-     :lock_to_single_conversation, :portal_id]
+     :lock_to_single_conversation, :portal_id, :sender_name_type, :business_name]
   end
 
   def permitted_params(channel_attributes = [])
@@ -144,8 +146,7 @@ class Api::V1::Accounts::InboxesController < Api::V1::Accounts::BaseController
       'email' => Channel::Email,
       'line' => Channel::Line,
       'telegram' => Channel::Telegram,
-      'whatsapp' => Channel::Whatsapp,
-      'sms' => Channel::Sms
+      'whatsapp' => Channel::Whatsapp
     }[permitted_params[:channel][:type]]
   end
 

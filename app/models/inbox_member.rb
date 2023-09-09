@@ -2,11 +2,12 @@
 #
 # Table name: inbox_members
 #
-#  id         :integer          not null, primary key
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  inbox_id   :integer          not null
-#  user_id    :integer          not null
+#  id            :integer          not null, primary key
+#  inbox_scanner :string
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  inbox_id      :integer          not null
+#  user_id       :integer          not null
 #
 # Indexes
 #
@@ -35,3 +36,5 @@ class InboxMember < ApplicationRecord
     ::AutoAssignment::InboxRoundRobinService.new(inbox: inbox).remove_agent_from_queue(user_id) if inbox.present?
   end
 end
+
+InboxMember.include_mod_with('Audit::InboxMember')
