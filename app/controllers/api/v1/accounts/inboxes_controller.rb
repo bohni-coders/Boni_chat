@@ -1,161 +1,80 @@
-class Api::V1::Accounts::InboxesController < Api::V1::Accounts::BaseController
-  include Api::V1::InboxesHelper
-  before_action :fetch_inbox, except: [:index, :create]
-  before_action :fetch_agent_bot, only: [:set_agent_bot]
-  before_action :validate_limit, only: [:create]
-  # we are already handling the authorization in fetch inbox
-  before_action :check_authorization, except: [:show]
+class Api::V1::Accounts::InboxMembersController < Api::V1::Accounts::BaseController
+  before_action :fetch_inbox
+  before_action :current_agents_ids, only: [:create, :update]
 
-  def index
-    @inboxes = policy_scope(Current.account.inboxes.order_by_name.includes(:channel, { avatar_attachment: [:blob] }))
-  end
-
-  def show; end
-
-  # Deprecated: This API will be removed in 2.7.0
-  def assignable_agents
-    @assignable_agents = @inbox.assignable_agents
-  end
-
-  def campaigns
-    @campaigns = @inbox.campaigns
-  end
-
-  def avatar
-    @inbox.avatar.attachment.destroy! if @inbox.avatar.attached?
-    head :ok
+  def show
+    authorize @inbox, :show?
+    fetch_updated_agents
   end
 
   def create
+    authorize @inbox, :create?
     ActiveRecord::Base.transaction do
-      channel = create_channel
-      @inbox = Current.account.inboxes.build(
-        {
-          name: inbox_name(channel),
-          channel: channel
-        }.merge(
-          permitted_params.except(:channel)
-        )
-      )
-      @inbox.save!
+      agents_to_be_added_ids.map { |user_id| @inbox.add_member(user_id) }
     end
+    fetch_updated_agents
   end
 
   def update
-    @inbox.update!(permitted_params.except(:channel))
-    update_inbox_working_hours
-    update_channel if channel_update_required?
-  end
+    authorize @inbox, :update?
+    update_agents_list
+    agents = fetch_updated_agents
+    qr_code = agents.as_json.to_s
 
-  def agent_bot
-    @agent_bot = @inbox.agent_bot
-  end
+    channel = @channel_api = Channel::Api.find(@inbox.channel_id) if @inbox.present? && @inbox.channel_type == 'Channel::Api'
 
-  def set_agent_bot
-    if @agent_bot
-      agent_bot_inbox = @inbox.agent_bot_inbox || AgentBotInbox.new(inbox: @inbox)
-      agent_bot_inbox.agent_bot = @agent_bot
-      agent_bot_inbox.save!
-    elsif @inbox.agent_bot_inbox.present?
-      @inbox.agent_bot_inbox.destroy!
-    end
-    head :ok
+    render json: {
+      user: current_user,
+      agents: agents,
+      qr_code: qr_code,
+      inbox: @inbox,
+      channel: channel
+    }
   end
 
   def destroy
-    ::DeleteObjectJob.perform_later(@inbox) if @inbox.present?
-    render status: :ok, json: { message: I18n.t('messages.inbox_deletetion_response') }
+    authorize @inbox, :destroy?
+    ActiveRecord::Base.transaction do
+      params[:user_ids].map { |user_id| @inbox.remove_member(user_id) }
+    end
+    head :ok
   end
 
   private
 
-  def fetch_inbox
-    @inbox = Current.account.inboxes.find(params[:id])
-    authorize @inbox, :show?
+  def fetch_updated_agents
+    @agents = Current.account.users.where(id: @inbox.members.select(:user_id))
   end
 
-  def fetch_agent_bot
-    @agent_bot = AgentBot.find(params[:agent_bot]) if params[:agent_bot]
-  end
+  # to-do onkar-----------------------------
+  def make_qr_code; end
 
-  def create_channel
-    return unless %w[web_widget api email line telegram whatsapp sms].include?(permitted_params[:channel][:type])
-
-    account_channels_method.create!(permitted_params(channel_type_from_params::EDITABLE_ATTRS)[:channel].except(:type))
-  end
-
-  def update_inbox_working_hours
-    @inbox.update_working_hours(params.permit(working_hours: Inbox::OFFISABLE_ATTRS)[:working_hours]) if params[:working_hours]
-  end
-
-  def update_channel
-    channel_attributes = get_channel_attributes(@inbox.channel_type)
-    return if permitted_params(channel_attributes)[:channel].blank?
-
-    validate_and_update_email_channel(channel_attributes) if @inbox.inbox_type == 'Email'
-
-    reauthorize_and_update_channel(channel_attributes)
-    update_channel_feature_flags
-  end
-
-  def channel_update_required?
-    permitted_params(get_channel_attributes(@inbox.channel_type))[:channel].present?
-  end
-
-  def validate_and_update_email_channel(channel_attributes)
-    validate_email_channel(channel_attributes)
-  rescue StandardError => e
-    render json: { message: e }, status: :unprocessable_entity and return
-  end
-
-  def reauthorize_and_update_channel(channel_attributes)
-    @inbox.channel.reauthorized! if @inbox.channel.respond_to?(:reauthorized!)
-    @inbox.channel.update!(permitted_params(channel_attributes)[:channel])
-  end
-
-  def update_channel_feature_flags
-    return unless @inbox.web_widget?
-    return unless permitted_params(Channel::WebWidget::EDITABLE_ATTRS)[:channel].key? :selected_feature_flags
-
-    @inbox.channel.selected_feature_flags = permitted_params(Channel::WebWidget::EDITABLE_ATTRS)[:channel][:selected_feature_flags]
-    @inbox.channel.save!
-  end
-
-  def inbox_attributes
-    [:name, :avatar, :greeting_enabled, :greeting_message, :enable_email_collect, :csat_survey_enabled,
-     :enable_auto_assignment, :working_hours_enabled, :out_of_office_message, :timezone, :allow_messages_after_resolved,
-     :lock_to_single_conversation, :portal_id]
-  end
-
-  def permitted_params(channel_attributes = [])
-    # We will remove this line after fixing https://linear.app/chatwoot/issue/CW-1567/null-value-passed-as-null-string-to-backend
-    params.each { |k, v| params[k] = params[k] == 'null' ? nil : v }
-
-    params.permit(
-      *inbox_attributes,
-      channel: [:type, *channel_attributes]
-    )
-  end
-
-  def channel_type_from_params
-    {
-      'web_widget' => Channel::WebWidget,
-      'api' => Channel::Api,
-      'email' => Channel::Email,
-      'line' => Channel::Line,
-      'telegram' => Channel::Telegram,
-      'whatsapp' => Channel::Whatsapp,
-      'sms' => Channel::Sms
-    }[permitted_params[:channel][:type]]
-  end
-
-  def get_channel_attributes(channel_type)
-    if channel_type.constantize.const_defined?(:EDITABLE_ATTRS)
-      channel_type.constantize::EDITABLE_ATTRS.presence
-    else
-      []
+  def update_agents_list
+    # get all the user_ids which the inbox currently has as members.
+    # get the list of  user_ids from params
+    # the missing ones are the agents which are to be deleted from the inbox
+    # the new ones are the agents which are to be added to the inbox
+    ActiveRecord::Base.transaction do
+      agents_to_be_added_ids.each { |user_id| @inbox.add_member(user_id) }
+      agents_to_be_removed_ids.each { |user_id| @inbox.remove_member(user_id) }
     end
   end
-end
 
-Api::V1::Accounts::InboxesController.prepend_mod_with('Api::V1::Accounts::InboxesController')
+  def agents_to_be_added_ids
+    params[:user_ids] - @current_agents_ids
+  end
+
+  def agents_to_be_removed_ids
+    @current_agents_ids - params[:user_ids]
+  end
+
+  def current_agents_ids
+    @current_agents_ids = @inbox.members.pluck(:id)
+  end
+
+  def fetch_inbox
+    @inbox = Current.account.inboxes.find(params[:inbox_id])
+  end
+
+  def fetch_channel; end
+end
