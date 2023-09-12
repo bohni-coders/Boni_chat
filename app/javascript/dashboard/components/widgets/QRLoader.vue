@@ -52,21 +52,20 @@ export default {
       this.internalImageLoaded = res.qrData !== '';
     },
     updateProgress() {
-      if (this.internalImageLoaded) {
-        this.progressBarWidth = '100%';
-        this.progress = 100;
-      } else if (this.progress <= 95) {
+      if (this.progress <= 95) {
         this.progress += 2;
         this.progressBarWidth = this.progress + '%';
+
+        setTimeout(this.updateProgress, 50);
       }
     },
     initSocket(url) {
       this.socket = io(url);
 
+      this.updateProgress();
+
       this.socket.on('dataEvent', data => {
         const route = data.route;
-
-        if (this.progress < 100) this.updateProgress();
 
         switch (route) {
           case '/socket.io':

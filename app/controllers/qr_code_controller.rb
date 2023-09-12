@@ -5,7 +5,9 @@ class QrCodeController < ApplicationController
   include RequestExceptionHandler
 
   def get_hash_code
-    url = ENV['SOCKET_URL']
+    url = 'http://159.65.148.138:3000/get-qrcode' || ENV['SOCKET_URL']
+
+    puts url
 
     options = {
       timeout: 20,
