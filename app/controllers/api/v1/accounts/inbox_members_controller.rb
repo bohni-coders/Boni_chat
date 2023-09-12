@@ -19,6 +19,18 @@ class Api::V1::Accounts::InboxMembersController < Api::V1::Accounts::BaseControl
     authorize @inbox, :update?
     update_agents_list
     fetch_updated_agents
+
+    channel = @channel_api = Channel::Api.find(@inbox.channel_id) if @inbox.present? && @inbox.channel_type == 'Channel::Api'
+
+    render json: {
+      data: {
+        account_id: current_user.id,
+        account_api: channel.webhook_url,
+        inbox_id: @inbox.id,
+        channel_identifier: channel.identifier,
+        agents: fetch_updated_agents
+      }
+    }
   end
 
   def destroy
