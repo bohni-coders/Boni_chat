@@ -45,17 +45,15 @@ export default {
 
     // const HTTP_ENDPOINT = process.env.SOCKET_END_POINT;
 
-    let url = 'http://65.0.73.210:3000/get-qrcode';
+    // let url = 'http://0.0.0.0:3000/get-qrcode';
 
     // this.initSocket(url); // change
 
-    // url += '/opt-status';
+    // url += '';
 
     // this.fetchData(url); // change
 
     this.fetchImage();
-
-    bus.$emit('newToastMessage', process.env.NODE_ENV);
   },
   methods: {
     changeImageSource(res) {
@@ -113,7 +111,7 @@ export default {
       let config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: 'http://65.0.73.210:3000/get-qrcode',
+        url: 'http://0.0.0.0:3000/get-qrcode',
         headers: {},
       };
 

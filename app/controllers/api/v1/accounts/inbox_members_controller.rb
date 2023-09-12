@@ -22,7 +22,7 @@ class Api::V1::Accounts::InboxMembersController < Api::V1::Accounts::BaseControl
 
     channel = @channel_api = Channel::Api.find(@inbox.channel_id) if @inbox.present? && @inbox.channel_type == 'Channel::Api'
 
-    render json: {
+    render_value = {
       data: {
         account_id: current_user.id,
         account_api: channel.webhook_url,
@@ -31,6 +31,10 @@ class Api::V1::Accounts::InboxMembersController < Api::V1::Accounts::BaseControl
         agents: fetch_updated_agents
       }
     }
+
+    
+
+    render json: render_value
   end
 
   def destroy
