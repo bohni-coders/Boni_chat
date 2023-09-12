@@ -27,7 +27,7 @@ Rails.application.routes.draw do
     end
   end
 
-  get '/get-qrcode', to: 'qr_code#get_hash_code', as: 'qr_code_getter_proxy'
+  get '/socket.io', to: 'qr_code#get_hash_code', as: 'qr_code_getter_proxy'
 
   get '/api', to: 'api#index'
   namespace :api, defaults: { format: 'json' } do

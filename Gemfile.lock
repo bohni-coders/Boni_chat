@@ -845,6 +845,7 @@ DEPENDENCIES
   hairtrigger
   hashie
   html2text!
+  httparty
   image_processing
   jbuilder
   json_refs

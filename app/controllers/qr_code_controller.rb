@@ -1,22 +1,23 @@
-class QrCodeController < ActionController::Base
-    include RequestExceptionHandler
-    skip_before_action :verify_authenticity_token
+require 'httparty'
 
-    def get_hash_code
-        url = URI.parse('http://65.0.73.210:3000/get-qrcode') || ENV['SOCKET_URL'] 
+class QrCodeController < ApplicationController
+  include HTTParty
+  include RequestExceptionHandler
 
-        http = Net::HTTP.new(url.host, url.port)
+  def get_hash_code
+    url = ENV['SOCKET_URL']
 
-        # http.use_ssl = (url.scheme == 'https')
+    options = {
+      timeout: 20,
+      open_timeout: 20,
+    }
 
-        request = Net::HTTP::Get.new(url)
+    response = self.class.get(url, options)
 
-        response = http.request(request)
-
-        if response.code == '200'
-        render json: { data: response.body, code: 200 }
-        else
-        render json: { data: null, code: 500 }
-        end
+    if response.success?
+      render json: { data: response.body, code: response.code }
+    else
+      render json: { data: nil, code: response.code, error: response.message }
     end
+  end
 end
