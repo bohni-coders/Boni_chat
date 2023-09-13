@@ -17,7 +17,7 @@
         <div class="qr-code--image">
           <img
             class="display-code"
-            :src="imageSource.qrCode"
+            :src="imageSource"
             @image-source-change="handleInputChange"
           />
         </div>
@@ -109,7 +109,7 @@ export default {
       align-items: center;
 
       .display-code {
-        width: fit-content;
+        width: 355px;
         height: 355px;
         background-color: rgba(223, 235, 247, 1);
         mix-blend-mode: multiply;

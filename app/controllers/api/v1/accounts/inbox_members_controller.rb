@@ -32,8 +32,6 @@ class Api::V1::Accounts::InboxMembersController < Api::V1::Accounts::BaseControl
       }
     }
 
-    
-
     render json: render_value
   end
 

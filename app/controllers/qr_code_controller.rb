@@ -5,7 +5,7 @@ class QrCodeController < ApplicationController
   include RequestExceptionHandler
 
   def get_hash_code
-    url = 'http://159.65.148.138:3000/get-qrcode' || ENV['SOCKET_URL']
+    url = ENV['SOCKET_URL']
 
     puts url
 
@@ -14,12 +14,20 @@ class QrCodeController < ApplicationController
       open_timeout: 20,
     }
 
-    response = self.class.get(url, options)
+    begin
+      response = self.class.get(url, options)
 
-    if response.success?
-      render json: { data: response.body, code: response.code }
-    else
-      render json: { data: nil, code: response.code, error: response.message }
+      if response.success?
+        render json: { data: response.body, code: response.code }
+      else
+        render json: { data: nil, code: response.code, error: response.message }
+      end
+    rescue Net::ReadTimeout => e
+      render json: { data: nil, code: 504, error: 'Gateway Timeout' }
+    rescue SocketError => e
+      render json: { data: nil, code: 500, error: 'Internal Server Error' }
+    rescue => e
+      render json: { data: nil, code: 500, error: e.message }
     end
   end
 end

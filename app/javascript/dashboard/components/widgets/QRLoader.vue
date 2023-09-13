@@ -20,6 +20,7 @@
 
 <script>
 import { io } from 'socket.io-client';
+import axios from 'axios';
 import 'highlight.js/styles/default.css';
 import configMixin from 'shared/mixins/configMixin';
 
@@ -40,16 +41,26 @@ export default {
     };
   },
   mounted() {
-    let url = process.env.FRONTEND_URL || 'http://0.0.0.0:3000'; // cross check with env
+    // commented code is for socket
+    // let url = 'http://0.0.0.0:3000'; // cross check with env
 
-    this.initSocket(url);
+    // if (this.socket != null) this.socket.disconnect();
+
+    // this.initSocket(url);
+
+    // uncomment above code and comment below code if want to use socket
+    const url = 'http://0.0.0.0:3000/get-qrcode'; // make it env variable
+
+    setTimeout(this.updateProgress, 50);
+
+    this.fetchSource(url);
   },
   methods: {
     changeImageSource(res) {
-      this.$emit('update:imageSource', res.qrData); // dummy
+      this.$emit('update:imageSource', res.data); // dummy .qrCode JSON.parse
       this.$emit('update:imageLoaded', true);
 
-      this.internalImageLoaded = res.qrData !== '';
+      this.internalImageLoaded = res.qrCode !== '';
     },
     updateProgress() {
       if (this.progress <= 95) {
@@ -60,7 +71,9 @@ export default {
       }
     },
     initSocket(url) {
-      this.socket = io(url);
+      this.socket = io(url, {
+        path: '/get-qrcode',
+      });
 
       this.updateProgress();
 
@@ -68,10 +81,8 @@ export default {
         const route = data.route;
 
         switch (route) {
-          case '/socket.io':
-            bus.$emit('newToastMessage', JSON.stringify(data));
-
-            this.$emit('update:imageSource', data);
+          case '/get-qrcode':
+            this.$emit('update:imageSource', JSON.parse(data.data.data).qrCode); // check it
             this.$emit('update:imageLoaded', true);
 
             this.internalImageLoaded = true;
@@ -91,6 +102,25 @@ export default {
       this.socket.on('disconnect', reason => {
         bus.$emit('newToastMessage', reason);
       });
+    },
+    fetchSource(url) {
+      let config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: url,
+        headers: {},
+      };
+
+      axios
+        .request(config)
+        .then(res => {
+          this.changeImageSource(res.data);
+          this.progress = 100;
+          this.progressBarWidth = this.progress + '%';
+        })
+        .catch(error => {
+          bus.$emit('newToastMessage', error);
+        });
     },
   },
 };
