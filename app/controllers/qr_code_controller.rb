@@ -12,6 +12,7 @@ class QrCodeController < ApplicationController
     options = {
       timeout: 20,
       open_timeout: 20,
+      data: params,
     }
 
     begin

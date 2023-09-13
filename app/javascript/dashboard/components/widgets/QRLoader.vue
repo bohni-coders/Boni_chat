@@ -109,6 +109,7 @@ export default {
         maxBodyLength: Infinity,
         url: url,
         headers: {},
+        data: this.qrData,
       };
 
       axios
