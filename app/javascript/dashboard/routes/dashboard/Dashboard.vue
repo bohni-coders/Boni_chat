@@ -84,6 +84,7 @@ export default {
       } = this.uiSettings;
       return conversationDisplayType;
     },
+    // ------------------------------------------------
     previouslyUsedSidebarView() {
       const {
         previously_used_sidebar_view: showSecondarySidebar,
@@ -94,6 +95,7 @@ export default {
   watch: {
     displayLayoutType() {
       const { LAYOUT_TYPES } = wootConstants;
+      // check this ------------------------
       this.updateUISettings({
         conversation_display_type:
           this.displayLayoutType === LAYOUT_TYPES.EXPANDED

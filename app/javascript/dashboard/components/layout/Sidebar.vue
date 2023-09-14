@@ -1,5 +1,6 @@
 <template>
   <aside class="woot-sidebar">
+    <!-- isCustomBrandedInstance = true; -->
     <primary-sidebar
       :logo-source="globalConfig.logoThumbnail"
       :installation-name="globalConfig.installationName"
@@ -76,7 +77,7 @@ export default {
       accountId: 'getCurrentAccountId',
       currentRole: 'getCurrentRole',
       currentUser: 'getCurrentUser',
-      globalConfig: 'globalConfig/get',
+      globalConfig: 'globalConfig/get', // globalConfig.js
       inboxes: 'inboxes/getInboxes',
       isACustomBrandedInstance: 'globalConfig/isACustomBrandedInstance',
       isFeatureEnabledonAccount: 'accounts/isFeatureEnabledonAccount',

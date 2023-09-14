@@ -40,5 +40,21 @@ export default {
         },
       ],
     },
+    {
+      path: frontendURL('accounts/:accountId/campaigns'),
+      component: SettingsContent,
+      props: {
+        headerTitle: 'CAMPAIGN.WHATSAPP.HEADER',
+        icon: 'whatsapp',
+      },
+      children: [
+        {
+          path: 'whatsapp',
+          name: 'whatsapp_campaigns',
+          roles: ['administrator'],
+          component: { ...Index },
+        },
+      ],
+    },
   ],
 };

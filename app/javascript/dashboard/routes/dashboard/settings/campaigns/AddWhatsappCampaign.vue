@@ -4,8 +4,7 @@
       :header-title="$t('CAMPAIGN.ADD.TITLE')"
       :header-content="$t('CAMPAIGN.ADD.DESC')"
     />
-    <!-- submit.prevent -->
-    <form v-if="!whatsapp" class="row" @submit.prevent="addCampaign">
+    <form class="row" @submit.prevent="addCampaign">
       <div class="medium-12 columns">
         <woot-input
           v-model="title"
@@ -168,17 +167,6 @@
         </woot-button>
       </div>
     </form>
-    <form v-if="whatsapp" class="row" @submit.prevent="addCampaign">
-
-      <div class="modal-footer">
-        <woot-button :is-loading="uiFlags.isCreating">
-          {{ $t('CAMPAIGN.ADD.CREATE_BUTTON_TEXT') }}
-        </woot-button>
-        <woot-button variant="clear" @click.prevent="onClose">
-          {{ $t('CAMPAIGN.ADD.CANCEL_BUTTON_TEXT') }}
-        </woot-button>
-      </div>
-    </form>
   </div>
 </template>
 
@@ -239,7 +227,7 @@ export default {
           shouldBeAValidURLPattern(value) {
             try {
               // eslint-disable-next-line
-              new URLPattern(value);
+                new URLPattern(value);
               return true;
             } catch (error) {
               return false;
@@ -278,9 +266,6 @@ export default {
         return this.$store.getters['inboxes/getWebsiteInboxes'];
 
       if (this.isOnOffType) return this.$store.getters['inboxes/getSMSInboxes'];
-
-      if (this.isWhatsapp)
-        return this.$store.getters['inboxes/getWhatsAppInboxes'];
 
       return this.$store.getters['inboxes/getInboxes'];
     },
@@ -332,7 +317,7 @@ export default {
           enabled: this.enabled,
           trigger_only_during_business_hours:
             // eslint-disable-next-line prettier/prettier
-            this.triggerOnlyDuringBusinessHours,
+              this.triggerOnlyDuringBusinessHours,
           trigger_rules: {
             url: this.endPoint,
             time_on_page: this.timeOnPage,
@@ -358,7 +343,6 @@ export default {
     async addCampaign() {
       this.$v.$touch();
       if (this.$v.$invalid) {
-        bus.$emit('newToastMessage', this.$v);
         return;
       }
       try {

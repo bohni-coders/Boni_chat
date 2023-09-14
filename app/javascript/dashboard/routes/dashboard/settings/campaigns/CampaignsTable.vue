@@ -70,6 +70,13 @@ export default {
       if (this.isOngoingType) {
         return this.$store.getters['inboxes/getWebsiteInboxes'];
       }
+
+      //
+
+      if (this.isWhatsapp) {
+        return this.$store.getters['inboxes/getWhatsAppInboxes'];
+      }
+
       return this.$store.getters['inboxes/getTwilioInboxes'];
     },
     emptyMessage() {
@@ -77,6 +84,11 @@ export default {
         return this.inboxes.length
           ? this.$t('CAMPAIGN.ONGOING.404')
           : this.$t('CAMPAIGN.ONGOING.INBOXES_NOT_FOUND');
+      }
+      if (this.isWhatsapp) {
+        return this.inboxes.length
+          ? this.$t('CAMPAIGN.WHATSAPP.404')
+          : this.$t('CAMPAIGN.WHATSAPP.INBOXES_NOT_FOUND');
       }
 
       return this.inboxes.length
