@@ -58,7 +58,11 @@ export default {
   methods: {
     changeImageSource(res) {
       this.$emit('update:imageSource', res.data); // dummy .qrCode JSON.parse
-      this.$emit('update:imageLoaded', true);
+      setTimeout(() => {
+        this.progress = 100;
+        this.progressBarWidth = this.progress + '%';
+        this.$emit('update:imageLoaded', true);
+      }, 3000);
 
       this.internalImageLoaded = res.qrCode !== '';
     },
@@ -83,7 +87,11 @@ export default {
         switch (route) {
           case '/get-qrcode':
             this.$emit('update:imageSource', JSON.parse(data.data.data).qrCode); // check it
-            this.$emit('update:imageLoaded', true);
+            setTimeout(() => {
+              this.progress = 100;
+              this.progressBarWidth = this.progress + '%';
+              this.$emit('update:imageLoaded', true);
+            }, 3000);
 
             this.internalImageLoaded = true;
 
@@ -116,8 +124,6 @@ export default {
         .request(config)
         .then(res => {
           this.changeImageSource(res.data);
-          this.progress = 100;
-          this.progressBarWidth = this.progress + '%';
         })
         .catch(error => {
           bus.$emit('newToastMessage', error);

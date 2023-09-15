@@ -4,8 +4,7 @@
       :header-title="$t('CAMPAIGN.ADD.TITLE')"
       :header-content="$t('CAMPAIGN.ADD.DESC')"
     />
-    <!-- submit.prevent -->
-    <form v-if="!whatsapp" class="row" @submit.prevent="addCampaign">
+    <form v-if="!isWhatsapp" class="row" @submit.prevent="addCampaign">
       <div class="medium-12 columns">
         <woot-input
           v-model="title"
@@ -168,17 +167,7 @@
         </woot-button>
       </div>
     </form>
-    <form v-if="whatsapp" class="row" @submit.prevent="addCampaign">
-
-      <div class="modal-footer">
-        <woot-button :is-loading="uiFlags.isCreating">
-          {{ $t('CAMPAIGN.ADD.CREATE_BUTTON_TEXT') }}
-        </woot-button>
-        <woot-button variant="clear" @click.prevent="onClose">
-          {{ $t('CAMPAIGN.ADD.CANCEL_BUTTON_TEXT') }}
-        </woot-button>
-      </div>
-    </form>
+    <whatsapp-campaign-form v-if="isWhatsapp" :prevent="addCampaign" />
   </div>
 </template>
 
@@ -191,11 +180,13 @@ import campaignMixin from 'shared/mixins/campaignMixin';
 import WootDateTimePicker from 'dashboard/components/ui/DateTimePicker.vue';
 import { URLPattern } from 'urlpattern-polyfill';
 import { CAMPAIGNS_EVENTS } from '../../../../helper/AnalyticsHelper/events';
+import WhatsappCampaignForm from './WhatsappCampaignForm.vue';
 
 export default {
   components: {
     WootDateTimePicker,
     WootMessageEditor,
+    WhatsappCampaignForm,
   },
 
   mixins: [alertMixin, campaignMixin],
@@ -213,6 +204,7 @@ export default {
       scheduledAt: null,
       selectedAudience: [],
       senderList: [],
+      selectedContact: [],
     };
   },
 
@@ -259,6 +251,13 @@ export default {
         },
       };
     }
+
+    if (this.isWhatsapp) {
+      return {
+        ...commonValidations,
+      };
+    }
+
     return {
       ...commonValidations,
       selectedAudience: {
@@ -384,5 +383,13 @@ export default {
 <style lang="scss" scoped>
 ::v-deep .ProseMirror-woot-style {
   height: 8rem;
+}
+
+.contact--form {
+  padding: var(--space-normal) var(--space-large) var(--space-large);
+
+  .columns {
+    padding: 0 var(--space-smaller);
+  }
 }
 </style>

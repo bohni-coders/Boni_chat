@@ -58,6 +58,11 @@
         "TRIGGER_ONLY_BUSINESS_HOURS": "Trigger only during business hours",
         "SUBMIT": "Add Campaign"
       },
+      "WHATSAPP_FORM": {
+        "CONTACT_SINGLE_SELECT_LABEL": "Select sender inbox",
+        "CONTACT_MULTISELECT_LABEL": "To",
+        "SEND_BUTTON_TEXT": "Send Campaign"
+      },
       "API": {
         "SUCCESS_MESSAGE": "Campaign created successfully",
         "ERROR_MESSAGE": "There was an error. Please try again."
