@@ -25,22 +25,46 @@
         <div class="qr-summary">
           <ol class="qr-instructions">
             <li class="qr-instruction">
-              1. Open the WhatsApp number that you would like to connect with
-              Boni Chat
+              Open the WhatsApp number that you would like to connect with Boni
+              Chat
             </li>
             <li class="qr-instruction">
-              2. Open Settings
+              Open Settings
             </li>
             <li class="qr-instruction">
-              3. Select the QR icon beside the profile name
+              Select the QR icon beside the profile name
             </li>
             <li class="qr-instruction">
-              4. can the code displayed on the screen
+              can the code displayed on the screen
             </li>
           </ol>
         </div>
       </div>
+      <div
+        v-if="imageLoaded"
+        class="router flex w-full justify-center gap-2 mt-4"
+      >
+        <router-link
+          class="button hollow primary"
+          :to="{
+            name: 'settings_inbox_show',
+            params: { inboxId: this.inboxId },
+          }"
+        >
+          {{ $t('INBOX_MGMT.FINISH.MORE_SETTINGS') }}
+        </router-link>
+        <router-link
+          class="button success"
+          :to="{
+            name: 'inbox_dashboard',
+            params: { inboxId: this.inboxId },
+          }"
+        >
+          {{ $t('INBOX_MGMT.FINISH.BUTTON_TEXT') }}
+        </router-link>
+      </div>
     </div>
+
     <q-r-loader
       v-else
       class="loader-container w-full h-full p-8 flex flex-col items-center justify-items-center"
@@ -66,12 +90,16 @@ export default {
     title: { type: String, default: '' },
     message: { type: String, default: '' },
     qrData: { type: Object, default: null },
+    inboxId: { type: Number, default: null },
   },
   data() {
     return {
       imageLoaded: false,
       imageSource: '',
     };
+  },
+  mounted() {
+    bus.$emit('newToastMessage', this.inboxId);
   },
   methods: {
     updateImageLoaded(newValue) {
@@ -95,8 +123,8 @@ export default {
 
   .code--codeopen-form {
     display: flex;
-    height: 627.038574px;
-    width: 1063.81px;
+    height: 590px;
+    width: 920px;
     top: 5727.6357421875px;
     left: 5792.65234375px;
     border-radius: 30px;
@@ -146,5 +174,9 @@ export default {
       }
     }
   }
+}
+.router {
+  text-align: center;
+  margin: 10px;
 }
 </style>
