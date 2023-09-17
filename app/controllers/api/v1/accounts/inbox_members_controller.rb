@@ -25,9 +25,9 @@ class Api::V1::Accounts::InboxMembersController < Api::V1::Accounts::BaseControl
     render_value = {
       data: {
         account_id: current_user.id,
-        account_api: channel.webhook_url,
+        account_api: channel ? channel.webhook_url : '',
         inbox_id: @inbox.id,
-        channel_identifier: channel.identifier,
+        channel_identifier: channel ? channel.identifier : '',
         agents: fetch_updated_agents
       }
     }
