@@ -4,10 +4,8 @@
   value: 'Chatwoot'
 - name: LOGO_THUMBNAIL
   value: '/brand-assets/logo_thumbnail.svg' # changed
-  locked: false
 - name: LOGO
   value: '/brand-assets/logo.svg' # changed .svg
-  locked: false
 - name: BRAND_URL
   value: 'https://www.chatwoot.com'
 - name: WIDGET_BRAND_URL
