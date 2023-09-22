@@ -1,5 +1,4 @@
 @charset "UTF-8";
-
 /*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */
 /* Document
    ========================================================================== */
@@ -499,7 +498,7 @@ template {
  * @author Brian Reavis <brian@thirdroute.com>
  */
 /* line 17, ../../../../.rvm/gems/ruby-3.2.2/gems/selectize-rails-0.12.6/vendor/assets/stylesheets/selectize.scss */
-.selectize-control.plugin-drag_drop.multi>.selectize-input>div.ui-sortable-placeholder {
+.selectize-control.plugin-drag_drop.multi > .selectize-input > div.ui-sortable-placeholder {
   visibility: visible !important;
   background: #f2f2f2 !important;
   background: rgba(0, 0, 0, 0.06) !important;
@@ -706,7 +705,7 @@ template {
 }
 
 /* line 172, ../../../../.rvm/gems/ruby-3.2.2/gems/selectize-rails-0.12.6/vendor/assets/stylesheets/selectize.scss */
-.selectize-input>* {
+.selectize-input > * {
   vertical-align: baseline;
   display: -moz-inline-stack;
   display: inline-block;
@@ -715,7 +714,7 @@ template {
 }
 
 /* line 179, ../../../../.rvm/gems/ruby-3.2.2/gems/selectize-rails-0.12.6/vendor/assets/stylesheets/selectize.scss */
-.selectize-control.multi .selectize-input>div {
+.selectize-control.multi .selectize-input > div {
   cursor: pointer;
   margin: 0 3px 3px 0;
   padding: 2px 6px;
@@ -725,22 +724,22 @@ template {
 }
 
 /* line 187, ../../../../.rvm/gems/ruby-3.2.2/gems/selectize-rails-0.12.6/vendor/assets/stylesheets/selectize.scss */
-.selectize-control.multi .selectize-input>div.active {
+.selectize-control.multi .selectize-input > div.active {
   background: #e8e8e8;
   color: #303030;
   border: 0 solid #cacaca;
 }
 
 /* line 192, ../../../../.rvm/gems/ruby-3.2.2/gems/selectize-rails-0.12.6/vendor/assets/stylesheets/selectize.scss */
-.selectize-control.multi .selectize-input.disabled>div,
-.selectize-control.multi .selectize-input.disabled>div.active {
+.selectize-control.multi .selectize-input.disabled > div,
+.selectize-control.multi .selectize-input.disabled > div.active {
   color: #7d7d7d;
   background: #ffffff;
   border: 0 solid #ffffff;
 }
 
 /* line 198, ../../../../.rvm/gems/ruby-3.2.2/gems/selectize-rails-0.12.6/vendor/assets/stylesheets/selectize.scss */
-.selectize-input>input {
+.selectize-input > input {
   display: inline-block !important;
   padding: 0 !important;
   min-height: 0 !important;
@@ -757,12 +756,12 @@ template {
 }
 
 /* line 213, ../../../../.rvm/gems/ruby-3.2.2/gems/selectize-rails-0.12.6/vendor/assets/stylesheets/selectize.scss */
-.selectize-input>input::-ms-clear {
+.selectize-input > input::-ms-clear {
   display: none;
 }
 
 /* line 216, ../../../../.rvm/gems/ruby-3.2.2/gems/selectize-rails-0.12.6/vendor/assets/stylesheets/selectize.scss */
-.selectize-input>input:focus {
+.selectize-input > input:focus {
   outline: none !important;
 }
 
@@ -913,7 +912,7 @@ template {
 }
 
 /* line 327, ../../../../.rvm/gems/ruby-3.2.2/gems/selectize-rails-0.12.6/vendor/assets/stylesheets/selectize.scss */
-.selectize-control.rtl .selectize-input>input {
+.selectize-control.rtl .selectize-input > input {
   margin: 0 4px 0 -2px !important;
 }
 
@@ -1092,7 +1091,7 @@ select {
 [type="radio"]:focus,
 [type="file"]:focus,
 select:focus {
-  outline: 3px solid rgba(57, 0, 153, 0.6);
+  outline: 3px solid rgba(29, 199, 117, 0.6);
   outline-offset: 1px;
 }
 
@@ -1184,7 +1183,7 @@ tbody tr:hover {
 
 /* line 33, app/assets/stylesheets/administrate/base/_tables.scss */
 tbody tr:focus {
-  outline: 3px solid rgba(57, 0, 153, 0.6);
+  outline: 3px solid rgba(29, 199, 117, 0.6);
   outline-offset: -3px;
 }
 
@@ -1260,12 +1259,12 @@ a {
 
 /* line 28, app/assets/stylesheets/administrate/base/_typography.scss */
 a:hover {
-  color: #2b0073;
+  color: #169558;
 }
 
 /* line 32, app/assets/stylesheets/administrate/base/_typography.scss */
 a:focus {
-  outline: 3px solid rgba(57, 0, 153, 0.6);
+  outline: 3px solid rgba(29, 199, 117, 0.6);
   outline-offset: 1px;
 }
 
@@ -1355,7 +1354,7 @@ input[type="button"]:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
 .button:hover {
-  background-color: #2e007a;
+  background-color: #179f5e;
   color: #fff;
 }
 
@@ -1365,7 +1364,7 @@ input[type="button"]:focus,
 input[type="reset"]:focus,
 input[type="submit"]:focus,
 .button:focus {
-  outline: 3px solid rgba(57, 0, 153, 0.6);
+  outline: 3px solid rgba(29, 199, 117, 0.6);
   outline-offset: 1px;
 }
 
@@ -1553,8 +1552,7 @@ input[type="submit"]:disabled:hover,
 }
 
 /* line 22, app/assets/stylesheets/administrate/components/_flashes.scss */
-.flash-alert a:focus,
-.flash-alert a:hover {
+.flash-alert a:focus, .flash-alert a:hover {
   color: #1a1913;
 }
 
@@ -1575,8 +1573,7 @@ input[type="submit"]:disabled:hover,
 }
 
 /* line 22, app/assets/stylesheets/administrate/components/_flashes.scss */
-.flash-error a:focus,
-.flash-error a:hover {
+.flash-error a:focus, .flash-error a:hover {
   color: #191717;
 }
 
@@ -1597,8 +1594,7 @@ input[type="submit"]:disabled:hover,
 }
 
 /* line 22, app/assets/stylesheets/administrate/components/_flashes.scss */
-.flash-notice a:focus,
-.flash-notice a:hover {
+.flash-notice a:focus, .flash-notice a:hover {
   color: #171819;
 }
 
@@ -1619,8 +1615,7 @@ input[type="submit"]:disabled:hover,
 }
 
 /* line 22, app/assets/stylesheets/administrate/components/_flashes.scss */
-.flash-success a:focus,
-.flash-success a:hover {
+.flash-success a:focus, .flash-success a:hover {
   color: #171813;
 }
 

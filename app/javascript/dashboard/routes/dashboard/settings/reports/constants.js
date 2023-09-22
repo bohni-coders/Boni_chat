@@ -98,7 +98,7 @@ export const DEFAULT_LINE_CHART = {
 
 export const DEFAULT_BAR_CHART = {
   type: 'bar',
-  backgroundColor: 'rgb(31, 147, 255)',
+  backgroundColor: '#139557',
 };
 
 export const DEFAULT_CHART = {

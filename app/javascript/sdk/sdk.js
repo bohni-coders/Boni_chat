@@ -38,7 +38,7 @@ export const SDK_CSS = `
 }
 
 .woot-widget-bubble {
-  background: #390099;
+  background: #1DC775;
   border-radius: 100px;
   border-width: 0px;
   bottom: 20px;
@@ -127,7 +127,7 @@ export const SDK_CSS = `
 }
 
 .woot-widget-bubble:hover {
-  background: #390099;
+  background: #1DC775;
   box-shadow: 0 8px 32px rgba(0, 0, 0, .4) !important;
 }
 

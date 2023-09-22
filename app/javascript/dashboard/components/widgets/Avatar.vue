@@ -21,7 +21,7 @@ export default {
     style() {
       return {
         fontSize: `${Math.floor(this.size / 2.5)}px`,
-        color: '#390099',
+        color: '#1DC775',
       };
     },
     userInitial() {

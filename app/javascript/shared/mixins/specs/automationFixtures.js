@@ -461,7 +461,7 @@ export const inboxes = [
     timezone: 'America/Los_Angeles',
     callback_webhook_url: null,
     allow_messages_after_resolved: true,
-    widget_color: '#390099',
+    widget_color: '#1DC775',
     website_url: 'https://acme.inc',
     hmac_mandatory: false,
     welcome_title: '',
