@@ -49,7 +49,7 @@ export default {
     // this.initSocket(url);
 
     // uncomment above code and comment below code if want to use socket
-    const url = 'http://0.0.0.0:3000/get-qrcode'; // make it env variable
+    const url = 'https://testcrm.boni.co.in/get-qrcode'; // make it env variable
 
     setTimeout(this.updateProgress, 50);
 
