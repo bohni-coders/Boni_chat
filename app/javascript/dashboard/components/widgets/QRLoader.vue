@@ -57,14 +57,16 @@ export default {
   },
   methods: {
     changeImageSource(res) {
-      this.$emit('update:imageSource', res.data); // dummy .qrCode JSON.parse
+      let data = JSON.stringify(res);
+      bus.$emit('newToastMessage', res); // comment out this line after testing
+      this.$emit('update:imageSource', data.qrCode); // dummy .qrCode JSON.parse
       setTimeout(() => {
         this.progress = 100;
         this.progressBarWidth = this.progress + '%';
         this.$emit('update:imageLoaded', true);
       }, 3000);
 
-      this.internalImageLoaded = res.qrCode !== '';
+      this.internalImageLoaded = data.qrCode !== '';
     },
     updateProgress() {
       if (this.progress <= 95) {
