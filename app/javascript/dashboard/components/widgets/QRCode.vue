@@ -98,9 +98,7 @@ export default {
       imageSource: '',
     };
   },
-  mounted() {
-    bus.$emit('newToastMessage', this.inboxId);
-  },
+  mounted() {},
   methods: {
     updateImageLoaded(newValue) {
       this.imageLoaded = newValue;

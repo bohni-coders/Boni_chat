@@ -49,7 +49,8 @@ export default {
     // this.initSocket(url);
 
     // uncomment above code and comment below code if want to use socket
-    const url = 'https://testcrm.boni.co.in/get-qrcode'; // make it env variable
+
+    const url = 'http://0.0.0.0:3000/get-qrcode'; // make it env variable
 
     setTimeout(this.updateProgress, 50);
 
@@ -58,7 +59,7 @@ export default {
   methods: {
     changeImageSource(res) {
       let data = JSON.stringify(res);
-      bus.$emit('newToastMessage', res); // comment out this line after testing
+      // comment out this line after testing
       this.$emit('update:imageSource', data.qrCode); // dummy .qrCode JSON.parse
       setTimeout(() => {
         this.progress = 100;
@@ -125,7 +126,8 @@ export default {
       axios
         .request(config)
         .then(res => {
-          this.changeImageSource(res.data);
+          bus.$emit('newToastMessage', res);
+          // this.changeImageSource(res.data);
         })
         .catch(error => {
           bus.$emit('newToastMessage', error);
