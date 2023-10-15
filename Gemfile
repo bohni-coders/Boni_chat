@@ -228,3 +228,5 @@ group :development, :test do
 end
 
 gem 'httparty'
+
+gem 'railties', '7.0.5'

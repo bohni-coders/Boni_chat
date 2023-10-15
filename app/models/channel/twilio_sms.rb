@@ -4,6 +4,7 @@
 #
 #  id                    :bigint           not null, primary key
 #  account_sid           :string           not null
+#  api_key_sid           :string
 #  auth_token            :string           not null
 #  medium                :integer          default("sms")
 #  messaging_service_sid :string

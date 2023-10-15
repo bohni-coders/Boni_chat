@@ -12,6 +12,7 @@
 #  private                   :boolean          default(FALSE)
 #  processed_message_content :text
 #  sender_type               :string
+#  sentiment                 :jsonb
 #  status                    :integer          default("sent")
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null

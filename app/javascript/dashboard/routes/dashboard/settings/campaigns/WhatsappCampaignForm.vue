@@ -1,5 +1,5 @@
 <template>
-  <form type="submit" @submit.prevent="addCampaign">
+  <form type="submit" @submit.prevent="onFormSubmit">
     <div v-if="showNoInboxAlert" class="callout warning">
       <p>
         {{ $t('NEW_CONVERSATION.NO_INBOX') }}
@@ -60,7 +60,7 @@
           <div>
             <multiselect
               v-model="selectedContacts"
-              :options="[...inboxes]"
+              :options="[...contacts]"
               :multiple="true"
               :close-on-select="false"
               :clear-on-select="false"
@@ -117,27 +117,6 @@
         </div>
       </div>
 
-      <!-- Container 3 we use changing properties in computed -->
-      <div class="w-full">
-        <label v-if="handleMessageChange > 0">
-          Set Variable
-        </label>
-
-        <div
-          v-for="index in handleMessageChange"
-          :key="index"
-          class="child-container"
-        >
-          <woot-label class="code--codeopen-form h-full w-[50px]">
-            {{ index + 1 }}
-          </woot-label>
-          <select>
-            <option value="optionA">Set your own</option>
-          </select>
-          <input type="text" />
-        </div>
-      </div>
-
       <!-- Container 4 -->
       <div class="container">
         <label for="normalInput">
@@ -152,9 +131,9 @@
 
       <!-- Container 5 -->
       <div class="modal-footer">
-        <woot-button variant="clear" @click.prevent="onClose">
+        <!-- <woot-button variant="clear" @click.prevent="onClose">
           {{ $t('CAMPAIGN.ADD.CANCEL_BUTTON_TEXT') }}
-        </woot-button>
+        </woot-button> -->
         <woot-button :is-loading="uiFlags.isCreating">
           {{ $t('CAMPAIGN.ADD.WHATSAPP_FORM.SEND_BUTTON_TEXT') }}
         </woot-button>
@@ -405,27 +384,6 @@ export default {
         selectedOption: '',
         inputText: '',
       });
-    },
-    countDoubleCurlyBraces(message) {
-      let count = 0;
-      let stack = [];
-
-      for (let i = 0; i < message.length; i += 1) {
-        if (message[i] === '{' && message[i + 1] === '{') {
-          // If '{{' is found, push to the stack and skip the next character
-          stack.push('{{');
-          i += 1;
-        } else if (message[i] === '}' && message[i + 1] === '}') {
-          // If '}}' is found and there is a matching opening '{{' on the stack, pop it
-          if (stack.length > 0 && stack[stack.length - 1] === '{{') {
-            stack.pop();
-            count += 1;
-          }
-          i += 1;
-        }
-      }
-
-      return count;
     },
     performAction() {
       // Handle action for Container 4

@@ -11,9 +11,6 @@ class CreateWhatsappCampaigns < ActiveRecord::Migration[7.0]
       t.bigint "inbox_id", null: false
       t.integer "campaign_status", default: 0, null: false
       t.jsonb "contacts", default: []
-      # t.index ["account_id"], name: "index_campaigns_on_account_id"
-      # t.index ["campaign_status"], name: "index_campaigns_on_campaign_status"
-      # t.index ["inbox_id"], name: "index_campaigns_on_inbox_id"
 
       t.timestamps
     end
