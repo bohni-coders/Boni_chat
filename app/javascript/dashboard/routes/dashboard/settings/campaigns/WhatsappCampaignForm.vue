@@ -1,5 +1,5 @@
 <template>
-  <form type="submit" @submit.prevent="onFormSubmit">
+  <form class="conversation--form" @submit.prevent="onFormSubmit">
     <div v-if="showNoInboxAlert" class="callout warning">
       <p>
         {{ $t('NEW_CONVERSATION.NO_INBOX') }}
@@ -9,32 +9,29 @@
       <div class="row gutter-small">
         <div class="columns">
           <label>
-            {{ $t('CAMPAIGN.ADD.WHATSAPP_FORM.CONTACT_SINGLE_SELECT_LABEL') }}
+            {{ $t('NEW_CONVERSATION.FORM.INBOX.LABEL') }}
           </label>
-          <div>
+          <div class="multiselect-wrap--small">
             <multiselect
-              v-model="selectedSender"
-              :placeholder="$t('FORMS.MULTISELECT.SELECT')"
-              :options="[...inboxes]"
-              :multiple="false"
-              selected-label=""
-              select-label=""
-              :close-on-select="true"
-              :clear-on-select="false"
-              :preserve-search="true"
+              v-model="targetInbox"
               track-by="id"
               label="name"
-              :preselect-first="false"
+              :placeholder="$t('FORMS.MULTISELECT.SELECT')"
+              selected-label=""
+              select-label=""
+              deselect-label=""
+              :max-height="160"
+              :close-on-select="true"
+              :options="[...inboxes]"
             >
               <template slot="singleLabel" slot-scope="{ option }">
                 <inbox-dropdown-item
                   v-if="option.name"
-                  class="px-py-0"
                   :name="option.name"
                   :inbox-identifier="computedInboxSource(option)"
                   :channel-type="option.channel_type"
                 />
-                <span v-else class="py-0 px-0">
+                <span v-else>
                   {{ $t('NEW_CONVERSATION.FORM.INBOX.PLACEHOLDER') }}
                 </span>
               </template>
@@ -55,9 +52,9 @@
         </div>
         <div class="columns">
           <label>
-            {{ $t('CAMPAIGN.ADD.WHATSAPP_FORM.CONTACT_MULTISELECT_LABEL') }}
+            {{ $t('NEW_CONVERSATION.FORM.TO.LABEL') }}
           </label>
-          <div>
+          <div class="multiselect-wrap--small">         
             <multiselect
               v-model="selectedContacts"
               :options="[...contacts]"
@@ -79,95 +76,122 @@
                   {{ values.length }} contacts selected
                 </span>
               </template>
-            </multiselect>
+            </multiselect>        
           </div>
-          <label :class="{ error: $v.targetInbox.$error }">
-            <span v-if="$v.targetInbox.$error" class="message">
+          <label :class="{ error: $v.selectedContacts.$error }">
+            <span v-if="$v.selectedContacts.$error" class="message">
               {{ $t('NEW_CONVERSATION.FORM.INBOX.ERROR') }}
             </span>
           </label>
         </div>
       </div>
-
-      <div class="row">
+      <div v-if="isAnEmailInbox" class="row">
         <div class="columns">
-          <div class="w-full">
-            <label class="editor-wrap">
-              {{ $t('CAMPAIGN.ADD.FORM.MESSAGE.LABEL') }}
-              <whatsapp-templates
-                v-if="hasWhatsappTemplates"
-                :inbox-id="selectedInbox.id"
-                @on-select-template="toggleWaTemplate"
-                @on-send="onSendWhatsAppReply"
-              />
-              <woot-message-editor
-                v-model="message"
-                class="message-editor"
-                :enable-variables="true"
-                :class="{ editor_warning: $v.message.$error }"
-                :placeholder="$t('CAMPAIGN.ADD.FORM.MESSAGE.PLACEHOLDER')"
-                @blur="$v.message.$touch"
-                @change="handleMessageChange"
-              />
-              <span v-if="$v.message.$error" class="editor-warning__message">
-                {{ $t('CAMPAIGN.ADD.FORM.MESSAGE.ERROR') }}
-              </span>
-            </label>
-          </div>
+          <label :class="{ error: $v.subject.$error }">
+            {{ $t('NEW_CONVERSATION.FORM.SUBJECT.LABEL') }}
+            <input
+              v-model="subject"
+              type="text"
+              :placeholder="$t('NEW_CONVERSATION.FORM.SUBJECT.PLACEHOLDER')"
+              @input="$v.subject.$touch"
+            />
+            <span v-if="$v.subject.$error" class="message">
+              {{ $t('NEW_CONVERSATION.FORM.SUBJECT.ERROR') }}
+            </span>
+          </label>
         </div>
       </div>
-
-      <!-- Container 4 -->
-      <div class="container">
-        <label for="normalInput">
-          Normal Input:
-          <div class="row">
-            <woot-input v-model="normalInput" />
-            <label class="or"> or </label>
-            <woot-button @click="performAction">Create Image URL</woot-button>
+      <div class="row">
+        <div class="columns">
+          <div class="canned-response">
+            <canned-response
+              v-if="showCannedResponseMenu && hasSlashCommand"
+              :search-key="cannedResponseSearchKey"
+              @click="replaceTextWithCannedResponse"
+            />
           </div>
-        </label>
+          <div v-if="isEmailOrWebWidgetInbox">
+            <label>
+              {{ $t('NEW_CONVERSATION.FORM.MESSAGE.LABEL') }}
+              <reply-email-head
+                v-if="isAnEmailInbox"
+                :cc-emails.sync="ccEmails"
+                :bcc-emails.sync="bccEmails"
+              />
+              <label class="editor-wrap">
+                <woot-message-editor
+                  v-model="message"
+                  class="message-editor"
+                  :class="{ editor_warning: $v.message.$error }"
+                  :enable-variables="true"
+                  :placeholder="$t('NEW_CONVERSATION.FORM.MESSAGE.PLACEHOLDER')"
+                  @toggle-canned-menu="toggleCannedMenu"
+                  @blur="$v.message.$touch"
+                />
+                <span v-if="$v.message.$error" class="editor-warning__message">
+                  {{ $t('NEW_CONVERSATION.FORM.MESSAGE.ERROR') }}
+                </span>
+              </label>
+            </label>
+          </div>
+          <whatsapp-templates
+            v-else-if="hasWhatsappTemplates"
+            :inbox-id="targetInbox.id"
+            @on-select-template="toggleWaTemplate"
+            @on-send="onSendWhatsAppReply"
+          />
+          <label v-else :class="{ error: $v.message.$error }">
+            {{ $t('NEW_CONVERSATION.FORM.MESSAGE.LABEL') }}
+            <textarea
+              v-model="message"
+              class="message-input"
+              type="text"
+              :placeholder="$t('NEW_CONVERSATION.FORM.MESSAGE.PLACEHOLDER')"
+              @input="$v.message.$touch"
+            />
+            <span v-if="$v.message.$error" class="message">
+              {{ $t('NEW_CONVERSATION.FORM.MESSAGE.ERROR') }}
+            </span>
+          </label>
+        </div>
       </div>
-
-      <!-- Container 5 -->
-      <div class="modal-footer">
-        <!-- <woot-button variant="clear" @click.prevent="onClose">
-          {{ $t('CAMPAIGN.ADD.CANCEL_BUTTON_TEXT') }}
-        </woot-button> -->
-        <woot-button :is-loading="uiFlags.isCreating">
-          {{ $t('CAMPAIGN.ADD.WHATSAPP_FORM.SEND_BUTTON_TEXT') }}
-        </woot-button>
-      </div>
+    </div>
+    <div v-if="!hasWhatsappTemplates" class="modal-footer">
+      <button class="button clear" @click.prevent="onCancel">
+        {{ $t('NEW_CONVERSATION.FORM.CANCEL') }}
+      </button>
+      <woot-button type="submit" :is-loading="conversationsUiFlags.isCreating">
+        {{ $t('NEW_CONVERSATION.FORM.SUBMIT') }}
+      </woot-button>
     </div>
   </form>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
+import Thumbnail from 'dashboard/components/widgets/Thumbnail';
 import WootMessageEditor from 'dashboard/components/widgets/WootWriter/Editor';
+import ReplyEmailHead from 'dashboard/components/widgets/conversation/ReplyEmailHead';
+import CannedResponse from 'dashboard/components/widgets/conversation/CannedResponse.vue';
 import InboxDropdownItem from 'dashboard/components/widgets/InboxDropdownItem';
 import WhatsappTemplates from 'dashboard/routes/dashboard/conversation/contact/WhatsappTemplates.vue';
 import alertMixin from 'shared/mixins/alertMixin';
+import { INBOX_TYPES } from 'shared/mixins/inboxMixin';
 import { ExceptionWithMessage } from 'shared/helpers/CustomErrors';
 import { getInboxSource } from 'dashboard/helper/inbox';
-import { required } from 'vuelidate/lib/validators';
-
-// import 'dashboard/assets/scss/plugins/_multiselect.scss';
-import Multiselect from 'vue-multiselect';
-
-import ContactApi from 'dashboard/api/contacts';
+import { required, requiredIf } from 'vuelidate/lib/validators';
 
 export default {
   components: {
+    Thumbnail,
     WootMessageEditor,
+    ReplyEmailHead,
+    CannedResponse,
     WhatsappTemplates,
     InboxDropdownItem,
-    Multiselect,
   },
   mixins: [alertMixin],
-  props: {
-    addCampaign: { type: Function, default: null },
-  },
+  props: {},
   data() {
     return {
       name: '',
@@ -178,72 +202,84 @@ export default {
       bccEmails: '',
       ccEmails: '',
       targetInbox: {},
+      selectedContacts: [],
       whatsappTemplateSelected: false,
-      numInputs: 0,
-      childInputs: [],
-      normalInput: '',
-      selectedSender: {},
-      contact: {},
-      selectedContacts: this.inboxes,
-      selectedItems: [],
-      searchText: '',
-      isDropdownOpen: false,
-      options: [], // Your list of options
-      varCount: 0,
     };
+  },
+  validations: {
+    subject: {
+      required: requiredIf('isAnEmailInbox'),
+    },
+    message: {
+      required,
+    },
+    targetInbox: {
+      required,
+    },
+    selectedContacts: {
+      required,
+    },
   },
   computed: {
     ...mapGetters({
       uiFlags: 'contacts/getUIFlags',
       conversationsUiFlags: 'contactConversations/getUIFlags',
       currentUser: 'getCurrentUser',
+      contactList: 'contacts/getContacts',
+      inboxList: 'inboxes/getWhatsAppInboxes',
     }),
-    handleMessageChange() {
-      return this.countDoubleCurlyBraces(this.message);
-    },
-    range() {
-      let start = 1;
-      let end = this.handleMessageChange();
-      return Array.from(
-        { length: end - start + 1 },
-        (_, index) => start + index
-      );
-    },
-    filteredOptions() {
-      // Filter options based on the search text
-      return this.options.filter(option =>
-        option.name.toLowerCase().includes(this.searchText.toLowerCase())
-      );
-    },
-    selectedInbox: {
-      get() {
-        const inboxList = this.inboxes;
+    emailMessagePayload() {
+      const payload = {
+        inboxId: this.targetInbox.id,
+        sourceId: this.targetInbox.sourceId,
+        contactId: this.contact.id,
+        message: { content: this.message },
+        mailSubject: this.subject,
+        assigneeId: this.currentUser.id,
+      };
+      if (this.ccEmails) {
+        payload.message.cc_emails = this.ccEmails;
+      }
 
-        return (
-          inboxList.find(inbox => inbox.id === this.targetInbox.id) || {
-            inbox: {},
-          }
-        );
-      },
-      set(value) {
-        this.targetInbox = value;
-      },
+      if (this.bccEmails) {
+        payload.message.bcc_emails = this.bccEmails;
+      }
+      return payload;
     },
     showNoInboxAlert() {
-      if (!this.inboxes) {
+      if (!this.contacts) {
         return false;
       }
       return this.inboxes.length === 0 && !this.uiFlags.isFetchingInboxes;
     },
     inboxes() {
-      const inboxList = this.$store.getters['inboxes/getWhatsAppInboxes'];
-      return inboxList.map(inbox => ({
+      return this.inboxList.map(inbox => ({
         ...inbox,
-        sourceId: inbox.channel_id, // source_id ?
+        sourceId: inbox.channel_id,
       }));
     },
+    contacts() {
+      const ct = this.$store.getters['contacts/getContacts']
+
+      return ct;
+    },
+    isAnEmailInbox() {
+      return (
+        this.targetInbox &&
+        this.targetInbox.channel_type === INBOX_TYPES.EMAIL
+      );
+    },
+    isAnWebWidgetInbox() {
+      return (
+        this.targetInbox &&
+        this.targetInbox.channel_type === INBOX_TYPES.WEB
+      );
+    },
+    isEmailOrWebWidgetInbox() {
+      return this.isAnEmailInbox || this.isAnWebWidgetInbox;
+    },
     hasWhatsappTemplates() {
-      return !!this.selectedInbox?.message_templates;
+      return !!this.targetInbox?.message_templates;
     },
   },
   watch: {
@@ -260,64 +296,31 @@ export default {
       }
     },
   },
-  mounted() {},
-  validations: {
-    message: {
-      required,
-    },
-    targetInbox: {
-      required,
-    },
-    selectedSender: {
-      required,
-    },
-    selectedContacts: {
-      required,
-    },
-  },
   methods: {
-    toggleDropdown() {
-      this.isDropdownOpen = !this.isDropdownOpen;
-      if (this.isDropdownOpen) {
-        this.$nextTick(() => {
-          this.$refs.searchInput.focus();
-        });
-      }
-    },
-    closeDropdown() {
-      this.isDropdownOpen = false;
-    },
-    selectItem(item) {
-      if (!this.selectedItems.includes(item)) {
-        this.selectedItems.push(item);
-      }
-      this.searchText = '';
-      this.isDropdownOpen = false;
-    },
-    removeItem(index) {
-      this.selectedItems.splice(index, 1);
-    },
-    async onSubmit(contactItem) {
-      const data = await this.$store.dispatch(
-        'contactConversations/create',
-        contactItem
-      );
-      return data;
-    },
     onCancel() {
       this.$emit('cancel');
     },
     onSuccess() {
       this.$emit('success');
     },
+    replaceTextWithCannedResponse(message) {
+      this.message = message;
+    },
+    toggleCannedMenu(value) {
+      this.showCannedMenu = value;
+    },
     prepareWhatsAppMessagePayload({ message: content, templateParams }) {
-      const payload = {
-        inboxId: this.targetInbox.id,
-        sourceId: this.targetInbox.sourceId,
-        contactId: this.contact.id,
-        message: { content, template_params: templateParams },
-        assigneeId: this.currentUser.id,
-      };
+      const payload = this.selectedContacts.map(contact => 
+      {
+        return {
+          inboxId: this.targetInbox.id,
+          sourceId: this.targetInbox.sourceId,
+          contactId: contact.id,
+          message: { content, template_params: templateParams },
+          assigneeId: this.currentUser.id,
+        };
+      });
+
       return payload;
     },
     onFormSubmit() {
@@ -348,7 +351,34 @@ export default {
         }
       }
     },
+    async onSubmit(contactItems) {
+      let data = {}
 
+      for(const item of contactItems){
+        setTimeout(async () => {
+          data = await this.$store.dispatch(
+            'contactConversations/create',
+            item
+          );
+        }, 1000);
+      }
+
+      const campaignDetails = {
+        message: this.message,
+        enabled: true,
+        inbox_id: this.targetInbox.id,
+        sender_id: this.currentUser.id,
+        contacts: this.selectedContacts.map(contact => contact.id),
+        message_template: contactItems[0].message
+      }
+
+      await this.$store.dispatch('whatsapp_campaigns/create', campaignDetails);
+
+      return data;
+    },
+    runCreateConversation(){
+
+    },
     toggleWaTemplate(val) {
       this.whatsappTemplateSelected = val;
     },
@@ -368,39 +398,37 @@ export default {
       );
       return classByType;
     },
-    async getContacts() {
-      const contacts = await ContactApi.getContacts();
-
-      return contacts.data;
-    },
-    generateChildInputs() {
-      this.childInputs = Array.from({ length: this.numInputs }, () => ({
-        selectedOption: '',
-        inputText: '',
-      }));
-    },
-    addNewInput() {
-      this.childInputs.push({
-        selectedOption: '',
-        inputText: '',
-      });
-    },
-    performAction() {
-      // Handle action for Container 4
-    },
-    cancelForm() {
-      // Handle cancel button click for Container 5
-    },
-    submitForm() {
-      this.$emit('form-submitted', this.formData);
-    },
   },
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
+.conversation--form {
+  padding: var(--space-normal) var(--space-large) var(--space-large);
+}
+
+.canned-response {
+  position: relative;
+}
+
 .input-group-label {
   font-size: var(--font-size-small);
+}
+
+.contact-input {
+  display: flex;
+  align-items: center;
+  height: 3.9rem;
+  background: var(--color-background-light);
+  border: 1px solid var(--color-border);
+  padding: var(--space-smaller) var(--space-small);
+  border-radius: var(--border-radius-small);
+
+  .contact-name {
+    margin: 0;
+    margin-left: var(--space-small);
+    margin-right: var(--space-small);
+  }
 }
 
 .message-input {
@@ -411,46 +439,23 @@ export default {
   gap: var(--space-small);
 }
 
-.row {
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-}
-
-.multiselect-wrap--medium {
-  .multiselect {
-    display: flex;
-    align-items: center;
-    width: 50%;
-
-    .multiselect_tags {
-      width: 100%;
-    }
+::v-deep {
+  .mention--box {
+    left: 0;
+    margin: auto;
+    right: 0;
+    top: unset;
+    height: fit-content;
   }
-}
 
-.multiselect_tags span {
-  padding: 0;
-}
-
-.or {
-  margin: 5px;
-}
-
-.container {
-  display: flex;
-  margin-bottom: 20px;
-  justify-content: space-between;
-}
-
-.child-container {
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-  margin-top: 5px;
-}
-
-.child-container select {
-  margin-right: 10px;
+  /* TODO: Remove when have standardized a component out of multiselect  */
+  .multiselect .multiselect__content .multiselect__option span {
+    display: inline-flex;
+    width: var(--space-medium);
+    color: var(--s-600);
+  }
+  .multiselect .multiselect__content .multiselect__option {
+    padding: var(--space-micro) var(--space-smaller);
+  }
 }
 </style>

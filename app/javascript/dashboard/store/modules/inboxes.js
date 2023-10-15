@@ -115,8 +115,7 @@ export const getters = {
   getWhatsAppInboxes($state) {
     return $state.records.filter(item => {
       return (
-        item.channel_type === INBOX_TYPES.WHATSAPP ||
-        item.channel_type === INBOX_TYPES.API
+        item.channel_type === INBOX_TYPES.WHATSAPP
       );
     });
   },

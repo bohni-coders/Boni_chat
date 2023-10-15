@@ -928,7 +928,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_17_013141) do
 
   create_table "whatsapp_campaigns", force: :cascade do |t|
     t.integer "display_id", null: false
-    t.string "title", null: false
     t.text "message", null: false
     t.jsonb "message_template"
     t.integer "sender_id"

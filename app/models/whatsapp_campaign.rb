@@ -8,7 +8,6 @@
 #  enabled          :boolean          default(TRUE)
 #  message          :text             not null
 #  message_template :jsonb
-#  title            :string           not null
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  account_id       :bigint           not null
@@ -18,5 +17,6 @@
 #
 class WhatsappCampaign < ApplicationRecord
   include UrlHelper
+  
   
 end
