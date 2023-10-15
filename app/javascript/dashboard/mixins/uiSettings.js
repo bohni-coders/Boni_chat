@@ -59,8 +59,6 @@ export default {
       });
     },
     isContactSidebarItemOpen(key) {
-      bus.$emit('newToastMessage', key);
-
       const { [key]: isOpen } = this.uiSettings;
       return !!isOpen;
     },
