@@ -3,28 +3,28 @@ class Api::V1::Accounts::WhatsappCampaignsController < Api::V1::Accounts::BaseCo
     before_action :check_authorization
   
     def index
-      @campaigns = Current.account.campaigns
+      @whatsapp_campaigns = Current.account.whatsapp_campaigns
     end
   
     def show; end
   
     def create
-      @campaign = Current.account.whatsapp_campaigns.create!(campaign_params)
+      @whatsapp_campaign = Current.account.whatsapp_campaigns.create!(campaign_params)
     end
   
     def update
-      @campaign.update!(campaign_params)
+      @whatsapp_campaign.update!(campaign_params)
     end
   
     def destroy
-      @campaign.destroy!
+      @whatsapp_campaign.destroy!
       head :ok
     end
   
     private
   
     def campaign
-      @campaign ||= Current.account.campaigns.find_by(display_id: params[:id])
+      @whatsapp_campaign ||= Current.account.whatsapp_campaigns.find_by(display_id: params[:id])
     end
   
     def campaign_params

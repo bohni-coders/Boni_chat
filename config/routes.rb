@@ -71,6 +71,11 @@ Rails.application.routes.draw do
           resources :campaigns, only: [:index, :create, :show, :update, :destroy] do
             
           end
+
+          resources :whatsapp_campaigns, only: [:index, :create, :show, :update, :destroy] do
+            
+          end
+
           resources :dashboard_apps, only: [:index, :show, :create, :update, :destroy]
           namespace :channels do
             resource :twilio_channel, only: [:create]

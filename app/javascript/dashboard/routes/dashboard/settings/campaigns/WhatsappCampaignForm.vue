@@ -54,29 +54,37 @@
           <label>
             {{ $t('NEW_CONVERSATION.FORM.TO.LABEL') }}
           </label>
-          <div class="multiselect-wrap--small">         
+          <div v-if="contacts" class="multiselect-wrap--small">
             <multiselect
               v-model="selectedContacts"
+              track-by="id"
+              label="name"
+              :placeholder="$t('FORMS.MULTISELECT.SELECT')"
+              selected-label=""
+              select-label=""
+              deselect-label=""
+              :max-height="160"
+              :close-on-select="true"
               :options="[...contacts]"
               :multiple="true"
-              :close-on-select="false"
-              :clear-on-select="false"
-              :preserve-search="true"
-              placeholder="Select Contacts"
-              label="name"
-              track-by="name"
-              :preselect-first="false"
             >
-              <template slot="selection" slot-scope="{ values, isOpen }">
-                <span
-                  v-if="values.length"
-                  v-show="!isOpen"
-                  class="multiselect__single"
-                >
+              <template slot="singleLabel" slot-scope="{ option, values }">
+                <contact-dropdown-item
+                  v-if="option.name"
+                  :name="option.name"
+                  :phone-number="option.phone_number"
+                />
+                <span v-else>
                   {{ values.length }} contacts selected
                 </span>
               </template>
-            </multiselect>        
+              <template slot="option" slot-scope="{ option }">
+                <contact-dropdown-item
+                  :name="option.name"
+                  :phone-number="option.phone_number"
+                />
+              </template>
+            </multiselect>
           </div>
           <label :class="{ error: $v.selectedContacts.$error }">
             <span v-if="$v.selectedContacts.$error" class="message">
@@ -180,6 +188,10 @@ import { INBOX_TYPES } from 'shared/mixins/inboxMixin';
 import { ExceptionWithMessage } from 'shared/helpers/CustomErrors';
 import { getInboxSource } from 'dashboard/helper/inbox';
 import { required, requiredIf } from 'vuelidate/lib/validators';
+import ContactAPI from 'dashboard/api/contacts';
+import WhatsappCampaignsAPI from 'dashboard/api/whatsappCampaigns';
+import ConversationApi from 'dashboard/api/conversations'
+import ContactDropdownItem from 'dashboard/modules/contact/components/ContactDropdownItem.vue'
 
 export default {
   components: {
@@ -189,6 +201,7 @@ export default {
     CannedResponse,
     WhatsappTemplates,
     InboxDropdownItem,
+    ContactDropdownItem,
   },
   mixins: [alertMixin],
   props: {},
@@ -203,6 +216,7 @@ export default {
       ccEmails: '',
       targetInbox: {},
       selectedContacts: [],
+      contacts: [],
       whatsappTemplateSelected: false,
     };
   },
@@ -229,14 +243,17 @@ export default {
       inboxList: 'inboxes/getWhatsAppInboxes',
     }),
     emailMessagePayload() {
-      const payload = {
-        inboxId: this.targetInbox.id,
-        sourceId: this.targetInbox.sourceId,
-        contactId: this.contact.id,
-        message: { content: this.message },
-        mailSubject: this.subject,
-        assigneeId: this.currentUser.id,
-      };
+      const payload = this.selectedContacts.map(contact => 
+      {
+        return {
+          inbox_id: this.targetInbox.id,
+          source_id: this.targetInbox.sourceId,
+          contact_id: contact.id,
+          mail_subject: this.subject,
+          message: { content, template_params: templateParams },
+          assignee_id: this.currentUser.id,
+        };
+      });
       if (this.ccEmails) {
         payload.message.cc_emails = this.ccEmails;
       }
@@ -258,11 +275,6 @@ export default {
         sourceId: inbox.channel_id,
       }));
     },
-    contacts() {
-      const ct = this.$store.getters['contacts/getContacts']
-
-      return ct;
-    },
     isAnEmailInbox() {
       return (
         this.targetInbox &&
@@ -281,6 +293,15 @@ export default {
     hasWhatsappTemplates() {
       return !!this.targetInbox?.message_templates;
     },
+  },
+  mounted() {
+    this.contactsfun()
+    .then(res => {
+      this.contacts = res;
+    }).catch(e => {
+      this.showAlert(e.data);
+    });
+
   },
   watch: {
     message(value) {
@@ -313,11 +334,11 @@ export default {
       const payload = this.selectedContacts.map(contact => 
       {
         return {
-          inboxId: this.targetInbox.id,
-          sourceId: this.targetInbox.sourceId,
-          contactId: contact.id,
+          inbox_id: this.targetInbox.id,
+          source_id: this.targetInbox.sourceId,
+          contact_id: contact.id,
           message: { content, template_params: templateParams },
-          assigneeId: this.currentUser.id,
+          assignee_id: this.currentUser.id,
         };
       });
 
@@ -355,12 +376,23 @@ export default {
       let data = {}
 
       for(const item of contactItems){
-        setTimeout(async () => {
-          data = await this.$store.dispatch(
-            'contactConversations/create',
-            item
-          );
-        }, 1000);
+        ConversationApi
+        .create(item)
+        .then(res => {
+          data = res;
+        }).catch(e => {
+          this.showAlert(e.data)
+        });
+
+
+        // this.$store.dispatch(
+        //   'contactConversations/create',
+        //   item
+        // ).then(res => {
+        //   data = res;
+        // }).catch(e => {
+        //   this.showAlert(e.data)
+        // });
       }
 
       const campaignDetails = {
@@ -368,13 +400,20 @@ export default {
         enabled: true,
         inbox_id: this.targetInbox.id,
         sender_id: this.currentUser.id,
-        contacts: this.selectedContacts.map(contact => contact.id),
+        contacts: this.selectedContacts,
         message_template: contactItems[0].message
       }
 
-      await this.$store.dispatch('whatsapp_campaigns/create', campaignDetails);
+      await WhatsappCampaignsAPI.create(campaignDetails);
 
       return data;
+    },
+    async contactsfun() {
+      const res = await ContactAPI.get()
+
+      const ct = res.data.payload;
+
+      return ct;
     },
     runCreateConversation(){
 
@@ -396,6 +435,7 @@ export default {
         inbox.phone_number,
         inbox
       );
+
       return classByType;
     },
   },
@@ -458,4 +498,5 @@ export default {
     padding: var(--space-micro) var(--space-smaller);
   }
 }
+
 </style>

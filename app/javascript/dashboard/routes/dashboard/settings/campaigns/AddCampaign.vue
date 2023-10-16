@@ -167,7 +167,7 @@
         </woot-button>
       </div>
     </form>
-    <whatsapp-campaign-form v-if="isWhatsapp" :prevent="addCampaign" />
+    <whatsapp-campaign-form v-if="isWhatsapp"/>
   </div>
 </template>
 
