@@ -27,7 +27,7 @@ class WhatsappCampaign < ApplicationRecord
   end
 
   def sent_message_to_contacts
-    CampaignConversationWorker.new.perform(id)
+    CampaignConversationWorker.perform_async(id)
   end
 
 end
