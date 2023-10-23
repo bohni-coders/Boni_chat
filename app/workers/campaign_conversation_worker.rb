@@ -5,7 +5,7 @@ class CampaignConversationWorker
     @whatsapp_campaign = WhatsappCampaign.find_by(id: whatsapp_campaign_id)
     return if @whatsapp_campaign.blank?
 
-    message = @whatsapp_campaign.message_template
+    message = @whatsapp_campaign.message_template.with_indifferent_access
     contacts = @whatsapp_campaign.contacts
     contacts.each do |contact_attr|
       contact = Contact.find_by(id: contact_attr['id'])

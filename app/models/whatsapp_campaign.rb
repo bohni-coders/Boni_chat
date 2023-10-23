@@ -20,7 +20,7 @@ class WhatsappCampaign < ApplicationRecord
   
   belongs_to :inbox
   before_create :set_display_id
-  after_create :sent_message_to_contacts
+  # after_create :sent_message_to_contacts
 
   def set_display_id
     self.display_id = self.account_id
