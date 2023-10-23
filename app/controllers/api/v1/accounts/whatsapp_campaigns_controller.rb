@@ -11,7 +11,7 @@ class Api::V1::Accounts::WhatsappCampaignsController < Api::V1::Accounts::BaseCo
     def create
       @whatsapp_campaign = Current.account.whatsapp_campaigns.new(campaign_params)
       if @whatsapp_campaign.save
-        CampaignConversationWorker.new.perform(@whatsapp_campaign.id)
+        CampaignConversationWorker.perform_async(@whatsapp_campaign.id)
       end
       head :ok
     end

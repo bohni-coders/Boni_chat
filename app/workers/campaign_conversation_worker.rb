@@ -19,6 +19,7 @@ class CampaignConversationWorker
       next unless conversation.persisted?
 
       Messages::MessageBuilder.new(nil, conversation, message).perform
+      sleep(2)
     end
   end
 
