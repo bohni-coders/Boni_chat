@@ -124,6 +124,13 @@ export const getters = {
       item => item.channel_type !== INBOX_TYPES.EMAIL
     );
   },
+  getOnOffInboxes($state) {
+    return $state.records.filter(item => {
+      return (
+        item.channel_type === INBOX_TYPES.WHATSAPP || item.channel_type === INBOX_TYPES.API
+      );
+    });
+  },
 };
 
 const sendAnalyticsEvent = channelType => {
