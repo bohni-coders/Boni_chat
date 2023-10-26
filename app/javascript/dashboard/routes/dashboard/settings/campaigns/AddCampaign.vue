@@ -276,7 +276,7 @@ export default {
       if (this.isOngoingType)
         return this.$store.getters['inboxes/getWebsiteInboxes'];
 
-      if (this.isOnOffType) return this.$store.getters['inboxes/getSMSInboxes'];
+      if (this.isOnOffType) return this.$store.getters['inboxes/getOnOffInboxes'];
 
       if (this.isWhatsapp)
         return this.$store.getters['inboxes/getWhatsAppInboxes'];
