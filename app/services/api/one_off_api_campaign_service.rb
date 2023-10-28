@@ -26,7 +26,7 @@ class Api::OneOffApiCampaignService
       next if contact_inbox.blank?
 
       conversation = find_conversation(contact.id)
-      conversation = create_conversation(contact_attr, contact_inbox.id) if conversation.blank?
+      conversation = create_conversation(contact, contact_inbox.id) if conversation.blank?
       next unless conversation.persisted?
       message = {content: campaign.message}.with_indifferent_access
       Messages::MessageBuilder.new(nil, conversation, message).perform
