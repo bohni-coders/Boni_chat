@@ -20,7 +20,7 @@ class Api::OneOffApiCampaignService
 
   def process_audience(audience_labels)
     campaign.account.contacts.tagged_with(audience_labels, any: true).each do |contact|
-      next if contact.phone_number.blank?
+      next if contact.phone_number.blank? && contact.identifier.blank?
 
       contact_inbox = ContactInboxBuilder.new(contact: contact, inbox: inbox, source_id: nil, hmac_verified: false).perform
       next if contact_inbox.blank?
