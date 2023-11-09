@@ -1,0 +1,38 @@
+name: Sync Chatwoot Release
+
+on:
+  schedule:
+    # Runs at 00:00 every day
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync-chatwoot:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+      with:
+        ref: 'ft/github-actions' # Replace with your default branch
+
+    - name: Fetch the latest release from Chatwoot
+      id: fetch-latest-release
+      run: |
+        LATEST_RELEASE=$(curl -s https://api.github.com/repos/chatwoot/chatwoot/releases/latest | jq -r .tag_name)
+        echo "Latest release is $LATEST_RELEASE"
+        echo "::set-output name=tag_name::$LATEST_RELEASE"
+
+    - name: Download and unzip latest release
+      run: |
+        LATEST_RELEASE="${{ steps.fetch-latest-release.outputs.tag_name }}"
+        curl -L "https://github.com/chatwoot/chatwoot/archive/refs/tags/$LATEST_RELEASE.tar.gz" -o chatwoot-release.tar.gz
+        mkdir chatwoot-latest
+        tar -zxvf chatwoot-release.tar.gz -C chatwoot-latest --strip-components=1
+
+    - name: Push to your repository
+      run: |
+        git config --local user.email "shreeda.bhat@yahoo.com"
+        git config --local user.name "memetics19"
+        git add .
+        git commit -m "Sync Chatwoot release ${{ steps.fetch-latest-release.outputs.tag_name }}"
+        git push origin ft/github-actions
