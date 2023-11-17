@@ -80,12 +80,6 @@ else
     echo "Ruby is already installed, skipping..."
 fi
 
-# Clone Chatwoot repository
-if [ ! -d "chatwoot" ]; then
-    git clone https://github.com/chatwoot/chatwoot.git
-fi
-cd chatwoot
-
 # Install Ruby and JavaScript dependencies
 bundle install
 yarn install
