@@ -31,7 +31,6 @@ RUN apk update && apk add --no-cache \
 WORKDIR /app
 
 COPY ../Gemfile ../Gemfile.lock ./
-
 # natively compile grpc and protobuf to support alpine musl (dialogflow-docker workflow)
 # https://github.com/googleapis/google-cloud-ruby/issues/13306
 # adding xz as nokogiri was failing to build libxml
@@ -106,7 +105,7 @@ RUN if [ "$RAILS_ENV" != "production" ]; then \
 
 COPY --from=pre-builder /gems/ /gems/
 COPY --from=pre-builder /app /app
-
+RUN chmod +x /app/docker/entrypoints/rails.sh
 # Copy .git_sha file from pre-builder stage
 COPY --from=pre-builder /app/.git_sha /app/.git_sha
 
