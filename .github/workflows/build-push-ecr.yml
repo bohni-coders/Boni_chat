@@ -40,5 +40,5 @@ jobs:
           branch: whatsap-campaign-pr
           message: "Update Image Version to ${{ github.sha }}"
           propertyPath: "image.tag"
-          value: "${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:/${{ github.sha }}"
+          value: "${{ github.sha }}"
           valueFile: helm/charts/chatwoot/values.yaml
