@@ -165,18 +165,18 @@ redis:
     replicaCount: 1
 
 # Provide affinity for hooks if needed
-hooks:
-  affinity: {}
-  migrate:
-    env: []
-    resources:
-      limits:
-        memory: 1000Mi
-      requests:
-        memory: 1000Mi
-    # Defaults to performing the DB migration job after the install/upgrade.
-    # Can be overridden to "pre-install,pre-upgrade" with caution to perform migrations that are sometimes required for the deployment to become healthy
-    hookAnnotation: "post-install,post-upgrade"
+# hooks:
+#   affinity: {}
+#   migrate:
+#     env: []
+#     resources:
+#       limits:
+#         memory: 1000Mi
+#       requests:
+#         memory: 1000Mi
+#     # Defaults to performing the DB migration job after the install/upgrade.
+#     # Can be overridden to "pre-install,pre-upgrade" with caution to perform migrations that are sometimes required for the deployment to become healthy
+#     hookAnnotation: "post-install,post-upgrade"
 
 # ENVIRONMENT VARIABLES
 
