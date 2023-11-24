@@ -62,7 +62,6 @@ services:
       - '6379:6379'
 
 volumes:
-  postgres:
   redis:
   bundle:
   packs:
