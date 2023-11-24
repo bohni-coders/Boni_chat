@@ -24,10 +24,10 @@ services:
     environment:
       - NODE_ENV=production
       - RAILS_ENV=production
-      - POSTGRES_HOST=localhost
-      - POSTGRES_DATABASE=chatwoot_production
-      - POSTGRES_USERNAME=chatwoot
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DATABASE=chatwoot
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=admin
     # entrypoint: docker/entrypoints/rails.sh
     command: ['bundle', 'exec', 'rails', 's', '-p', '3000', '-b', '0.0.0.0']
 
@@ -51,7 +51,7 @@ services:
   #   environment:
   #     - POSTGRES_DB=chatwoot
   #     - POSTGRES_USER=postgres
-  #     - POSTGRES_PASSWORD=
+  #     - POSTGRES_PASSWORD=admin
 
   redis:
     image: redis:alpine
@@ -62,6 +62,7 @@ services:
       - '6379:6379'
 
 volumes:
+  postgres:
   redis:
   bundle:
   packs:
