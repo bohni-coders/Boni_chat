@@ -1,0 +1,44 @@
+name: Push Image to ECR
+'on':
+  push:
+    branches:
+      - whatsap-campaign-pr
+  pull_request:
+    branches:
+      - whatsap-campaign-pr
+env:
+  AWS_REGION: ap-south-1
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: '${{ secrets.AWS_ACCESS_KEY_ID }}'
+          aws-secret-access-key: '${{ secrets.AWS_SECRET_ACCESS_KEY }}'
+          aws-region: '${{ env.AWS_REGION }}'
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: 'Build, tag, and push image to Amazon ECR'
+        id: build-image
+        env:
+          ECR_REGISTRY: '${{ steps.login-ecr.outputs.registry }}'
+          ECR_REPOSITORY:  '${{ secrets.ECR_REPOSITORY }}'
+          IMAGE_TAG: '${{ github.sha }}'
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }} .
+          docker push  $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}  
+      - name: "Update Image Version deployment.yaml"
+        uses: fjogeleit/yaml-update-action@main
+        with: 
+          branch: whatsap-campaign-pr
+          message: "Update Image Version to ${{ github.sha }}"
+          propertyPath: "image.tag"
+          value: "${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:/${{ github.sha }}"
+          valueFile: helm/charts/chatwoot/values.yaml
