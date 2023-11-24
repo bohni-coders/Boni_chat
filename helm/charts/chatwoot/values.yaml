@@ -59,7 +59,7 @@ services:
   name: chatwoot
   internalPort: 3000
   targetPort: 3000
-  type: LoadBalancer
+  type: ClusterIP
   annotations: {}
     # For example
     #  service.beta.kubernetes.io/aws-load-balancer-type: external
@@ -67,7 +67,7 @@ services:
     #  service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
 
 imagePullSecrets:
-  - name: my-ecr-secret
+  - name: aws-registry
 
 nameOverride: ""
 fullnameOverride: ""
