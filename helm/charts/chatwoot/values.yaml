@@ -129,11 +129,11 @@ affinity: {}
 
 postgresql:
   enabled: false
-  nameOverride: chatwoot-postgresql
+  nameOverride: 
   auth:
-    username: postgres
-    postgresPassword: bIno()2020
-    database: postgres
+    username: 
+    postgresPassword: 
+    database: 
     # when existingSecret is defined auth.password, auth.PostgressPassword
     # is ignored.
     # existingSecret: secret-name
@@ -141,7 +141,7 @@ postgresql:
     #   adminPasswordKey: postgres-password
     #   replicationPasswordKey: replication-password
   # The following variables are only used when internal PG is disabled
-  postgresqlHost: chatwootres.cijrllc5kdsu.ap-south-1.rds.amazonaws.com
+  postgresqlHost:
   postgresqlPort: 5432
 
 redis:
