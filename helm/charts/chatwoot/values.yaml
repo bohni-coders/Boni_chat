@@ -1,6 +1,6 @@
 image:
   repository: 335448355144.dkr.ecr.ap-south-1.amazonaws.com/boni_chat
-  tag: 216ebdc3381785c532a5477ef1ddb30de6da34e2
+  tag: 83bd671221083d37faa63c32e83456e778c989bf
   pullPolicy: IfNotPresent
 autoscaling:
   apiVersion: autoscaling/v2
@@ -59,7 +59,7 @@ tolerations: []
 affinity: {}
 postgresql:
   enabled: false
-  nameOverride: null
+  nameOverride: chatwoot-postgresql
   auth:
     username: null
     postgresPassword: null
@@ -76,6 +76,16 @@ redis:
       enabled: true
   replica:
     replicaCount: 1
+hooks:
+  affinity: {}
+  migrate:
+    env: []
+    resources:
+      limits:
+        memory: 1000Mi
+      requests:
+        memory: 1000Mi
+    hookAnnotation: pre-install,pre-upgrade
 existingEnvSecret: ''
 env:
   ACTIVE_STORAGE_SERVICE: local
