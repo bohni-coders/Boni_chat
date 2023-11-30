@@ -30,7 +30,11 @@
         :is-contact-panel-open="isContactPanelOpen"
         @contact-panel-toggle="onToggleContactPanel"
       />
-      <empty-state v-else :is-on-expanded-layout="isOnExpandedLayout" />
+      <quick-connect 
+        v-else 
+
+      />
+      <!-- <empty-state v-else :is-on-expanded-layout="isOnExpandedLayout" /> -->
       <div v-show="showContactPanel" class="conversation-sidebar-wrap">
         <contact-panel
           v-if="showContactPanel"
@@ -56,6 +60,7 @@ import ContactPanel from 'dashboard/routes/dashboard/conversation/ContactPanel';
 import ConversationHeader from './ConversationHeader';
 import DashboardAppFrame from '../DashboardApp/Frame.vue';
 import EmptyState from './EmptyState';
+import QuickConnect from './QuickConnect.vue'
 import MessagesView from './MessagesView';
 
 export default {
@@ -64,6 +69,7 @@ export default {
     ConversationHeader,
     DashboardAppFrame,
     EmptyState,
+    QuickConnect,
     MessagesView,
   },
 

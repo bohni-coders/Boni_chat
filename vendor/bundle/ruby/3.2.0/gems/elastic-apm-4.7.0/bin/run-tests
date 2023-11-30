@@ -1,0 +1,42 @@
+#!/bin/bash
+set -e
+
+JUNIT_PREFIX=${JUNIT_PREFIX:-""}
+
+runRspec(){
+  local case=${1:-""}
+  local bn=${case}
+
+  if [ -n "${case}" ]; then
+    bn="$(basename ${case} _spec.rb)/"
+  fi
+  # If working on an isolated environment then copy the file to
+  # the original location
+  TEST_REPORT_DIR=spec/junit-reports/${JUNIT_PREFIX}${bn}
+  if [ -n "$APP_PATH" ] ; then
+    TEST_REPORT_DIR=$APP_PATH/$TEST_REPORT_DIR
+    mkdir -p $TEST_REPORT_DIR
+  fi
+  bundle exec rspec \
+    -f progress \
+    -r yarjuf -f JUnit -o ${TEST_REPORT_DIR}ruby-agent-junit.xml \
+    ${case}
+}
+specific_spec=$1
+
+if [[ $specific_spec = '' ]]; then
+  echo 'Running all specs, including integration'
+
+  runRspec
+  for i in $(find spec/integration -name '*_spec.rb')
+  do
+    echo "========================================"
+    echo $i
+    echo "========================================"
+    runRspec "$i"
+  done
+else
+  echo "Running only $specific_spec"
+
+  runRspec $specific_spec
+fi

@@ -1,0 +1,10 @@
+VERSION:
+  - ruby:3.1
+  - ruby:3.0
+  - ruby:2.7
+  - ruby:2.6
+  - ruby:2.4
+  - jruby:9.2
+  - elasticobservability/jruby:9.2-13-jdk
+  - elasticobservability/jruby:9.2-11-jdk
+  - elasticobservability/jruby:9.2-8-jdk

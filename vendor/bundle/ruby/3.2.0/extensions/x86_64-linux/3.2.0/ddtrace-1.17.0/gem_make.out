@@ -1,0 +1,19 @@
+current directory: /home/onkar/projects/boni/Boni_chat/vendor/bundle/ruby/3.2.0/gems/ddtrace-1.17.0/ext/ddtrace_profiling_loader
+/usr/local/rvm/rubies/ruby-3.2.2/bin/ruby extconf.rb
+WARNING: '-Wunused-parameter' not accepted by compiler, skipping it
+creating Makefile
+
+current directory: /home/onkar/projects/boni/Boni_chat/vendor/bundle/ruby/3.2.0/gems/ddtrace-1.17.0/ext/ddtrace_profiling_loader
+make DESTDIR\= sitearchdir\=./.gem.20231129-1256-1ptau6 sitelibdir\=./.gem.20231129-1256-1ptau6 clean
+
+current directory: /home/onkar/projects/boni/Boni_chat/vendor/bundle/ruby/3.2.0/gems/ddtrace-1.17.0/ext/ddtrace_profiling_loader
+make DESTDIR\= sitearchdir\=./.gem.20231129-1256-1ptau6 sitelibdir\=./.gem.20231129-1256-1ptau6
+compiling ddtrace_profiling_loader.c
+linking shared-object ddtrace_profiling_loader.3.2.2_x86_64-linux.so
+
+current directory: /home/onkar/projects/boni/Boni_chat/vendor/bundle/ruby/3.2.0/gems/ddtrace-1.17.0/ext/ddtrace_profiling_loader
+make DESTDIR\= sitearchdir\=./.gem.20231129-1256-1ptau6 sitelibdir\=./.gem.20231129-1256-1ptau6 install
+/usr/bin/install -m 0755 ddtrace_profiling_loader.3.2.2_x86_64-linux.so ./.gem.20231129-1256-1ptau6
+
+current directory: /home/onkar/projects/boni/Boni_chat/vendor/bundle/ruby/3.2.0/gems/ddtrace-1.17.0/ext/ddtrace_profiling_loader
+make DESTDIR\= sitearchdir\=./.gem.20231129-1256-1ptau6 sitelibdir\=./.gem.20231129-1256-1ptau6 clean

@@ -1,12 +1,12 @@
-current directory: /home/onkar/projects/Boni_chat/vendor/bundle/ruby/3.2.0/gems/sassc-2.4.0/ext
+current directory: /home/onkar/projects/boni/Boni_chat/vendor/bundle/ruby/3.2.0/gems/sassc-2.4.0/ext
 /usr/local/rvm/rubies/ruby-3.2.2/bin/ruby extconf.rb
 creating Makefile
 
-current directory: /home/onkar/projects/Boni_chat/vendor/bundle/ruby/3.2.0/gems/sassc-2.4.0/ext
-make DESTDIR\= sitearchdir\=./.gem.20231015-816751-o1ulja sitelibdir\=./.gem.20231015-816751-o1ulja clean
+current directory: /home/onkar/projects/boni/Boni_chat/vendor/bundle/ruby/3.2.0/gems/sassc-2.4.0/ext
+make DESTDIR\= sitearchdir\=./.gem.20231129-4414-7egnwe sitelibdir\=./.gem.20231129-4414-7egnwe clean
 
-current directory: /home/onkar/projects/Boni_chat/vendor/bundle/ruby/3.2.0/gems/sassc-2.4.0/ext
-make DESTDIR\= sitearchdir\=./.gem.20231015-816751-o1ulja sitelibdir\=./.gem.20231015-816751-o1ulja
+current directory: /home/onkar/projects/boni/Boni_chat/vendor/bundle/ruby/3.2.0/gems/sassc-2.4.0/ext
+make DESTDIR\= sitearchdir\=./.gem.20231129-4414-7egnwe sitelibdir\=./.gem.20231129-4414-7egnwe
 compiling ./libsass/src/ast.cpp
 compiling ./libsass/src/ast2c.cpp
 compiling ./libsass/src/ast_fwd_decl.cpp
@@ -75,9 +75,9 @@ compiling ./libsass/src/util_string.cpp
 compiling ./libsass/src/values.cpp
 linking shared-object sassc/libsass.so
 
-current directory: /home/onkar/projects/Boni_chat/vendor/bundle/ruby/3.2.0/gems/sassc-2.4.0/ext
-make DESTDIR\= sitearchdir\=./.gem.20231015-816751-o1ulja sitelibdir\=./.gem.20231015-816751-o1ulja install
-/usr/bin/install -m 0755 libsass.so ./.gem.20231015-816751-o1ulja/sassc
+current directory: /home/onkar/projects/boni/Boni_chat/vendor/bundle/ruby/3.2.0/gems/sassc-2.4.0/ext
+make DESTDIR\= sitearchdir\=./.gem.20231129-4414-7egnwe sitelibdir\=./.gem.20231129-4414-7egnwe install
+/usr/bin/install -m 0755 libsass.so ./.gem.20231129-4414-7egnwe/sassc
 
-current directory: /home/onkar/projects/Boni_chat/vendor/bundle/ruby/3.2.0/gems/sassc-2.4.0/ext
-make DESTDIR\= sitearchdir\=./.gem.20231015-816751-o1ulja sitelibdir\=./.gem.20231015-816751-o1ulja clean
+current directory: /home/onkar/projects/boni/Boni_chat/vendor/bundle/ruby/3.2.0/gems/sassc-2.4.0/ext
+make DESTDIR\= sitearchdir\=./.gem.20231129-4414-7egnwe sitelibdir\=./.gem.20231129-4414-7egnwe clean
