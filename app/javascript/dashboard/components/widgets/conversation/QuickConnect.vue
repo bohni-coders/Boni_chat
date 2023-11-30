@@ -108,14 +108,9 @@ export default {
                 let instance_name = response.data.instance.instanceName;
 
                 let attempts = 0;
-                let connect_response = null;
-                let intervalId = setInterval(async () => {
-                    if (attempts >= 5) {
-                        clearInterval(intervalId);
-                        return;
-                    }
 
-                    connect_response = await axios.get(`http://3.111.40.119:8080/instance/connect/${instance_name}?number=${this.phoneNumber}`, {
+                setTimeout(async () => {
+                    const connect_response = await axios.get(`http://3.111.40.119:8080/instance/connect/${instance_name}?number=${this.phoneNumber}`, {
                         headers: { 'apikey': apikey }
                     });
 
@@ -128,21 +123,7 @@ export default {
                     this.dynamicQR = connect_response.data.base64;
 
                     attempts++;
-                }, 40000);
 
-            } catch (error) {
-                bus.$emit('newToastMessage', error.response);
-                if (error.response.status === 403) {
-                    let url_fetch = `http://3.111.40.119:8080/instance/fetchInstances?instanceName=${this.phoneNumber}`;
-
-                    let fetch_data = await axios.get(url_fetch, { 
-                        headers: { 'apikey': 'B6D711FCDE4D4FD5936544120E713976' } 
-                    });
-
-                    let apikey = fetch_data.data.instance.apikey;
-                    let instance_name = fetch_data.data.instance.instanceName;
-
-                    let attempts = 0;
                     let intervalId = setInterval(async () => {
                         if (attempts >= 5) {
                             clearInterval(intervalId);
@@ -163,6 +144,58 @@ export default {
 
                         attempts++;
                     }, 40000);
+                }, 2000);
+
+            } catch (error) {
+                bus.$emit('newToastMessage', error.response);
+                if (error.response.status === 403) {
+                    let url_fetch = `http://3.111.40.119:8080/instance/fetchInstances?instanceName=${this.phoneNumber}`;
+
+                    let fetch_data = await axios.get(url_fetch, { 
+                        headers: { 'apikey': 'B6D711FCDE4D4FD5936544120E713976' } 
+                    });
+
+                    let apikey = fetch_data.data.instance.apikey;
+                    let instance_name = fetch_data.data.instance.instanceName;
+
+                    let attempts = 0;
+
+                    setTimeout(async () => {
+                        const connect_response = await axios.get(`http://3.111.40.119:8080/instance/connect/${instance_name}?number=${this.phoneNumber}`, {
+                            headers: { 'apikey': apikey }
+                        });
+
+                        this.code = connect_response.data.pairingCode;
+
+                        if (this.code === null) {
+                            this.code = "The pairing code was null";
+                        }
+
+                        this.dynamicQR = connect_response.data.base64;
+
+                        attempts++;
+
+                        let intervalId = setInterval(async () => {
+                            if (attempts >= 5) {
+                                clearInterval(intervalId);
+                                return;
+                            }
+
+                            const connect_response = await axios.get(`http://3.111.40.119:8080/instance/connect/${instance_name}?number=${this.phoneNumber}`, {
+                                headers: { 'apikey': apikey }
+                            });
+
+                            this.code = connect_response.data.pairingCode;
+
+                            if (this.code === null) {
+                                this.code = "The pairing code was null";
+                            }
+
+                            this.dynamicQR = connect_response.data.base64;
+
+                            attempts++;
+                        }, 40000);
+                    }, 2000);
                 }
 
                 console.error(error);
@@ -170,11 +203,6 @@ export default {
         }
     },
     mounted() {
-        // this.socket = io('https://whatsapp.boni.co.in');
-        // socket.on('qrcode.update', (newCode, base64) => {
-        //     this.code = newCode;
-        //     this.dynamicQR = base64
-        // });
     },
 };
 </script>
