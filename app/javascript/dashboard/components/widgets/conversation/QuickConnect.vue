@@ -55,6 +55,7 @@ export default {
             showQuickConnectPopup: true,
             phoneNumber: '',
             code: '',
+            socket: null,
             dynamicQR: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAIAAADTED8xAAADMElEQVR4nOzVwQnAIBQFQYXff81RUkQCOyDj1YOPnbXWPmeTRef+/3O/OyBjzh3CD95BfqICMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMO0TAAD//2Anhf4QtqobAAAAAElFTkSuQmCC'
         };
     },
@@ -86,12 +87,12 @@ export default {
                 token: "",
                 qrcode: false,
                 number: `${this.phoneNumber}@s.whatsapp.net`,
-                chatwoot_account_id: AccountId,
-                chatwoot_token: token,
-                chatwoot_url: "https://localhost:3000",
-                chatwoot_sign_msg: false,
-                chatwoot_reopen_conversation: true,
-                chatwoot_conversation_pending: false
+                // chatwoot_account_id: AccountId,
+                // chatwoot_token: token,
+                // chatwoot_url: "https://localhost:3000",
+                // chatwoot_sign_msg: false,
+                // chatwoot_reopen_conversation: true,
+                // chatwoot_conversation_pending: false
             };
 
             try {
@@ -119,8 +120,24 @@ export default {
                         this.code = "The pairing code was null"
                     }
 
-                    // this.dynamicQR = connect_response.data.
+                    this.dynamicQR = connect_response.data.base64
                 }, 2000)
+
+
+                // setTimeout(async () => {
+                //     const connect_response = await axios.get(`http://3.111.40.119:8080/instance/connect/${instance_name}?number=${this.phoneNumber}`, {
+                //         headers:
+                //             { 'apikey': apikey }
+                //     })
+
+                //     this.code = connect_response.data.pairingCode
+
+                //     if (this.code === null) {
+                //         this.code = "The pairing code was null"
+                //     }
+
+                //     this.dynamicQR = connect_response.data.base64
+                // }, 40000)
 
 
             } catch (error) {
@@ -129,10 +146,11 @@ export default {
         }
     },
     mounted() {
-        const socket = io('http://your-backend-url');
-        socket.on('codeUpdated', (newCode) => {
-            this.code = newCode;
-        });
+        // this.socket = io('https://whatsapp.boni.co.in');
+        // socket.on('qrcode.update', (newCode, base64) => {
+        //     this.code = newCode;
+        //     this.dynamicQR = base64
+        // });
     },
 };
 </script>
