@@ -11,14 +11,24 @@
             <woot-button @click="generateCode(currentUser.access_token, currentAccountId)">
                 Generate Code
             </woot-button>
-            <p>Your code: {{ code }}</p>  
+            <p>Your code: {{ code }}</p>
             <ol>
-                <li><p>Open WhatsApp of the number entered above</p></li>
-                <li><p>Tap Menu ⋮ and click on ‘Linked devices’️</p></li>
-                <li><p>Click on ‘Link a device’</p></li>
-                <li><p>Click on ‘Link with phone number instead’</p></li>
-                <li><p>Enter the code generated above</p></li>
-            </ol> 
+                <li>
+                    <p>Open WhatsApp of the number entered above</p>
+                </li>
+                <li>
+                    <p>Tap Menu ⋮ and click on ‘Linked devices’️</p>
+                </li>
+                <li>
+                    <p>Click on ‘Link a device’</p>
+                </li>
+                <li>
+                    <p>Click on ‘Link with phone number instead’</p>
+                </li>
+                <li>
+                    <p>Enter the code generated above</p>
+                </li>
+            </ol>
             <!-- </woot-modal> -->
         </div>
         <div>or</div>
@@ -28,11 +38,19 @@
                 <img class="w-full h-full" :src="dynamicQR" />
             </div>
             <ol>
-                <li><p>Open the WhatsApp number that you would like to connect with BOW CRM</p></li>
-                <li><p>Tap Menu ⋮ and click on ‘Linked devices’️</p></li>
-                <li><p>Click on ‘Link a device’</p></li>
-                <li><p>Generate and scan the QR displayed on the screen</p></li>
-            </ol> 
+                <li>
+                    <p>Open the WhatsApp number that you would like to connect with BOW CRM</p>
+                </li>
+                <li>
+                    <p>Tap Menu ⋮ and click on ‘Linked devices’️</p>
+                </li>
+                <li>
+                    <p>Click on ‘Link a device’</p>
+                </li>
+                <li>
+                    <p>Generate and scan the QR displayed on the screen</p>
+                </li>
+            </ol>
         </div>
     </div>
 </template>
@@ -42,8 +60,6 @@ import axios from 'axios';
 import wootButton from 'dashboard/components/buttons/Button.vue';
 import { addBusinessDays } from 'date-fns';
 import io from 'socket.io-client';
-
-
 import { mapGetters } from 'vuex';
 
 export default {
@@ -56,43 +72,29 @@ export default {
             phoneNumber: '',
             code: '',
             socket: null,
-            dynamicQR: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAIAAADTED8xAAADMElEQVR4nOzVwQnAIBQFQYXff81RUkQCOyDj1YOPnbXWPmeTRef+/3O/OyBjzh3CD95BfqICMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMO0TAAD//2Anhf4QtqobAAAAAElFTkSuQmCC'
+            dynamicQR: 'test'
         };
     },
     computed: {
         ...mapGetters({
             currentUser: 'getCurrentUser',
+            getAccount: 'accounts/getAccount',
             currentAccountId: 'getCurrentAccountId',
         }),
     },
     methods: {
         openQuickConnectPopup() {
             this.showQuickConnectPopup = true;
-
             bus.$emit('newToastMessage', currentUser);
         },
         closeQuickConnectPopup() {
             this.showQuickConnectPopup = false;
         },
         async generateCode(token, AccountId) {
-
-            if(this.phoneNumber === ''){
-                bus.$emit('newToastMessage', 'Please Enter Phone Number!')
-
-                return
-            }
-
             const data = {
                 instanceName: this.phoneNumber,
                 token: "",
                 qrcode: false,
-                number: `${this.phoneNumber}@s.whatsapp.net`,
-                // chatwoot_account_id: AccountId,
-                // chatwoot_token: token,
-                // chatwoot_url: "https://localhost:3000",
-                // chatwoot_sign_msg: false,
-                // chatwoot_reopen_conversation: true,
-                // chatwoot_conversation_pending: false
             };
 
             try {
@@ -102,45 +104,67 @@ export default {
                     }
                 });
 
+                let apikey = response.data.hash.apikey;
+                let instance_name = response.data.instance.instanceName;
 
-                let apikey = response.data.hash.apikey
-
-                let instance_name = response.data.instance.instanceName
-
-
-                setTimeout(async () => {
-                    const connect_response = await axios.get(`http://3.111.40.119:8080/instance/connect/${instance_name}?number=${this.phoneNumber}`, {
-                        headers:
-                            { 'apikey': apikey }
-                    })
-
-                    this.code = connect_response.data.pairingCode
-
-                    if (this.code === null) {
-                        this.code = "The pairing code was null"
+                let attempts = 0;
+                let connect_response = null;
+                let intervalId = setInterval(async () => {
+                    if (attempts >= 5) {
+                        clearInterval(intervalId);
+                        return;
                     }
 
-                    this.dynamicQR = connect_response.data.base64
-                }, 2000)
+                    connect_response = await axios.get(`http://3.111.40.119:8080/instance/connect/${instance_name}?number=${this.phoneNumber}`, {
+                        headers: { 'apikey': apikey }
+                    });
 
+                    this.code = connect_response.data.pairingCode;
 
-                // setTimeout(async () => {
-                //     const connect_response = await axios.get(`http://3.111.40.119:8080/instance/connect/${instance_name}?number=${this.phoneNumber}`, {
-                //         headers:
-                //             { 'apikey': apikey }
-                //     })
+                    if (this.code === null) {
+                        this.code = "The pairing code was null";
+                    }
 
-                //     this.code = connect_response.data.pairingCode
+                    this.dynamicQR = connect_response.data.base64;
 
-                //     if (this.code === null) {
-                //         this.code = "The pairing code was null"
-                //     }
-
-                //     this.dynamicQR = connect_response.data.base64
-                // }, 40000)
-
+                    attempts++;
+                }, 40000);
 
             } catch (error) {
+                bus.$emit('newToastMessage', error.response);
+                if (error.response.status === 403) {
+                    let url_fetch = `http://3.111.40.119:8080/instance/fetchInstances?instanceName=${this.phoneNumber}`;
+
+                    let fetch_data = await axios.get(url_fetch, { 
+                        headers: { 'apikey': 'B6D711FCDE4D4FD5936544120E713976' } 
+                    });
+
+                    let apikey = fetch_data.data.instance.apikey;
+                    let instance_name = fetch_data.data.instance.instanceName;
+
+                    let attempts = 0;
+                    let intervalId = setInterval(async () => {
+                        if (attempts >= 5) {
+                            clearInterval(intervalId);
+                            return;
+                        }
+
+                        const connect_response = await axios.get(`http://3.111.40.119:8080/instance/connect/${instance_name}?number=${this.phoneNumber}`, {
+                            headers: { 'apikey': apikey }
+                        });
+
+                        this.code = connect_response.data.pairingCode;
+
+                        if (this.code === null) {
+                            this.code = "The pairing code was null";
+                        }
+
+                        this.dynamicQR = connect_response.data.base64;
+
+                        attempts++;
+                    }, 40000);
+                }
+
                 console.error(error);
             }
         }
@@ -156,7 +180,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .modal-wrapper {
     display: flex;
     justify-content: space-around;
@@ -184,6 +207,4 @@ export default {
         width: 150px;
         margin: 2%;
     }
-}
-
-</style>
+}</style>
