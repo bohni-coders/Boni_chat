@@ -75,8 +75,10 @@ export default {
         },
         async generateCode(token, AccountId) {
 
-            if(this.phoneNumber === null){
+            if(this.phoneNumber === ''){
                 bus.$emit('newToastMessage', 'Please Enter Phone Number!')
+
+                return
             }
 
             const data = {
