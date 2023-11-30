@@ -9,7 +9,7 @@
             <p class="text-center"><b>Enter the WhatsApp number</b></p>
             <input class="inp" v-model="phoneNumber" type="text" placeholder="Enter phone number">
             <woot-button @click="generateCode(currentUser.access_token, currentAccountId)">
-                Generate Code
+                {{ buttonText }}
             </woot-button>
             <p>Your code: {{ code }}</p>
             <ol>
@@ -72,7 +72,8 @@ export default {
             phoneNumber: '',
             code: '',
             socket: null,
-            dynamicQR: 'test'
+            dynamicQR: 'test',
+            buttonText: 'Generate Code',
         };
     },
     computed: {
@@ -127,6 +128,8 @@ export default {
                     let intervalId = setInterval(async () => {
                         if (attempts >= 5) {
                             clearInterval(intervalId);
+
+                            this.buttonText = 'Reconnect'
                             return;
                         }
 
@@ -178,6 +181,8 @@ export default {
                         let intervalId = setInterval(async () => {
                             if (attempts >= 5) {
                                 clearInterval(intervalId);
+
+                                this.buttonText = 'Reconnect'
                                 return;
                             }
 
@@ -200,6 +205,8 @@ export default {
 
                 console.error(error);
             }
+
+            
         }
     },
     mounted() {
