@@ -1,0 +1,14 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: yarn start:dev
+    environment:
+      - POSTGRES_DATABASE=test
+      - POSTGRES_HOST=localhost
+      - POSTGRES_USERNAME=chatwoot
+      - POSTGRES_PASSWORD=test
+    ports:
+      - "3000:3000"

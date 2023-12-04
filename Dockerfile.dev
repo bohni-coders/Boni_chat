@@ -1,0 +1,27 @@
+FROM ruby:3.2.2
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+    apt-get update && apt-get install -y nodejs yarn
+
+WORKDIR /myapp
+
+ARG POSTGRES_DATABASE 
+ARG  POSTGRES_HOST
+ARG POSTGRES_USERNAME
+ARG POSTGRES_PASSWORD
+#RUN touch /myapp/log/development.log
+COPY Gemfile /myapp/Gemfile
+COPY Gemfile.lock /myapp/Gemfile.lock
+RUN bundle install
+
+COPY package.json /myapp/package.json
+COPY yarn.lock /myapp/yarn.lock
+RUN yarn install --check-files
+RUN  rm -rf /myapp/tmp/pids/server.pid
+COPY . /myapp
+RUN export NODE_OPTIONS=--openssl-legacy-provider
+RUN  touch .env
+RUN mkdir -p log && touch  log/development.log
+
+CMD yarn start:dev

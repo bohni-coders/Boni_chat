@@ -86,7 +86,7 @@ yarn install
 
 
 # Create and setup the database
-rails db:create db:migrate db:seed
+#rails db:create db:migrate db:seed
 
 # Start the local server
 bundle exec rails server
