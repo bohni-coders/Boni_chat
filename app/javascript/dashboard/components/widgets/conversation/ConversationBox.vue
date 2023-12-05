@@ -93,7 +93,6 @@ export default {
       currentChat: 'getSelectedChat',
       dashboardApps: 'dashboardApps/getRecords',
     }),
-    console.log(currentChat.id)
     dashboardAppTabs() {
       return [
         {
