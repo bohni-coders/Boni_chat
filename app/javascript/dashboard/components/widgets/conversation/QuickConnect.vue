@@ -1,55 +1,42 @@
 <template>
-    <div class="modal-wrapper h-full w-full"  >
-      <div class="modal-container" v-if="isAdmin">
-        <div class="modal">
-            <h4>Quick Connect with <b class="">OTP</b></h4>
-            <p class="text-center"><b>Enter the WhatsApp number</b></p>
-            <phone-input v-model="phoneNumber" @setCode="ct_code = $event"/>
-            <woot-button @click="generateCode(currentUser.access_token, currentAccountId)" :disabled="isGeneratingCode">
-                {{ buttonText }}
-            </woot-button>
-            <p>Your code: <br><strong>{{ code }}</strong></p>
-            <ol>
-                <li>
-                    <p>Open WhatsApp of the number entered above</p>
-                </li>
-                <li>
-                    <p>Tap Menu ⋮ and click on ‘Linked devices’️</p>
-                </li>
-                <li>
-                    <p>Click on ‘Link a device’</p>
-                </li>
-                <li>
-                    <p>Click on ‘Link with phone number instead’</p>
-                </li>
-                <li>
-                    <p>Enter the code generated above</p>
-                </li>
-            </ol>
-        </div>
-        <div>or</div>
-        <div class="modal">
-            <h4>Quick Connect with <b class="">QR</b></h4>
-            <div class="img-container">
-                <img class="w-full h-full" :src="dynamicQR" />
+    <div class="modal-wrapper h-full w-full">
+        <div>
+            <h4 :style="{ textAlign: 'center' }">Quick Connect with <b class="">QR</b></h4>
+            <div class="modal-container" v-if="isAdmin">
+                <div class="modal">
+                    <ol>
+                        <li>
+                            <p>Open WhatsApp of the number entered above</p>
+                        </li>
+                        <li>
+                            <p>Tap Menu ⋮ and click on ‘Linked devices’️</p>
+                        </li>
+                        <li>
+                            <p>Click on ‘Link a device’</p>
+                        </li>
+                        <li>
+                            <p>Click on ‘Link with phone number instead’</p>
+                        </li>
+                        <li>
+                            <p>Enter the code generated above</p>
+                        </li>
+                    </ol>
+                </div>
+                <div class="modal">
+                    <div class="img-container">
+                        <img class="w-full h-full" :src="dynamicQR" />
+                    </div>
+                    <p class="text-center"><b>Enter the WhatsApp number</b></p>
+                    <phone-input v-model="phoneNumber" @setCode="ct_code = $event" />
+                    <woot-button @click="generateCode(currentUser.access_token, currentAccountId)"
+                        :disabled="isGeneratingCode">
+                        {{ buttonText }}
+                    </woot-button>
+                    <p>Your code: <br><strong>{{ code }}</strong></p>
+                </div>
             </div>
-            <ol>
-                <li>
-                    <p>Open the WhatsApp number that you would like to connect with BOW CRM</p>
-                </li>
-                <li>
-                    <p>Tap Menu ⋮ and click on ‘Linked devices’️</p>
-                </li>
-                <li>
-                    <p>Click on ‘Link a device’</p>
-                </li>
-                <li>
-                    <p>Generate and scan the QR displayed on the screen</p>
-                </li>
-            </ol>
+            <EmptyState v-else />
         </div>
-      </div>
-      <EmptyState v-else />
     </div>
 </template>
 
@@ -100,8 +87,7 @@ export default {
         },
         async generateCode(token, AccountId) {
             this.isGeneratingCode = true;
-            console.log(this.ct_code);
-            
+
             const data = {
                 instanceName: this.phoneNumber,
                 token: "",
@@ -115,10 +101,10 @@ export default {
                 chatwoot_conversation_pending: false
             };
             if (this.ct_code === null || this.ct_code === '') {
-                      this.phoneNumber = '91' + this.phoneNumber;
+                this.phoneNumber = '91' + this.phoneNumber;
             } else {
-                  this.ct_code = this.ct_code.replace('+', '');
-                  this.phoneNumber = `${ct_code}`+`${phoneNumber}`
+                this.ct_code = this.ct_code.replace('+', '');
+                this.phoneNumber = `${ct_code}` + `${phoneNumber}`
             }
             console.log(this.phoneNumber)
 
@@ -147,14 +133,14 @@ export default {
 
                     this.dynamicQR = connect_response.data.base64;
 
-                     if (connect_response.data.instance && connect_response.data.instance.state === 'open') {
-                                        clearInterval(intervalId);
-                                        this.isGeneratingCode = false;
-                                        this.phoneNumber = '';
-                                           return;
-                                }
+                    if (connect_response.data.instance && connect_response.data.instance.state === 'open') {
+                        clearInterval(intervalId);
+                        this.isGeneratingCode = false;
+                        this.phoneNumber = '';
+                        return;
+                    }
 
-                    
+
 
                     attempts++;
 
@@ -188,12 +174,12 @@ export default {
 
                     if (this.phoneNumber.startsWith('91')) {
                         this.new_phone = this.phoneNumber.substring(2);
-                     }
-                    
+                    }
+
                     let url_fetch = `https://instance.boni.co.in/instance/fetchInstances?instanceName=${this.new_phone}`;
 
-                    let fetch_data = await axios.get(url_fetch, { 
-                        headers: { 'apikey': 'B6D711FCDE4D4FD5936544120E713976' } 
+                    let fetch_data = await axios.get(url_fetch, {
+                        headers: { 'apikey': 'B6D711FCDE4D4FD5936544120E713976' }
                     });
 
                     let apikey = fetch_data.data.instance.apikey;
@@ -213,12 +199,12 @@ export default {
                         }
 
                         this.dynamicQR = connect_response.data.base64;
-                         if (connect_response.data.instance && connect_response.data.instance.state === 'open') {
-                                        clearInterval(intervalId);
-                                        this.isGeneratingCode = false;
-                                        this.phoneNumber = '';
-                                           return;
-                                }
+                        if (connect_response.data.instance && connect_response.data.instance.state === 'open') {
+                            clearInterval(intervalId);
+                            this.isGeneratingCode = false;
+                            this.phoneNumber = '';
+                            return;
+                        }
 
                         attempts++;
 
@@ -247,11 +233,9 @@ export default {
                         }, 40000);
                     }, 2000);
                 }
-
-                console.error(error);
             }
 
-            
+
         }
     },
     mounted() {
@@ -268,9 +252,9 @@ export default {
 }
 
 .modal-container {
-  display: flex;
-  justify-content: space-between;
-  margin: 0 40px;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 40px;
 }
 
 .modal {
@@ -294,4 +278,5 @@ export default {
         width: 150px;
         margin: 2%;
     }
-}</style>
+}
+</style>
