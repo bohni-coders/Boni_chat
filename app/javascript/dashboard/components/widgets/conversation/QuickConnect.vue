@@ -1,7 +1,6 @@
 <template>
-  <div v-if="isAdmin">
-    <div class="modal-wrapper h-full w-full">
-      <div class="modal-container">
+    <div class="modal-wrapper h-full w-full"  >
+      <div class="modal-container" v-if="isAdmin">
         <div class="modal">
             <h4>Quick Connect with <b class="">OTP</b></h4>
             <p class="text-center"><b>Enter the WhatsApp number</b></p>
@@ -50,9 +49,8 @@
             </ol>
         </div>
       </div>
+      <EmptyState v-else />
     </div>
-    <EmptyState v-else />
-  </div>
 </template>
 
 <script>
