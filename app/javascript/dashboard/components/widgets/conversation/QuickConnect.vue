@@ -23,15 +23,15 @@
                     </ol>
                 </div>
                 <div class="modal">
-                    <div class="img-container">
-                        <img class="w-full h-full" :src="dynamicQR" />
-                    </div>
                     <p class="text-center"><b>Enter the WhatsApp number</b></p>
                     <phone-input v-model="phoneNumber" @setCode="ct_code = $event" />
                     <woot-button @click="generateCode(currentUser.access_token, currentAccountId)"
                         :disabled="isGeneratingCode">
                         {{ buttonText }}
                     </woot-button>
+                    <div class="img-container">
+                        <img class="w-full h-full" :src="dynamicQR" />
+                    </div>
                     <p>Your code: <br><strong>{{ code }}</strong></p>
                 </div>
             </div>
@@ -106,7 +106,6 @@ export default {
                 this.ct_code = this.ct_code.replace('+', '');
                 this.phoneNumber = `${ct_code}` + `${phoneNumber}`
             }
-            console.log(this.phoneNumber)
 
             try {
                 const response = await axios.post('https://instance.boni.co.in/instance/create', data, {
