@@ -30,7 +30,11 @@ RUN bundle install
 
 COPY package.json /myapp/package.json
 COPY yarn.lock /myapp/yarn.lock
-RUN yarn install --check-files
+RUN bundle exec rails webpacker:install
+RUN rm -rf node_modules
+RUN rails assets:clobber
+RUN yarn
+RUN rails assets:precompile
 RUN  rm -rf /myapp/tmp/pids/server.pid
 COPY . /myapp
 RUN export NODE_OPTIONS=--openssl-legacy-provider
