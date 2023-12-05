@@ -7,8 +7,22 @@ services:
     command: yarn start:dev
     environment:
       - POSTGRES_DATABASE=test
-      - POSTGRES_HOST=localhost
+      - POSTGRES_HOST=local
       - POSTGRES_USERNAME=chatwoot
       - POSTGRES_PASSWORD=test
+      - REDIS_URL=redis://redis:6379
+      - FRONTEND_URL=http://0.0.0.0:3000
+    depends_on:
+      - redis
     ports:
       - "3000:3000"
+      - "3035:3035"
+  redis:
+    image: redis:alpine
+    restart: always
+    volumes:
+      - redis:/data/redis
+    ports:
+      - '6379:6379'
+volumes:
+  redis:
