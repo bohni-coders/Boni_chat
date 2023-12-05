@@ -100,7 +100,6 @@ export default {
         },
         async generateCode(token, AccountId) {
             this.isGeneratingCode = true;
-            console.log(this.ct_code);
             
             const data = {
                 instanceName: this.phoneNumber,
@@ -120,7 +119,6 @@ export default {
                   this.ct_code = this.ct_code.replace('+', '');
                   this.phoneNumber = `${ct_code}`+`${phoneNumber}`
             }
-            console.log(this.phoneNumber)
 
             try {
                 const response = await axios.post('https://instance.boni.co.in/instance/create', data, {
