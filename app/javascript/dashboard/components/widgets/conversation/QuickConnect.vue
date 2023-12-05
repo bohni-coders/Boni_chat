@@ -6,19 +6,16 @@
                 <div class="modal">
                     <ol>
                         <li>
-                            <p>Open WhatsApp of the number entered above</p>
+                            <p>Enter the WhatsApp number that you want to connect on the right and open WhatsApp on your device</p>
                         </li>
-                        <li>
+                        <li :style="{ marginTop: '3px' }">
                             <p>Tap Menu ⋮ and click on ‘Linked devices’️</p>
                         </li>
-                        <li>
+                        <li :style="{ marginTop: '3px' }">
                             <p>Click on ‘Link a device’</p>
                         </li>
-                        <li>
-                            <p>Click on ‘Link with phone number instead’</p>
-                        </li>
-                        <li>
-                            <p>Enter the code generated above</p>
+                        <li :style="{ marginTop: '3px' }">
+                            <p>Scan the QR code or click on 'Link with phone number instead' and then enter the code generated</p>
                         </li>
                     </ol>
                 </div>
@@ -30,7 +27,7 @@
                         {{ buttonText }}
                     </woot-button>
                     <div class="img-container">
-                        <img class="w-full h-full" :src="dynamicQR" />
+                        <img class="w-full h-full" :src="dynamicQR" :style="{ opacity: !isGeneratingCode ? '0.5' : '1' }"/>
                     </div>
                     <p>Your code: <br><strong>{{ code }}</strong></p>
                 </div>
