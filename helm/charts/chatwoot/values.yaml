@@ -1,6 +1,6 @@
 image:
   repository: 335448355144.dkr.ecr.ap-south-1.amazonaws.com/boni_chat
-  tag: fbfe4ddcc38a82c78cddf352d4fc86df2f8872b3
+  tag: d8e0a575a28d6006cdf8b76d2bc58b44ac9261e7
   pullPolicy: IfNotPresent
 autoscaling:
   apiVersion: autoscaling/v2
