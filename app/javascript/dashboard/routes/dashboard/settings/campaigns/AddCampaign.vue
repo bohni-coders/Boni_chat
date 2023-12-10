@@ -207,6 +207,7 @@
 </template>
 
 <script>
+import { DirectUpload } from 'activestorage';
 import { mapGetters } from 'vuex';
 import { required } from 'vuelidate/lib/validators';
 import alertMixin from 'shared/mixins/alertMixin';
@@ -324,6 +325,7 @@ export default {
       uiFlags: 'campaigns/getUIFlags',
       audienceList: 'labels/getLabels',
       globalConfig: 'globalConfig/get',
+      currentUser: 'getCurrentUser'
     }),
     inboxes() {
       if (this.isOngoingType)
@@ -443,11 +445,13 @@ export default {
       return this.attachedFiles.length;
     },
     onFileUpload(file) {
-      if (false && this.globalConfig.directUploadsEnabled) { // ---------------------------------------
-        this.onDirectFileUpload(file);
-      } else {
-        this.onIndirectFileUpload(file);
-      }
+      this.onDirectFileUpload(file);
+
+      // if (this.globalConfig.directUploadsEnabled) { // ---------------------------------------
+      //   this.onDirectFileUpload(file);
+      // } else {
+      //   this.onIndirectFileUpload(file);
+      // }
     },
     onDirectFileUpload(file) {
       const MAXIMUM_SUPPORTED_FILE_UPLOAD_SIZE = MAXIMUM_FILE_UPLOAD_SIZE;
@@ -458,7 +462,7 @@ export default {
       if (checkFileSizeLimit(file, MAXIMUM_SUPPORTED_FILE_UPLOAD_SIZE)) {
         const upload = new DirectUpload(
           file.file,
-          `/api/v1/accounts/${this.accountId}/conversations/${this.currentChat.id}/direct_uploads`,
+          `/direct-upload`,
           {
             directUploadWillCreateBlobWithXHR: xhr => {
               xhr.setRequestHeader(
@@ -471,13 +475,14 @@ export default {
 
         upload.create((error, blob) => {
           if (error) {
-            this.showAlert(error);
+            bus.$emit('newToastMessage', error);
           } else {
             this.attachFile({ file, blob });
           }
         });
       } else {
-        this.showAlert(
+        bus.$emit(
+          'newToastMessage',
           this.$t('CONVERSATION.FILE_SIZE_LIMIT', {
             MAXIMUM_SUPPORTED_FILE_UPLOAD_SIZE,
           })
@@ -485,6 +490,8 @@ export default {
       }
     },
     onIndirectFileUpload(file) {
+      bus.$emit('newToastMessage', "indirect uploading...")
+
       const MAXIMUM_SUPPORTED_FILE_UPLOAD_SIZE = MAXIMUM_FILE_UPLOAD_SIZE;
       if (!file) {
         return;
@@ -500,6 +507,8 @@ export default {
       }
     },
     attachFile({ blob, file }) {
+      bus.$emit('newToastMessage', 'success...')
+
       const reader = new FileReader();
       reader.readAsDataURL(file.file);
       reader.onloadend = () => {

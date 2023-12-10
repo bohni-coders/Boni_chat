@@ -11,7 +11,6 @@
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  account_id       :bigint           not null
-#  display_id       :integer          not null
 #  inbox_id         :bigint           not null
 #  sender_id        :integer
 #

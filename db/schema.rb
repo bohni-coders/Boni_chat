@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_17_013141) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_10_164923) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -204,6 +204,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_17_013141) do
     t.jsonb "audience", default: []
     t.datetime "scheduled_at", precision: nil
     t.boolean "trigger_only_during_business_hours", default: false
+    t.jsonb "attachments"
     t.index ["account_id"], name: "index_campaigns_on_account_id"
     t.index ["campaign_status"], name: "index_campaigns_on_campaign_status"
     t.index ["campaign_type"], name: "index_campaigns_on_campaign_type"
@@ -927,7 +928,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_17_013141) do
   end
 
   create_table "whatsapp_campaigns", force: :cascade do |t|
-    t.integer "display_id", null: false
     t.text "message", null: false
     t.jsonb "message_template"
     t.integer "sender_id"
