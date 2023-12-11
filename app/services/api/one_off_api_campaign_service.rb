@@ -28,7 +28,19 @@ class Api::OneOffApiCampaignService
       conversation = find_conversation(contact.id)
       conversation = create_conversation(contact, contact_inbox.id) if conversation.blank?
       next unless conversation.persisted?
-      message = {content: campaign.message}.with_indifferent_access
+
+      blob_ids = campaign.attachments.map(&:deep_symbolize_keys).pluck(:resource).pluck(:id)
+
+      blobs = ActiveStorage::Blob.where(id: blob_ids)
+
+
+      puts "--------------------------------------------------------------------------------------------------------------"
+
+      puts blobs.pluck(id)
+
+      puts "--------------------------------------------------------------------------------------------------------------"
+
+      message = {content: campaign.message, attachments: blobs}.with_indifferent_access
       Messages::MessageBuilder.new(nil, conversation, message).perform
     end
   end
