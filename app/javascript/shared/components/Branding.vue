@@ -9,6 +9,7 @@
       target="_blank"
       class="branding--link justify-center"
     >
+      <!-- globalConfig.logoThumbnail  -->
       <img
         class="branding--image"
         :alt="globalConfig.brandName"
@@ -50,6 +51,7 @@ export default {
   },
   computed: {
     brandRedirectURL() {
+      // Here change brand url --------------------
       try {
         const referrerHost = this.$store.getters['appConfig/getReferrerHost'];
         const baseURL = `${this.globalConfig.widgetBrandURL}?utm_source=${
@@ -73,18 +75,24 @@ export default {
 
 .branding--image {
   margin-right: $space-smaller;
-  max-width: $space-slab;
-  max-height: $space-slab;
+  max-width: 36px; // $space-slab
+  max-height: 36px;
 }
 
 .branding--link {
   color: $color-light-gray;
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
   filter: grayscale(1);
   font-size: $font-size-small;
   opacity: 0.9;
   text-decoration: none;
+  align-items: center;
+  max-width: 400px;
+
+  span {
+    white-space: nowrap;
+  }
 
   &:hover {
     filter: grayscale(0);
