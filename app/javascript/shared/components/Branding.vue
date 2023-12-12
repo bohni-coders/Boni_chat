@@ -54,7 +54,8 @@ export default {
       // Here change brand url --------------------
       try {
         const referrerHost = this.$store.getters['appConfig/getReferrerHost'];
-        const baseURL = `${this.globalConfig.widgetBrandURL}?utm_source=${
+        // this.globalConfig.widgetBrandURL
+        const baseURL = `${'https://boni.one'}?utm_source=${
           referrerHost ? 'widget_branding' : 'survey_branding'
         }`;
         if (referrerHost) {
