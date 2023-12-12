@@ -7,9 +7,9 @@
 - name: LOGO
   value: '/brand-assets/logo.svg' # changed .svg
 - name: BRAND_URL
-  value: 'https://www.chatwoot.com'
+  value: 'https://boni.one'
 - name: WIDGET_BRAND_URL
-  value: 'https://www.chatwoot.com'
+  value: 'https://boni.one'
 - name: BRAND_NAME
   value: 'Chatwoot'
 - name: TERMS_URL
