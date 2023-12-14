@@ -50,12 +50,13 @@
             </span>
           </label>
         </div>
+
         <div class="columns">
           <label>
             {{ $t('NEW_CONVERSATION.FORM.TO.LABEL') }}
           </label>
           <div v-if="contacts" class="multiselect-wrap--small">
-            <multiselect
+            <!-- <multiselect
               v-model="selectedContacts"
               track-by="id"
               label="name"
@@ -74,9 +75,7 @@
                   :name="option.name"
                   :phone-number="option.phone_number"
                 />
-                <span v-else>
-                  {{ values.length }} contacts selected
-                </span>
+                <span v-else> {{ values.length }} contacts selected </span>
               </template>
               <template slot="option" slot-scope="{ option }">
                 <contact-dropdown-item
@@ -84,7 +83,16 @@
                   :phone-number="option.phone_number"
                 />
               </template>
-            </multiselect>
+            </multiselect> -->
+            <woot-button class="modal-button" @click="modalVisible = true">Click</woot-button>
+            <woot-modal 
+              class="contacts-modal" 
+              :show.sync="modalVisible" 
+              :on-close="hideContactsModal" 
+              size="medium"
+            >
+              <whatsapp-campaign-contacts-view />
+            </woot-modal>
           </div>
           <label :class="{ error: $v.selectedContacts.$error }">
             <span v-if="$v.selectedContacts.$error" class="message">
@@ -93,57 +101,12 @@
           </label>
         </div>
       </div>
-      <div v-if="isAnEmailInbox" class="row">
-        <div class="columns">
-          <label :class="{ error: $v.subject.$error }">
-            {{ $t('NEW_CONVERSATION.FORM.SUBJECT.LABEL') }}
-            <input
-              v-model="subject"
-              type="text"
-              :placeholder="$t('NEW_CONVERSATION.FORM.SUBJECT.PLACEHOLDER')"
-              @input="$v.subject.$touch"
-            />
-            <span v-if="$v.subject.$error" class="message">
-              {{ $t('NEW_CONVERSATION.FORM.SUBJECT.ERROR') }}
-            </span>
-          </label>
-        </div>
-      </div>
+
       <div class="row">
         <div class="columns">
-          <div class="canned-response">
-            <canned-response
-              v-if="showCannedResponseMenu && hasSlashCommand"
-              :search-key="cannedResponseSearchKey"
-              @click="replaceTextWithCannedResponse"
-            />
-          </div>
-          <div v-if="isEmailOrWebWidgetInbox">
-            <label>
-              {{ $t('NEW_CONVERSATION.FORM.MESSAGE.LABEL') }}
-              <reply-email-head
-                v-if="isAnEmailInbox"
-                :cc-emails.sync="ccEmails"
-                :bcc-emails.sync="bccEmails"
-              />
-              <label class="editor-wrap">
-                <woot-message-editor
-                  v-model="message"
-                  class="message-editor"
-                  :class="{ editor_warning: $v.message.$error }"
-                  :enable-variables="true"
-                  :placeholder="$t('NEW_CONVERSATION.FORM.MESSAGE.PLACEHOLDER')"
-                  @toggle-canned-menu="toggleCannedMenu"
-                  @blur="$v.message.$touch"
-                />
-                <span v-if="$v.message.$error" class="editor-warning__message">
-                  {{ $t('NEW_CONVERSATION.FORM.MESSAGE.ERROR') }}
-                </span>
-              </label>
-            </label>
-          </div>
-          <whatsapp-templates
-            v-else-if="hasWhatsappTemplates"
+          <!-- v-else-if -->
+          <whatsapp-campaign-template
+            v-if="hasWhatsappTemplates"
             :inbox-id="targetInbox.id"
             @on-select-template="toggleWaTemplate"
             @on-send="onSendWhatsAppReply"
@@ -164,12 +127,17 @@
         </div>
       </div>
     </div>
-    <div v-if="!hasWhatsappTemplates" class="modal-footer">
+
+    <div class="modal-footer">
       <button class="button clear" @click.prevent="onCancel">
         {{ $t('NEW_CONVERSATION.FORM.CANCEL') }}
       </button>
-      <woot-button type="submit" :is-loading="conversationsUiFlags.isCreating">
-        {{ $t('NEW_CONVERSATION.FORM.SUBMIT') }}
+      <woot-button
+        type="submit"
+        :is-loading="conversationsUiFlags.isCreating"
+        @click="disableForm"
+      >
+        {{ 'Send Campaign' }}
       </woot-button>
     </div>
   </form>
@@ -190,8 +158,10 @@ import { getInboxSource } from 'dashboard/helper/inbox';
 import { required, requiredIf } from 'vuelidate/lib/validators';
 import ContactAPI from 'dashboard/api/contacts';
 import WhatsappCampaignsAPI from 'dashboard/api/whatsappCampaigns';
-import ConversationApi from 'dashboard/api/conversations'
-import ContactDropdownItem from 'dashboard/modules/contact/components/ContactDropdownItem.vue'
+import ConversationApi from 'dashboard/api/conversations';
+import ContactDropdownItem from 'dashboard/modules/contact/components/ContactDropdownItem.vue';
+import WhatsappCampaignTemplate from './WhatsappCampaignTemplate.vue'
+import WhatsappCampaignContactsView from './WhatsappCampaignContactsView.vue'
 
 export default {
   components: {
@@ -200,11 +170,18 @@ export default {
     ReplyEmailHead,
     CannedResponse,
     WhatsappTemplates,
+    WhatsappCampaignTemplate,
+    WhatsappCampaignContactsView,
     InboxDropdownItem,
     ContactDropdownItem,
   },
   mixins: [alertMixin],
-  props: {},
+  props: {
+    disableForm: {
+      type: Function,
+      default: () => {},
+    },
+  },
   data() {
     return {
       name: '',
@@ -218,6 +195,8 @@ export default {
       selectedContacts: [],
       contacts: [],
       whatsappTemplateSelected: false,
+      payload: {},
+      modalVisible: false,
     };
   },
   validations: {
@@ -243,8 +222,7 @@ export default {
       inboxList: 'inboxes/getWhatsAppInboxes',
     }),
     emailMessagePayload() {
-      const payload = this.selectedContacts.map(contact => 
-      {
+      const payload = this.selectedContacts.map(contact => {
         return {
           inbox_id: this.targetInbox.id,
           source_id: this.targetInbox.sourceId,
@@ -277,14 +255,12 @@ export default {
     },
     isAnEmailInbox() {
       return (
-        this.targetInbox &&
-        this.targetInbox.channel_type === INBOX_TYPES.EMAIL
+        this.targetInbox && this.targetInbox.channel_type === INBOX_TYPES.EMAIL
       );
     },
     isAnWebWidgetInbox() {
       return (
-        this.targetInbox &&
-        this.targetInbox.channel_type === INBOX_TYPES.WEB
+        this.targetInbox && this.targetInbox.channel_type === INBOX_TYPES.WEB
       );
     },
     isEmailOrWebWidgetInbox() {
@@ -296,12 +272,14 @@ export default {
   },
   mounted() {
     this.contactsfun()
-    .then(res => {
-      this.contacts = res;
-    }).catch(e => {
-      this.showAlert(e.data);
-    });
+      .then(res => {
+        this.contacts = res;
+      })
+      .catch(e => {
+        this.showAlert(e.data);
+      });
 
+    // ----------------------------------------------------------------------------------------------------------------------
   },
   watch: {
     message(value) {
@@ -320,9 +298,13 @@ export default {
   methods: {
     onCancel() {
       this.$emit('cancel');
+      this.disableForm();
     },
     onSuccess() {
       this.$emit('success');
+    },
+    hideContactsModal() {
+      this.modalVisible = false;
     },
     replaceTextWithCannedResponse(message) {
       this.message = message;
@@ -331,8 +313,7 @@ export default {
       this.showCannedMenu = value;
     },
     prepareWhatsAppMessagePayload({ message: content, templateParams }) {
-      const payload = this.selectedContacts.map(contact => 
-      {
+      const payload = this.selectedContacts.map(contact => {
         return {
           inbox_id: this.targetInbox.id,
           source_id: this.targetInbox.sourceId,
@@ -349,41 +330,40 @@ export default {
       if (this.$v.$invalid) {
         return;
       }
-      this.createConversation(this.emailMessagePayload);
+      // this.createConversation(this.emailMessagePayload);
     },
-    async createConversation(payload) {
-      try {
-        const data = await this.onSubmit(payload);
-        const action = {
-          type: 'link',
-          to: `/app/accounts/${data.account_id}/conversations/${data.id}`,
-          message: this.$t('NEW_CONVERSATION.FORM.GO_TO_CONVERSATION'),
-        };
-        this.onSuccess();
-        this.showAlert(
-          this.$t('NEW_CONVERSATION.FORM.SUCCESS_MESSAGE'),
-          action
-        );
-      } catch (error) {
-        if (error instanceof ExceptionWithMessage) {
-          this.showAlert(error.data);
-        } else {
-          this.showAlert(this.$t('NEW_CONVERSATION.FORM.ERROR_MESSAGE'));
-        }
-      }
-    },
+    // async createConversation(payload) {
+    //   try {
+    //     const data = await this.onSubmit(payload);
+    //     const action = {
+    //       type: 'link',
+    //       to: `/app/accounts/${data.account_id}/conversations/${data.id}`,
+    //       message: this.$t('NEW_CONVERSATION.FORM.GO_TO_CONVERSATION'),
+    //     };
+    //     this.onSuccess();
+    //     this.showAlert(
+    //       this.$t('NEW_CONVERSATION.FORM.SUCCESS_MESSAGE'),
+    //       action
+    //     );
+    //   } catch (error) {
+    //     if (error instanceof ExceptionWithMessage) {
+    //       this.showAlert(error.data);
+    //     } else {
+    //       this.showAlert(this.$t('NEW_CONVERSATION.FORM.ERROR_MESSAGE'));
+    //     }
+    //   }
+    // },
     async onSubmit(contactItems) {
-      let data = {}
+      // let data = {};
 
-      for(const item of contactItems){
-        ConversationApi
-        .create(item)
-        .then(res => {
-          data = res;
-        }).catch(e => {
-          this.showAlert(e.data)
-        });
-
+      // for (const item of contactItems) {
+      //   ConversationApi.create(item)
+      //     .then(res => {
+      //       data = res;
+      //     })
+      //     .catch(e => {
+      //       this.showAlert(e.data);
+      //     });
 
         // this.$store.dispatch(
         //   'contactConversations/create',
@@ -393,7 +373,7 @@ export default {
         // }).catch(e => {
         //   this.showAlert(e.data)
         // });
-      }
+      // }
 
       const campaignDetails = {
         message: this.message,
@@ -401,29 +381,32 @@ export default {
         inbox_id: this.targetInbox.id,
         sender_id: this.currentUser.id,
         contacts: this.selectedContacts,
-        message_template: contactItems[0].message
-      }
+        message_template: contactItems[0].message,
+      };
 
       await WhatsappCampaignsAPI.create(campaignDetails);
 
       return data;
     },
     async contactsfun() {
-      const res = await ContactAPI.get()
+      const res = await ContactAPI.get();
 
       const ct = res.data.payload;
 
       return ct;
     },
-    runCreateConversation(){
-
-    },
+    runCreateConversation() {},
+    // ------------------------------------------------------------------------------------------------------------------
     toggleWaTemplate(val) {
       this.whatsappTemplateSelected = val;
     },
-    async onSendWhatsAppReply(messagePayload) {
-      const payload = this.prepareWhatsAppMessagePayload(messagePayload);
-      await this.createConversation(payload);
+    onSendWhatsAppReply(messagePayload) {
+      bus.$emit('newToastMessage', messagePayload);
+
+      this.payload = messagePayload;
+
+      // const payload = this.prepareWhatsAppMessagePayload(messagePayload);
+      // await this.createConversation(payload);
     },
     inboxReadableIdentifier(inbox) {
       return `${inbox.name} (${inbox.channel_type})`;
@@ -443,8 +426,23 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+.modal-footer {
+  margin-top: 15px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.contacts-modal{
+ 
+}
+
+.modal-button {
+  min-width: 100%; 
+}
 .conversation--form {
   padding: var(--space-normal) var(--space-large) var(--space-large);
+  width: 600px;
 }
 
 .canned-response {
@@ -498,5 +496,4 @@ export default {
     padding: var(--space-micro) var(--space-smaller);
   }
 }
-
 </style>

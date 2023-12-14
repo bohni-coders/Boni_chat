@@ -8,10 +8,13 @@
     >
       {{ buttonText }}
     </woot-button>
-    <campaign />
-    <woot-modal :show.sync="showAddPopup" :on-close="hideAddPopup">
+    <campaign v-if="!this.isWhatsapp"/>
+    <woot-modal v-if="!this.isWhatsapp" :show.sync="showAddPopup" :on-close="hideAddPopup">
       <add-campaign @on-close="hideAddPopup" />
     </woot-modal>
+    <!-- WhatsappCampaign -->
+    <whatsapp-campaign v-if="this.isWhatsapp && !this.showWhatsappForm" />
+    <whatsapp-campaign-form v-if="this.isWhatsapp && this.showWhatsappForm" :disable-form="hideAddPopup" />
   </div>
 </template>
 
@@ -19,15 +22,24 @@
 import campaignMixin from 'shared/mixins/campaignMixin';
 import Campaign from './Campaign.vue';
 import AddCampaign from './AddCampaign';
+import WhatsappCampaign from './WhatsappCampaign.vue';
+import WhatsappCampaignForm from './WhatsappCampaignForm.vue';
+import AddWhatsappCampaign from './AddWhatsappCampaign.vue';
 
 export default {
   components: {
     Campaign,
+    WhatsappCampaign,
+    WhatsappCampaignForm,
+    AddWhatsappCampaign,
     AddCampaign,
   },
   mixins: [campaignMixin],
   data() {
-    return { showAddPopup: false };
+    return { 
+      showAddPopup: false,
+      showWhatsappForm: false, 
+    };
   },
   computed: {
     buttonText() {
@@ -45,10 +57,12 @@ export default {
   },
   methods: {
     openAddPopup() {
-      this.showAddPopup = true;
+      if (!this.isWhatsapp) this.showAddPopup = true;
+      else if (this.isWhatsapp) this.showWhatsappForm = true;
     },
     hideAddPopup() {
-      this.showAddPopup = false;
+      if (!this.isWhatsapp) this.showAddPopup = false;
+      else if (this.isWhatsapp) this.showWhatsappForm = false;
     },
   },
 };

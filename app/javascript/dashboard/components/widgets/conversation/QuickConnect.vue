@@ -1,7 +1,7 @@
 <template>
     <div class="modal-wrapper h-full w-full">
         <div>
-            <h4 :style="{ textAlign: 'center' }">Quick Connect with <b class="">WhatsApp</b></h4>
+            <h4 v-if="isAdmin" :style="{ textAlign: 'center' }">Quick Connect with <b class="">WhatsApp</b></h4>
             <div class="modal-container" v-if="isAdmin">
                 <div class="modal">
                     <ol>
