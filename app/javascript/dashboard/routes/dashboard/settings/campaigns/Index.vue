@@ -31,10 +31,13 @@ export default {
   },
   computed: {
     buttonText() {
-      if (this.isOngoingType) {
-        return this.$t('CAMPAIGN.HEADER_BTN_TXT.ONGOING');
-      }
-      return this.$t('CAMPAIGN.HEADER_BTN_TXT.ONE_OFF');
+      if (this.isWhatsapp) return this.$t('CAMPAIGN.HEADER_BTN_TXT.WHATSAPP');
+
+      if (this.isOngoingType) return this.$t('CAMPAIGN.HEADER_BTN_TXT.ONGOING');
+
+      if (this.isOnOffType) return this.$t('CAMPAIGN.HEADER_BTN_TXT.ONE_OFF');
+
+      return this.$t('CAMPAIGN.HEADER_BTN_TXT.WHATSAPP');
     },
   },
   mounted() {

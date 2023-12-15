@@ -37,8 +37,8 @@ const state = {
   gitSha,
   hCaptchaSiteKey,
   installationName,
-  logo,
-  logoThumbnail,
+  logo, // --------------------------------------------------------- //
+  logoThumbnail, // ------------------------------------------------------ //
   privacyURL,
   termsURL,
   widgetBrandURL,

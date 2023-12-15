@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_12_103936) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_10_164923) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -49,7 +49,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_103936) do
     t.integer "locale", default: 0
     t.string "domain", limit: 100
     t.string "support_email", limit: 100
-    t.integer "feature_flags", default: 0, null: false
+    t.bigint "feature_flags", default: 0, null: false
     t.integer "auto_resolve_duration"
     t.jsonb "limits", default: {}
     t.jsonb "custom_attributes", default: {}
@@ -204,6 +204,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_103936) do
     t.jsonb "audience", default: []
     t.datetime "scheduled_at", precision: nil
     t.boolean "trigger_only_during_business_hours", default: false
+    t.jsonb "attachments"
     t.index ["account_id"], name: "index_campaigns_on_account_id"
     t.index ["campaign_status"], name: "index_campaigns_on_campaign_status"
     t.index ["campaign_type"], name: "index_campaigns_on_campaign_type"
@@ -231,6 +232,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_103936) do
     t.string "slug", null: false
     t.bigint "parent_category_id"
     t.bigint "associated_category_id"
+    t.string "icon", default: ""
     t.index ["associated_category_id"], name: "index_categories_on_associated_category_id"
     t.index ["locale", "account_id"], name: "index_categories_on_locale_and_account_id"
     t.index ["locale"], name: "index_categories_on_locale"
@@ -330,6 +332,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_103936) do
     t.datetime "updated_at", null: false
     t.integer "medium", default: 0
     t.string "messaging_service_sid"
+    t.string "api_key_sid"
     t.index ["account_sid", "phone_number"], name: "index_channel_twilio_sms_on_account_sid_and_phone_number", unique: true
     t.index ["messaging_service_sid"], name: "index_channel_twilio_sms_on_messaging_service_sid", unique: true
     t.index ["phone_number"], name: "index_channel_twilio_sms_on_phone_number", unique: true
@@ -407,6 +410,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_103936) do
     t.index "lower((email)::text), account_id", name: "index_contacts_on_lower_email_account_id"
     t.index ["account_id", "email", "phone_number", "identifier"], name: "index_contacts_on_nonempty_fields", where: "(((email)::text <> ''::text) OR ((phone_number)::text <> ''::text) OR ((identifier)::text <> ''::text))"
     t.index ["account_id"], name: "index_contacts_on_account_id"
+    t.index ["account_id"], name: "index_resolved_contact_account_id", where: "(((email)::text <> ''::text) OR ((phone_number)::text <> ''::text) OR ((identifier)::text <> ''::text))"
     t.index ["email", "account_id"], name: "uniq_email_per_account_contact", unique: true
     t.index ["identifier", "account_id"], name: "uniq_identifier_per_account_contact", unique: true
     t.index ["name", "email", "phone_number", "identifier"], name: "index_contacts_on_name_email_phone_number_identifier", opclass: :gin_trgm_ops, using: :gin
@@ -448,6 +452,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_103936) do
     t.datetime "assignee_last_seen_at", precision: nil
     t.datetime "first_reply_created_at", precision: nil
     t.integer "priority"
+    t.bigint "sla_policy_id"
+    t.datetime "waiting_since"
     t.index ["account_id", "display_id"], name: "index_conversations_on_account_id_and_display_id", unique: true
     t.index ["account_id", "id"], name: "index_conversations_on_id_and_account_id"
     t.index ["account_id", "inbox_id", "status", "assignee_id"], name: "conv_acid_inbid_stat_asgnid_idx"
@@ -464,6 +470,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_103936) do
     t.index ["status", "priority"], name: "index_conversations_on_status_and_priority"
     t.index ["team_id"], name: "index_conversations_on_team_id"
     t.index ["uuid"], name: "index_conversations_on_uuid", unique: true
+    t.index ["waiting_since"], name: "index_conversations_on_waiting_since"
   end
 
   create_table "csat_survey_responses", force: :cascade do |t|
@@ -581,6 +588,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_103936) do
     t.jsonb "auto_assignment_config", default: {}
     t.boolean "lock_to_single_conversation", default: false, null: false
     t.bigint "portal_id"
+    t.integer "sender_name_type", default: 0, null: false
+    t.string "business_name"
     t.index ["account_id"], name: "index_inboxes_on_account_id"
     t.index ["channel_id", "channel_type"], name: "index_inboxes_on_channel_id_and_channel_type"
     t.index ["portal_id"], name: "index_inboxes_on_portal_id"
@@ -597,7 +606,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_103936) do
   end
 
   create_table "integrations_hooks", force: :cascade do |t|
-    t.integer "status", default: 0
+    t.integer "status", default: 1
     t.integer "inbox_id"
     t.integer "account_id"
     t.string "app_id"
@@ -654,7 +663,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_103936) do
     t.integer "message_type", null: false
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.boolean "private", default: false
+    t.boolean "private", default: false, null: false
     t.integer "status", default: 0
     t.string "source_id"
     t.integer "content_type", default: 0, null: false
@@ -664,6 +673,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_103936) do
     t.jsonb "external_source_ids", default: {}
     t.jsonb "additional_attributes", default: {}
     t.text "processed_message_content"
+    t.jsonb "sentiment", default: {}
     t.index "((additional_attributes -> 'campaign_id'::text))", name: "index_messages_on_additional_attributes_campaign_id", using: :gin
     t.index ["account_id", "inbox_id"], name: "index_messages_on_account_id_and_inbox_id"
     t.index ["account_id"], name: "index_messages_on_account_id"
@@ -916,6 +926,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_103936) do
     t.integer "webhook_type", default: 0
     t.jsonb "subscriptions", default: ["conversation_status_changed", "conversation_updated", "conversation_created", "contact_created", "contact_updated", "message_created", "message_updated", "webwidget_triggered"]
     t.index ["account_id", "url"], name: "index_webhooks_on_account_id_and_url", unique: true
+  end
+
+  create_table "whatsapp_campaigns", force: :cascade do |t|
+    t.integer "display_id", null: false
+    t.text "message", null: false
+    t.jsonb "message_template"
+    t.integer "sender_id"
+    t.boolean "enabled", default: true
+    t.bigint "account_id", null: false
+    t.bigint "inbox_id", null: false
+    t.integer "campaign_status", default: 0, null: false
+    t.jsonb "contacts", default: []
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "working_hours", force: :cascade do |t|

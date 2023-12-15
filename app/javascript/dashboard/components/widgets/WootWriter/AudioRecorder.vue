@@ -58,8 +58,8 @@ export default {
         plugins: {
           wavesurfer: {
             backend: 'WebAudio',
-            waveColor: '#390099',
-            progressColor: 'rgb(25, 118, 204)',
+            waveColor: '#1DC775',
+            progressColor: ' #139557',
             cursorColor: 'rgba(43, 51, 63, 0.7)',
             backgroundColor: 'none',
             barWidth: 1,
@@ -228,6 +228,7 @@ export default {
   min-height: 8rem;
   height: 8rem;
 }
+
 .video-js .vjs-control-bar {
   background-color: transparent;
 }

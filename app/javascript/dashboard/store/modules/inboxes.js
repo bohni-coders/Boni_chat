@@ -112,10 +112,24 @@ export const getters = {
         (item.channel_type === INBOX_TYPES.TWILIO && item.medium === 'sms')
     );
   },
+  getWhatsAppInboxes($state) {
+    return $state.records.filter(item => {
+      return (
+        item.channel_type === INBOX_TYPES.WHATSAPP
+      );
+    });
+  },
   dialogFlowEnabledInboxes($state) {
     return $state.records.filter(
       item => item.channel_type !== INBOX_TYPES.EMAIL
     );
+  },
+  getOnOffInboxes($state) {
+    return $state.records.filter(item => {
+      return (
+        item.channel_type === INBOX_TYPES.WHATSAPP || item.channel_type === INBOX_TYPES.API
+      );
+    });
   },
 };
 

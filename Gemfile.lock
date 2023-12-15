@@ -845,6 +845,7 @@ DEPENDENCIES
   hairtrigger
   hashie
   html2text!
+  httparty
   image_processing
   jbuilder
   json_refs
@@ -876,6 +877,7 @@ DEPENDENCIES
   rack-mini-profiler
   rack-timeout
   rails (~> 7)
+  railties (= 7.0.5)
   redis
   redis-namespace
   responders
@@ -918,7 +920,7 @@ DEPENDENCIES
   working_hours
 
 RUBY VERSION
-   ruby 3.2.2p185
+   ruby 3.2.2p53
 
 BUNDLED WITH
    2.4.6

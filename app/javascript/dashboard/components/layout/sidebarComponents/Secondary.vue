@@ -76,12 +76,15 @@ export default {
       if (!this.currentRole) {
         return [];
       }
-      const menuItemsFilteredByRole = this.menuConfig.menuItems.filter(
-        menuItem =>
-          window.roleWiseRoutes[this.currentRole].indexOf(
-            menuItem.toStateName
-          ) > -1
-      );
+
+      // ----------------------------- changed onkar -------------------------------
+
+      const menuItemsFilteredByRole = this.menuConfig.menuItems; // .filter(
+      //   menuItem =>
+      //     window.roleWiseRoutes[this.currentRole].indexOf(
+      //       menuItem.toStateName
+      //     ) > -1
+      // );
       return menuItemsFilteredByRole.filter(item => {
         if (item.showOnlyOnCloud) {
           return this.isOnChatwootCloud;

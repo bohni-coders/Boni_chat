@@ -18,7 +18,7 @@ module.exports = {
   theme: {
     colors: {
       white: colors.white,
-      woot: {
+      blue: {
         25: '#F5FAFF',
         50: '#e2d7ff',
         75: '#D6EBFF',
@@ -26,13 +26,13 @@ module.exports = {
         200: '#99CEFF',
         300: '#70BAFF',
         400: '#47A6FF',
-        500: '#390099',
+        500: '#1DC775',
         600: '#e2d7ff',
         700: '#135899',
         800: '#0C3B66',
         900: '#061D33',
       },
-      green: {
+      woot: {
         50: '#E6F8E6',
         100: '#C4EEC2',
         200: '#9DE29A',

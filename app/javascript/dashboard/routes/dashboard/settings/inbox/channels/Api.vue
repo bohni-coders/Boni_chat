@@ -22,7 +22,7 @@
         </label>
       </div>
 
-      <div class="medium-8 columns">
+      <!-- <div class="medium-8 columns">
         <label :class="{ error: $v.webhookUrl.$error }">
           {{ $t('INBOX_MGMT.ADD.API_CHANNEL.WEBHOOK_URL.LABEL') }}
           <input
@@ -37,7 +37,7 @@
         <p class="help-text">
           {{ $t('INBOX_MGMT.ADD.API_CHANNEL.WEBHOOK_URL.SUBTITLE') }}
         </p>
-      </div>
+      </div> -->
 
       <div class="medium-12 columns">
         <woot-submit-button
@@ -67,7 +67,7 @@ export default {
   data() {
     return {
       channelName: '',
-      webhookUrl: '',
+      webhookUrl: 'https://api.bow.chat/webhook/whatsapp', // hardcoded
     };
   },
   computed: {

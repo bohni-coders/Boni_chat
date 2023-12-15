@@ -5,6 +5,16 @@
       :message="message"
       :button-text="$t('INBOX_MGMT.FINISH.BUTTON_TEXT')"
     >
+      <!-- <div class="wizard-body columns content-box small-9">
+        <woot-q-r-code
+          v-if="isApiInbox"
+          :title="$t('INBOX_MGMT.ADD.API_CHANNEL.FINISH.TITLE')"
+          :message="message"
+          :inboxId="currentInbox.id"
+          :qr-data="qrData"
+        />
+      </div> -->
+
       <div class="medium-12 columns text-center">
         <div class="website--code">
           <woot-code

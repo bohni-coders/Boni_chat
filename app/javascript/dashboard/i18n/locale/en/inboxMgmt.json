@@ -264,6 +264,10 @@
         "SUBMIT_BUTTON": "Create API Channel",
         "API": {
           "ERROR_MESSAGE": "We were not able to save the api channel"
+        },
+        "FINISH": {
+          "TITLE": "Scan QR",
+          "MESSAGE": "Scan QR Code with"
         }
       },
       "EMAIL_CHANNEL": {
@@ -695,7 +699,7 @@
         "USER_MESSAGE": "Hi",
         "AGENT_MESSAGE": "Hello"
       },
-      "BRANDING_TEXT": "Powered by Chatwoot",
+      "BRANDING_TEXT": "Powered by Boni",
       "SCRIPT_SETTINGS": "\n      window.chatwootSettings = {options};"
     },
     "EMAIL_PROVIDERS": {

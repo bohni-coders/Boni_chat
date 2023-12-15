@@ -87,12 +87,16 @@ export default {
       const selectedAgents = this.selectedAgents.map(x => x.id);
 
       try {
-        await InboxMembersAPI.update({ inboxId, agentList: selectedAgents });
+        const qrData = await InboxMembersAPI.update({
+          inboxId,
+          agentList: selectedAgents,
+        });
         router.replace({
           name: 'settings_inbox_finish',
           params: {
             page: 'new',
             inbox_id: this.$route.params.inbox_id,
+            qr_data: qrData,
           },
         });
       } catch (error) {

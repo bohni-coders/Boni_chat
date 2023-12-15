@@ -63,6 +63,7 @@ export default {
       return !!isOpen;
     },
     toggleSidebarUIState(key) {
+      // changes here ----------------------
       this.updateUISettings({ [key]: !this.isContactSidebarItemOpen(key) });
     },
   },

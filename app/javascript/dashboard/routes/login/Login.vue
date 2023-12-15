@@ -7,7 +7,7 @@
         class="hero__logo"
       />
       <h2 class="hero__title">
-        LOGIN TO BONI CHAT
+        {{ $t('LOGIN.TITLE') }}
       </h2>
     </section>
     <section class="row align-center">

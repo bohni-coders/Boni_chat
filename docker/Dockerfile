@@ -10,7 +10,7 @@ ENV BUNDLER_VERSION=2.1.2
 ARG RAILS_SERVE_STATIC_FILES=true
 ENV RAILS_SERVE_STATIC_FILES ${RAILS_SERVE_STATIC_FILES}
 
-ARG RAILS_ENV=production
+ARG RAILS_ENV=development
 ENV RAILS_ENV ${RAILS_ENV}
 
 ENV BUNDLE_PATH="/gems"
@@ -30,7 +30,7 @@ RUN apk update && apk add --no-cache \
 
 WORKDIR /app
 
-COPY Gemfile Gemfile.lock ./
+COPY ../Gemfile ../Gemfile.lock ./
 
 # natively compile grpc and protobuf to support alpine musl (dialogflow-docker workflow)
 # https://github.com/googleapis/google-cloud-ruby/issues/13306
@@ -86,7 +86,7 @@ ENV RAILS_SERVE_STATIC_FILES ${RAILS_SERVE_STATIC_FILES}
 ARG BUNDLE_FORCE_RUBY_PLATFORM=1
 ENV BUNDLE_FORCE_RUBY_PLATFORM ${BUNDLE_FORCE_RUBY_PLATFORM}
 
-ARG RAILS_ENV=production
+ARG RAILS_ENV=development
 ENV RAILS_ENV ${RAILS_ENV}
 ENV BUNDLE_PATH="/gems"
 
