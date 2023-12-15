@@ -4,16 +4,16 @@ checking for -lstdc++... yes
 creating Makefile
 
 current directory: /home/onkar/projects/Boni_chat/vendor/bundle/ruby/3.2.0/gems/unf_ext-0.0.8.2/ext/unf_ext
-make DESTDIR\= sitearchdir\=./.gem.20231015-816751-ysdxy9 sitelibdir\=./.gem.20231015-816751-ysdxy9 clean
+make DESTDIR\= sitearchdir\=./.gem.20231212-160499-p67wav sitelibdir\=./.gem.20231212-160499-p67wav clean
 
 current directory: /home/onkar/projects/Boni_chat/vendor/bundle/ruby/3.2.0/gems/unf_ext-0.0.8.2/ext/unf_ext
-make DESTDIR\= sitearchdir\=./.gem.20231015-816751-ysdxy9 sitelibdir\=./.gem.20231015-816751-ysdxy9
+make DESTDIR\= sitearchdir\=./.gem.20231212-160499-p67wav sitelibdir\=./.gem.20231212-160499-p67wav
 compiling unf.cc
 linking shared-object unf_ext.so
 
 current directory: /home/onkar/projects/Boni_chat/vendor/bundle/ruby/3.2.0/gems/unf_ext-0.0.8.2/ext/unf_ext
-make DESTDIR\= sitearchdir\=./.gem.20231015-816751-ysdxy9 sitelibdir\=./.gem.20231015-816751-ysdxy9 install
-/usr/bin/install -m 0755 unf_ext.so ./.gem.20231015-816751-ysdxy9
+make DESTDIR\= sitearchdir\=./.gem.20231212-160499-p67wav sitelibdir\=./.gem.20231212-160499-p67wav install
+/usr/bin/install -m 0755 unf_ext.so ./.gem.20231212-160499-p67wav
 
 current directory: /home/onkar/projects/Boni_chat/vendor/bundle/ruby/3.2.0/gems/unf_ext-0.0.8.2/ext/unf_ext
-make DESTDIR\= sitearchdir\=./.gem.20231015-816751-ysdxy9 sitelibdir\=./.gem.20231015-816751-ysdxy9 clean
+make DESTDIR\= sitearchdir\=./.gem.20231212-160499-p67wav sitelibdir\=./.gem.20231212-160499-p67wav clean
