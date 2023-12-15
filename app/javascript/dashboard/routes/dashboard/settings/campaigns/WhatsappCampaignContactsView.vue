@@ -19,6 +19,7 @@
       />
       <contacts-table
         ref="contactsTable"
+        @on-change-selection="onChangeSelection"
         :contacts="records"
         :show-search-empty-state="showEmptySearchResult"
         :is-loading="uiFlags.isFetching"
@@ -135,6 +136,7 @@ export default {
       searchQuery: '',
       showCreateModal: false,
       showImportModal: false,
+      selectedContactIds: [],
       selectedContactId: '',
       sortConfig: { last_activity_at: 'desc' },
       showFiltersModal: false,
@@ -169,12 +171,12 @@ export default {
     hasActiveSegments() {
       return this.activeSegment && this.segmentsId !== 0;
     },
-    isContactAndLabelDashboard() {
-      return (
-        this.$route.name === 'contacts_dashboard' ||
-        this.$route.name === 'contacts_labels_dashboard'
-      );
-    },
+    // isContactAndLabelDashboard() {
+    //   return (
+    //     this.$route.name === 'contacts_dashboard' ||
+    //     this.$route.name === 'contacts_labels_dashboard'
+    //   );
+    // },
     pageTitle() {
       if (this.hasActiveSegments) {
         return this.activeSegment.name;
@@ -227,11 +229,18 @@ export default {
       }
     },
     activeSegment() {
+
+      console.log('has active segments', this.hasActiveSegments);
+
       if (this.hasActiveSegments) {
         const payload = this.activeSegment.query;
         this.fetchSavedFilteredContact(payload, DEFAULT_PAGE);
       }
-      if (this.hasAppliedFilters && this.$route.name === 'contacts_dashboard') {
+      // 'contacts/filter' ------------ changed
+      console.log('has applied fileters', this.hasAppliedFilters, "records", this.records);
+
+      if (this.hasAppliedFilters) {
+
         this.fetchFilteredContacts(DEFAULT_PAGE);
       } else {
         this.fetchContacts(DEFAULT_PAGE);
@@ -272,14 +281,22 @@ export default {
       const res = await ContactAPI.get(page);
 
       const ct = res.data.payload;
-      return ct
+      return ct;
     },
     saveContacts() {
-      
+      console.log('on change in contacts view', this.selectedContactIds);
+
+      this.$emit('on-change-selection', this.selectedContactIds);
+    },
+    onChangeSelection(selectedIds) {
+      console.log('store ids in contacts view');
+
+      this.selectedContactIds = selectedIds;
     },
     fetchContacts(page) {
 
-      if (this.isContactAndLabelDashboard) {
+      // changed -------------------------------------------------------------------------------------------------
+      if (true || this.isContactAndLabelDashboard) {
         this.updatePageParam(page);
         let value = '';
         if (this.searchQuery.charAt(0) === '+') {
@@ -312,6 +329,8 @@ export default {
       }
     },
     fetchFilteredContacts(page) {
+      // ----------------------------------------------------------------------------------------------------
+      console.log('fetching ....')
       if (this.hasAppliedFilters) {
         const payload = this.segmentsQuery;
         this.updatePageParam(page);
@@ -329,7 +348,7 @@ export default {
       if (refetchAllContacts) {
         this.fetchContacts(DEFAULT_PAGE);
       }
-    },
+    }, // -----------------------------------------------------------------------------------------
     onSearchSubmit() {
       this.selectedContactId = '';
       if (this.searchQuery) {
@@ -485,7 +504,8 @@ export default {
     },
     selectAllRows() {
       let selectedRows = this.$refs.contactsTable.selectAllRows();
-      bus.$emit('newToastMessage', selectedRows);
+      // bus.$emit('newToastMessage', selectedRows);
+      this.$emit('set-contacts', selectedRows);
     },
   },
 };

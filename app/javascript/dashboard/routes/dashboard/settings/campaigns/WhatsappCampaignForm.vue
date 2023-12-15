@@ -5,58 +5,62 @@
         {{ $t('NEW_CONVERSATION.NO_INBOX') }}
       </p>
     </div>
-    <div v-else>
-      <div class="row gutter-small">
-        <div class="columns">
-          <label>
-            {{ $t('NEW_CONVERSATION.FORM.INBOX.LABEL') }}
-          </label>
-          <div class="multiselect-wrap--small">
-            <multiselect
-              v-model="targetInbox"
-              track-by="id"
-              label="name"
-              :placeholder="$t('FORMS.MULTISELECT.SELECT')"
-              selected-label=""
-              select-label=""
-              deselect-label=""
-              :max-height="160"
-              :close-on-select="true"
-              :options="[...inboxes]"
-            >
-              <template slot="singleLabel" slot-scope="{ option }">
-                <inbox-dropdown-item
-                  v-if="option.name"
-                  :name="option.name"
-                  :inbox-identifier="computedInboxSource(option)"
-                  :channel-type="option.channel_type"
-                />
-                <span v-else>
-                  {{ $t('NEW_CONVERSATION.FORM.INBOX.PLACEHOLDER') }}
-                </span>
-              </template>
-              <template slot="option" slot-scope="{ option }">
-                <inbox-dropdown-item
-                  :name="option.name"
-                  :inbox-identifier="computedInboxSource(option)"
-                  :channel-type="option.channel_type"
-                />
-              </template>
-            </multiselect>
-          </div>
-          <label :class="{ error: $v.targetInbox.$error }">
-            <span v-if="$v.targetInbox.$error" class="message">
-              {{ $t('NEW_CONVERSATION.FORM.INBOX.ERROR') }}
-            </span>
-          </label>
-        </div>
 
-        <div class="columns">
-          <label>
-            {{ $t('NEW_CONVERSATION.FORM.TO.LABEL') }}
-          </label>
-          <div v-if="contacts" class="multiselect-wrap--small">
-            <!-- <multiselect
+    <!-- v-else -->
+    <div v-else >
+      <div>
+        <div class="row gutter-small">
+          <div class="columns">
+            <label>
+              {{ $t('NEW_CONVERSATION.FORM.INBOX.LABEL') }}
+            </label>
+            <div class="multiselect-wrap--small">
+              <multiselect
+                v-model="targetInbox"
+                track-by="id"
+                label="name"
+                :placeholder="$t('FORMS.MULTISELECT.SELECT')"
+                selected-label=""
+                select-label=""
+                deselect-label=""
+                :max-height="160"
+                :close-on-select="true"
+                :options="[...inboxes]"
+              >
+                <template slot="singleLabel" slot-scope="{ option }">
+                  <inbox-dropdown-item
+                    v-if="option.name"
+                    :name="option.name"
+                    :inbox-identifier="computedInboxSource(option)"
+                    :channel-type="option.channel_type"
+                  />
+                  <span v-else>
+                    {{ $t('NEW_CONVERSATION.FORM.INBOX.PLACEHOLDER') }}
+                  </span>
+                </template>
+                <template slot="option" slot-scope="{ option }">
+                  <inbox-dropdown-item
+                    :name="option.name"
+                    :inbox-identifier="computedInboxSource(option)"
+                    :channel-type="option.channel_type"
+                  />
+                </template>
+              </multiselect>
+            </div>
+            <label :class="{ error: $v.targetInbox.$error }">
+              <span v-if="$v.targetInbox.$error" class="message">
+                {{ $t('NEW_CONVERSATION.FORM.INBOX.ERROR') }}
+              </span>
+            </label>
+          </div>
+
+          <div class="columns">
+            <label>
+              {{ $t('NEW_CONVERSATION.FORM.TO.LABEL') }}
+            </label>
+            <!-- multiselect-wrap--small -->
+            <div v-if="contacts" class="multiselect-container" @click="modalVisible = true">
+              <!-- <multiselect
               v-model="selectedContacts"
               track-by="id"
               label="name"
@@ -84,61 +88,71 @@
                 />
               </template>
             </multiselect> -->
-            <woot-button class="modal-button" @click="modalVisible = true">Click</woot-button>
-            <woot-modal 
-              class="contacts-modal" 
-              :show.sync="modalVisible" 
-              :on-close="hideContactsModal" 
-              size="medium"
-            >
-              <whatsapp-campaign-contacts-view />
-            </woot-modal>
+              <button class="modal-button" >
+                Select Contacts
+              </button>
+              <fluent-icon
+                  class="icon"
+                  icon="edit"
+              />
+
+              <woot-modal
+                class="contacts-modal"
+                :show.sync="modalVisible"
+                :on-close="hideContactsModal"
+                size="medium"
+              >
+                <whatsapp-campaign-contacts-view
+                  @on-change-selection="setContacts"
+                />
+              </woot-modal>
+            </div>
+            <label :class="{ error: $v.selectedContacts.$error }">
+              <span v-if="$v.selectedContacts.$error" class="message">
+                {{ $t('NEW_CONVERSATION.FORM.INBOX.ERROR') }}
+              </span>
+            </label>
           </div>
-          <label :class="{ error: $v.selectedContacts.$error }">
-            <span v-if="$v.selectedContacts.$error" class="message">
-              {{ $t('NEW_CONVERSATION.FORM.INBOX.ERROR') }}
-            </span>
-          </label>
         </div>
-      </div>
 
-      <div class="row">
-        <div class="columns">
-          <!-- v-else-if -->
-          <whatsapp-campaign-template
-            v-if="hasWhatsappTemplates"
-            :inbox-id="targetInbox.id"
-            @on-select-template="toggleWaTemplate"
-            @on-send="onSendWhatsAppReply"
-          />
-          <label v-else :class="{ error: $v.message.$error }">
-            {{ $t('NEW_CONVERSATION.FORM.MESSAGE.LABEL') }}
-            <textarea
-              v-model="message"
-              class="message-input"
-              type="text"
-              :placeholder="$t('NEW_CONVERSATION.FORM.MESSAGE.PLACEHOLDER')"
-              @input="$v.message.$touch"
+        <div class="row">
+          <div class="columns">
+            <!-- v-else-if -->
+            <whatsapp-campaign-template
+              v-if="hasWhatsappTemplates"
+              :inbox-id="targetInbox.id"
+              @on-select-template="toggleWaTemplate"
+              @on-send="onSendWhatsAppReply"
             />
-            <span v-if="$v.message.$error" class="message">
-              {{ $t('NEW_CONVERSATION.FORM.MESSAGE.ERROR') }}
-            </span>
-          </label>
+            <label v-else :class="{ error: $v.message.$error }">
+              {{ $t('NEW_CONVERSATION.FORM.MESSAGE.LABEL') }}
+              <textarea
+                v-model="message"
+                class="message-input"
+                type="text"
+                :placeholder="$t('NEW_CONVERSATION.FORM.MESSAGE.PLACEHOLDER')"
+                @input="$v.message.$touch"
+              />
+              <span v-if="$v.message.$error" class="message">
+                {{ $t('NEW_CONVERSATION.FORM.MESSAGE.ERROR') }}
+              </span>
+            </label>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="modal-footer">
-      <button class="button clear" @click.prevent="onCancel">
-        {{ $t('NEW_CONVERSATION.FORM.CANCEL') }}
-      </button>
-      <woot-button
-        type="submit"
-        :is-loading="conversationsUiFlags.isCreating"
-        @click="disableForm"
-      >
-        {{ 'Send Campaign' }}
-      </woot-button>
+      <div class="modal-footer">
+        <button class="button clear" @click.prevent="onCancel">
+          {{ $t('NEW_CONVERSATION.FORM.CANCEL') }}
+        </button>
+        <woot-button
+          type="submit"
+          :is-loading="conversationsUiFlags.isCreating"
+          @click="disableForm"
+        >
+          {{ 'Send Campaign' }}
+        </woot-button>
+      </div>
     </div>
   </form>
 </template>
@@ -160,8 +174,8 @@ import ContactAPI from 'dashboard/api/contacts';
 import WhatsappCampaignsAPI from 'dashboard/api/whatsappCampaigns';
 import ConversationApi from 'dashboard/api/conversations';
 import ContactDropdownItem from 'dashboard/modules/contact/components/ContactDropdownItem.vue';
-import WhatsappCampaignTemplate from './WhatsappCampaignTemplate.vue'
-import WhatsappCampaignContactsView from './WhatsappCampaignContactsView.vue'
+import WhatsappCampaignTemplate from './WhatsappCampaignTemplate.vue';
+import WhatsappCampaignContactsView from './WhatsappCampaignContactsView.vue';
 
 export default {
   components: {
@@ -365,14 +379,14 @@ export default {
       //       this.showAlert(e.data);
       //     });
 
-        // this.$store.dispatch(
-        //   'contactConversations/create',
-        //   item
-        // ).then(res => {
-        //   data = res;
-        // }).catch(e => {
-        //   this.showAlert(e.data)
-        // });
+      // this.$store.dispatch(
+      //   'contactConversations/create',
+      //   item
+      // ).then(res => {
+      //   data = res;
+      // }).catch(e => {
+      //   this.showAlert(e.data)
+      // });
       // }
 
       const campaignDetails = {
@@ -387,6 +401,10 @@ export default {
       await WhatsappCampaignsAPI.create(campaignDetails);
 
       return data;
+    },
+    setContacts(contactsPayload) {
+      this.selectedContacts = contactsPayload;
+      console.log('inside form', this.selectedContacts);
     },
     async contactsfun() {
       const res = await ContactAPI.get();
@@ -426,19 +444,31 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 .modal-footer {
   margin-top: 15px;
   display: flex;
   justify-content: flex-end;
 }
 
-.contacts-modal{
- 
+.multiselect-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 100%;
+  height: 3.9rem;
+  background-color: white;
+
+  padding: var(--space-smaller) var(--space-small);
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius-small);
 }
 
 .modal-button {
-  min-width: 100%; 
+  min-width: 60%;
+  height: 3.9rem;
+  text-align: start;
+  font-size: 14px;
+  font-weight: 400;
 }
 .conversation--form {
   padding: var(--space-normal) var(--space-large) var(--space-large);

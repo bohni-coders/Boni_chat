@@ -31,7 +31,7 @@ master.key
 .env
 
 
-vendor\bundle
+vendor/bundle
 
 
 

@@ -127,8 +127,8 @@ export default {
               onClick={(e) => {
                 if (e.target.checked && !this.selectedRows.includes(row.id)) this.selectedRows.push(row.id); 
                 else this.selectedRows = this.selectedRows.filter(item => item != row.id);
-                
-                console.log(row.id, this.selectedRows);
+
+                this.emitSelectedRows(this.selectedRows);
               }}
             />
           )
@@ -171,29 +171,29 @@ export default {
             </woot-button>
           ),
         },
-        // {
-        //   field: 'email',
-        //   key: 'email',
-        //   title: this.$t('CONTACTS_PAGE.LIST.TABLE_HEADER.EMAIL_ADDRESS'),
-        //   align: this.isRTLView ? 'right' : 'left',
-        //   sortBy: this.sortConfig.email || '',
-        //   width: 240,
-        //   renderBodyCell: ({ row }) => {
-        //     if (row.email)
-        //       return (
-        //         <div class="text-truncate">
-        //           <a
-        //             target="_blank"
-        //             rel="noopener noreferrer nofollow"
-        //             href={`mailto:${row.email}`}
-        //           >
-        //             {row.email}
-        //           </a>
-        //         </div>
-        //       );
-        //     return '---';
-        //   },
-        // },
+        {
+          field: 'email',
+          key: 'email',
+          title: this.$t('CONTACTS_PAGE.LIST.TABLE_HEADER.EMAIL_ADDRESS'),
+          align: this.isRTLView ? 'right' : 'left',
+          sortBy: this.sortConfig.email || '',
+          width: 240,
+          renderBodyCell: ({ row }) => {
+            if (row.email)
+              return (
+                <div class="text-truncate">
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    href={`mailto:${row.email}`}
+                  >
+                    {row.email}
+                  </a>
+                </div>
+              );
+            return '---';
+          },
+        },
         {
           field: 'phone_number',
           key: 'phone_number',
@@ -201,88 +201,88 @@ export default {
           title: this.$t('CONTACTS_PAGE.LIST.TABLE_HEADER.PHONE_NUMBER'),
           align: this.isRTLView ? 'right' : 'left',
         },
-        // {
-        //   field: 'company',
-        //   key: 'company',
-        //   sortBy: this.sortConfig.company_name || '',
-        //   title: this.$t('CONTACTS_PAGE.LIST.TABLE_HEADER.COMPANY'),
-        //   align: this.isRTLView ? 'right' : 'left',
-        // },
-        // {
-        //   field: 'city',
-        //   key: 'city',
-        //   sortBy: this.sortConfig.city || '',
-        //   title: this.$t('CONTACTS_PAGE.LIST.TABLE_HEADER.CITY'),
-        //   align: this.isRTLView ? 'right' : 'left',
-        // },
-        // {
-        //   field: 'country',
-        //   key: 'country',
-        //   title: this.$t('CONTACTS_PAGE.LIST.TABLE_HEADER.COUNTRY'),
-        //   align: this.isRTLView ? 'right' : 'left',
-        //   sortBy: this.sortConfig.country || '',
-        //   renderBodyCell: ({ row }) => {
-        //     if (row.country) {
-        //       return (
-        //         <div class="text-truncate">
-        //           {`${getCountryFlag(row.countryCode)} ${row.country}`}
-        //         </div>
-        //       );
-        //     }
-        //     return '---';
-        //   },
-        // },
-        // {
-        //   field: 'profiles',
-        //   key: 'profiles',
-        //   title: this.$t('CONTACTS_PAGE.LIST.TABLE_HEADER.SOCIAL_PROFILES'),
-        //   align: this.isRTLView ? 'right' : 'left',
-        //   renderBodyCell: ({ row }) => {
-        //     const { profiles } = row;
+        {
+          field: 'company',
+          key: 'company',
+          sortBy: this.sortConfig.company_name || '',
+          title: this.$t('CONTACTS_PAGE.LIST.TABLE_HEADER.COMPANY'),
+          align: this.isRTLView ? 'right' : 'left',
+        },
+        {
+          field: 'city',
+          key: 'city',
+          sortBy: this.sortConfig.city || '',
+          title: this.$t('CONTACTS_PAGE.LIST.TABLE_HEADER.CITY'),
+          align: this.isRTLView ? 'right' : 'left',
+        },
+        {
+          field: 'country',
+          key: 'country',
+          title: this.$t('CONTACTS_PAGE.LIST.TABLE_HEADER.COUNTRY'),
+          align: this.isRTLView ? 'right' : 'left',
+          sortBy: this.sortConfig.country || '',
+          renderBodyCell: ({ row }) => {
+            if (row.country) {
+              return (
+                <div class="text-truncate">
+                  {`${getCountryFlag(row.countryCode)} ${row.country}`}
+                </div>
+              );
+            }
+            return '---';
+          },
+        },
+        {
+          field: 'profiles',
+          key: 'profiles',
+          title: this.$t('CONTACTS_PAGE.LIST.TABLE_HEADER.SOCIAL_PROFILES'),
+          align: this.isRTLView ? 'right' : 'left',
+          renderBodyCell: ({ row }) => {
+            const { profiles } = row;
 
-        //     const items = Object.keys(profiles);
+            const items = Object.keys(profiles);
 
-        //     if (!items.length) return '---';
+            if (!items.length) return '---';
 
-        //     return (
-        //       <div class="cell--social-profiles">
-        //         {items.map(
-        //           profile =>
-        //             profiles[profile] && (
-        //               <a
-        //                 target="_blank"
-        //                 rel="noopener noreferrer nofollow"
-        //                 href={`https://${profile}.com/${profiles[profile]}`}
-        //               >
-        //                 <FluentIcon icon={`brand-${profile}`} />
-        //               </a>
-        //             )
-        //         )}
-        //       </div>
-        //     );
-        //   },
-        // },
-        // {
-        //   field: 'last_activity_at',
-        //   key: 'last_activity_at',
-        //   sortBy: this.sortConfig.last_activity_at || '',
-        //   title: this.$t('CONTACTS_PAGE.LIST.TABLE_HEADER.LAST_ACTIVITY'),
-        //   align: this.isRTLView ? 'right' : 'left',
-        // },
-        // {
-        //   field: 'created_at',
-        //   key: 'created_at',
-        //   sortBy: this.sortConfig.created_at || '',
-        //   title: this.$t('CONTACTS_PAGE.LIST.TABLE_HEADER.CREATED_AT'),
-        //   align: this.isRTLView ? 'right' : 'left',
-        // },
-        // {
-        //   field: 'conversationsCount',
-        //   key: 'conversationsCount',
-        //   title: this.$t('CONTACTS_PAGE.LIST.TABLE_HEADER.CONVERSATIONS'),
-        //   width: 150,
-        //   align: this.isRTLView ? 'right' : 'left',
-        // },
+            return (
+              <div class="cell--social-profiles">
+                {items.map(
+                  profile =>
+                    profiles[profile] && (
+                      <a
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                        href={`https://${profile}.com/${profiles[profile]}`}
+                      >
+                        <FluentIcon icon={`brand-${profile}`} />
+                      </a>
+                    )
+                )}
+              </div>
+            );
+          },
+        },
+        {
+          field: 'last_activity_at',
+          key: 'last_activity_at',
+          sortBy: this.sortConfig.last_activity_at || '',
+          title: this.$t('CONTACTS_PAGE.LIST.TABLE_HEADER.LAST_ACTIVITY'),
+          align: this.isRTLView ? 'right' : 'left',
+        },
+        {
+          field: 'created_at',
+          key: 'created_at',
+          sortBy: this.sortConfig.created_at || '',
+          title: this.$t('CONTACTS_PAGE.LIST.TABLE_HEADER.CREATED_AT'),
+          align: this.isRTLView ? 'right' : 'left',
+        },
+        {
+          field: 'conversationsCount',
+          key: 'conversationsCount',
+          title: this.$t('CONTACTS_PAGE.LIST.TABLE_HEADER.CONVERSATIONS'),
+          width: 150,
+          align: this.isRTLView ? 'right' : 'left',
+        },
       ];
     },
   },
@@ -304,6 +304,11 @@ export default {
     selectAllRows() {
       this.selectedRows = this.tableData.map(row => row.id);
       return this.selectedRows;
+    },
+    emitSelectedRows(rows) {
+      console.log('emit in table view', rows);
+
+      this.$emit('on-change-selection', rows);
     },
   },
 };
