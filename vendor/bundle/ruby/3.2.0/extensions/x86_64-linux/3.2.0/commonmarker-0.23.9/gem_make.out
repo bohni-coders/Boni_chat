@@ -3,10 +3,10 @@ current directory: /home/onkar/projects/Boni_chat/vendor/bundle/ruby/3.2.0/gems/
 creating Makefile
 
 current directory: /home/onkar/projects/Boni_chat/vendor/bundle/ruby/3.2.0/gems/commonmarker-0.23.9/ext/commonmarker
-make DESTDIR\= sitearchdir\=./.gem.20231015-816751-lc4dh4 sitelibdir\=./.gem.20231015-816751-lc4dh4 clean
+make DESTDIR\= sitearchdir\=./.gem.20231212-160499-de1ujm sitelibdir\=./.gem.20231212-160499-de1ujm clean
 
 current directory: /home/onkar/projects/Boni_chat/vendor/bundle/ruby/3.2.0/gems/commonmarker-0.23.9/ext/commonmarker
-make DESTDIR\= sitearchdir\=./.gem.20231015-816751-lc4dh4 sitelibdir\=./.gem.20231015-816751-lc4dh4
+make DESTDIR\= sitearchdir\=./.gem.20231212-160499-de1ujm sitelibdir\=./.gem.20231212-160499-de1ujm
 compiling arena.c
 compiling autolink.c
 autolink.c: In function ‘postprocess_text’:
@@ -102,8 +102,8 @@ compiling xml.c
 linking shared-object commonmarker/commonmarker.so
 
 current directory: /home/onkar/projects/Boni_chat/vendor/bundle/ruby/3.2.0/gems/commonmarker-0.23.9/ext/commonmarker
-make DESTDIR\= sitearchdir\=./.gem.20231015-816751-lc4dh4 sitelibdir\=./.gem.20231015-816751-lc4dh4 install
-/usr/bin/install -m 0755 commonmarker.so ./.gem.20231015-816751-lc4dh4/commonmarker
+make DESTDIR\= sitearchdir\=./.gem.20231212-160499-de1ujm sitelibdir\=./.gem.20231212-160499-de1ujm install
+/usr/bin/install -m 0755 commonmarker.so ./.gem.20231212-160499-de1ujm/commonmarker
 
 current directory: /home/onkar/projects/Boni_chat/vendor/bundle/ruby/3.2.0/gems/commonmarker-0.23.9/ext/commonmarker
-make DESTDIR\= sitearchdir\=./.gem.20231015-816751-lc4dh4 sitelibdir\=./.gem.20231015-816751-lc4dh4 clean
+make DESTDIR\= sitearchdir\=./.gem.20231212-160499-de1ujm sitelibdir\=./.gem.20231212-160499-de1ujm clean
