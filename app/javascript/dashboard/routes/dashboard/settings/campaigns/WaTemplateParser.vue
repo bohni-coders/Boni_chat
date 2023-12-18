@@ -33,9 +33,9 @@
         <woot-button variant="smooth" @click="$emit('resetTemplate')">
           {{ $t('WHATSAPP_TEMPLATES.PARSER.GO_BACK_LABEL') }}
         </woot-button>
-        <!-- <woot-button @click="sendMessage">
-          {{ $t('WHATSAPP_TEMPLATES.PARSER.SEND_MESSAGE_LABEL') }}
-        </woot-button> -->
+        <woot-button @click.prevent="sendMessage">
+          {{ "Set Message" || $t('WHATSAPP_TEMPLATES.PARSER.SEND_MESSAGE_LABEL') }}
+        </woot-button>
       </footer>
     </div>
   </template>

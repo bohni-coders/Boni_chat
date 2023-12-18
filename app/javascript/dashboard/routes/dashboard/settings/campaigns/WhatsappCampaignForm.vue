@@ -1,5 +1,6 @@
 <template>
-  <form class="conversation--form" @submit.prevent="onFormSubmit">
+  <!-- @submit.prevent="onFormSubmit" -->
+  <form class="conversation--form" @submit.prevent="onFormSubmit" >
     <div v-if="showNoInboxAlert" class="callout warning">
       <p>
         {{ $t('NEW_CONVERSATION.NO_INBOX') }}
@@ -59,35 +60,7 @@
               {{ $t('NEW_CONVERSATION.FORM.TO.LABEL') }}
             </label>
             <!-- multiselect-wrap--small -->
-            <div v-if="contacts" class="multiselect-container" @click="modalVisible = true">
-              <!-- <multiselect
-              v-model="selectedContacts"
-              track-by="id"
-              label="name"
-              :placeholder="$t('FORMS.MULTISELECT.SELECT')"
-              selected-label=""
-              select-label=""
-              deselect-label=""
-              :max-height="160"
-              :close-on-select="true"
-              :options="[...contacts]"
-              :multiple="true"
-            >
-              <template slot="singleLabel" slot-scope="{ option, values }">
-                <contact-dropdown-item
-                  v-if="option.name"
-                  :name="option.name"
-                  :phone-number="option.phone_number"
-                />
-                <span v-else> {{ values.length }} contacts selected </span>
-              </template>
-              <template slot="option" slot-scope="{ option }">
-                <contact-dropdown-item
-                  :name="option.name"
-                  :phone-number="option.phone_number"
-                />
-              </template>
-            </multiselect> -->
+            <div v-if="contacts" class="multiselect-container" @click.prevent="modalVisible = true">
               <button class="modal-button" >
                 Select Contacts
               </button>
@@ -145,10 +118,10 @@
         <button class="button clear" @click.prevent="onCancel">
           {{ $t('NEW_CONVERSATION.FORM.CANCEL') }}
         </button>
+        <!--  -->
         <woot-button
           type="submit"
-          :is-loading="conversationsUiFlags.isCreating"
-          @click="disableForm"
+          @click.prevent="disableForm"   
         >
           {{ 'Send Campaign' }}
         </woot-button>
@@ -200,7 +173,7 @@ export default {
     return {
       name: '',
       subject: '',
-      message: '',
+      message: [],
       showCannedResponseMenu: false,
       cannedResponseSearchKey: '',
       bccEmails: '',
@@ -218,7 +191,7 @@ export default {
       required: requiredIf('isAnEmailInbox'),
     },
     message: {
-      required,
+      // required,
     },
     targetInbox: {
       required,
@@ -297,16 +270,7 @@ export default {
   },
   watch: {
     message(value) {
-      this.hasSlashCommand = value[0] === '/' && !this.isEmailOrWebWidgetInbox;
-      const hasNextWord = value.includes(' ');
-      const isShortCodeActive = this.hasSlashCommand && !hasNextWord;
-      if (isShortCodeActive) {
-        this.cannedResponseSearchKey = value.substring(1);
-        this.showCannedResponseMenu = true;
-      } else {
-        this.cannedResponseSearchKey = '';
-        this.showCannedResponseMenu = false;
-      }
+      
     },
   },
   methods: {
@@ -342,8 +306,13 @@ export default {
     onFormSubmit() {
       this.$v.$touch();
       if (this.$v.$invalid) {
+        console.log('invalid......')
         return;
       }
+
+      this.onSubmit();
+
+      this.disableForm();
       // this.createConversation(this.emailMessagePayload);
     },
     // async createConversation(payload) {
@@ -367,7 +336,9 @@ export default {
     //     }
     //   }
     // },
-    async onSubmit(contactItems) {
+
+    // async
+    onSubmit() {
       // let data = {};
 
       // for (const item of contactItems) {
@@ -395,12 +366,15 @@ export default {
         inbox_id: this.targetInbox.id,
         sender_id: this.currentUser.id,
         contacts: this.selectedContacts,
-        message_template: contactItems[0].message,
+        message_template: this.payload, // contactItems[0].message,
       };
 
-      await WhatsappCampaignsAPI.create(campaignDetails);
 
-      return data;
+      console.log('campaign details', JSON.stringify(campaignDetails));
+
+      // await WhatsappCampaignsAPI.create(campaignDetails);
+
+      // return data;
     },
     setContacts(contactsPayload) {
       this.selectedContacts = contactsPayload;
@@ -417,13 +391,17 @@ export default {
     // ------------------------------------------------------------------------------------------------------------------
     toggleWaTemplate(val) {
       this.whatsappTemplateSelected = val;
+
+
     },
     onSendWhatsAppReply(messagePayload) {
-      bus.$emit('newToastMessage', messagePayload);
+      console.log("message template, payload :", messagePayload);
 
-      this.payload = messagePayload;
 
-      // const payload = this.prepareWhatsAppMessagePayload(messagePayload);
+      const payload_ = this.prepareWhatsAppMessagePayload(messagePayload);
+
+      this.payload = payload_;
+
       // await this.createConversation(payload);
     },
     inboxReadableIdentifier(inbox) {

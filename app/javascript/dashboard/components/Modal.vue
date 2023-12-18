@@ -12,7 +12,7 @@
           icon="dismiss"
           variant="clear"
           class="modal--close"
-          @click="close"
+          @click.prevent="close"
         />
         <slot />
       </div>

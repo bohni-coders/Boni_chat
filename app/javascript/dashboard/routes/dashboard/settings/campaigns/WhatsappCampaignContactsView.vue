@@ -78,7 +78,7 @@
         @clearFilters="clearFilters"
       />
     </woot-modal>
-    <woot-button :style="{ width: '100%' }" @click="saveContacts">Save</woot-button>
+    <woot-button :style="{ width: '100%' }" @click.prevent="saveContacts">Save</woot-button>
   </div>
 </template>
 

@@ -71,13 +71,14 @@ export default {
   computed: {
     whatsAppTemplateMessages() {
       // TODO: Remove the last filter when we support all formats
-      return this.$store.getters['inboxes/getWhatsAppTemplates'](this.inboxId)
+      let templates = this.$store.getters['inboxes/getWhatsAppTemplates'](this.inboxId)
+      return templates
         .filter(template => template.status.toLowerCase() === 'approved')
-        .filter(template => {
-          return template.components.every(component => {
-            return !formatsToRemove.includes(component.format);
-          });
-        });
+        // .filter(template => {
+        //   return template.components.every(component => {
+        //     return !formatsToRemove.includes(component.format);
+        //   });
+        // });
     },
     filteredTemplateMessages() {
       return this.whatsAppTemplateMessages.filter(template =>

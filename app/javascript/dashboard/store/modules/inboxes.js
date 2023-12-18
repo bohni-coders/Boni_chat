@@ -64,13 +64,17 @@ export const getters = {
     const messagesTemplates =
       whatsAppMessageTemplates || apiInboxMessageTemplates;
 
+    console.log('message_templates', messagesTemplates);
+    
+
     // filtering out the whatsapp templates with media
     if (messagesTemplates instanceof Array) {
-      return messagesTemplates.filter(template => {
-        return !template.components.some(
-          i => i.format === 'IMAGE' || i.format === 'VIDEO'
-        );
-      });
+      return messagesTemplates
+      // .filter(template => {
+      //   return !template.components.some(
+      //     i => i.format === 'IMAGE' || i.format === 'VIDEO'
+      //   );
+      // });
     }
     return [];
   },
