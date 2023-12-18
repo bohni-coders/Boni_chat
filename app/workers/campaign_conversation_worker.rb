@@ -21,7 +21,8 @@ class CampaignConversationWorker
       conversation = create_conversation(contact_attr, contact_inbox.id, contact) if conversation.blank?
       next unless conversation.persisted?
 
-      Messages::MessageBuilder.new(nil, conversation, message).perform
+
+      Messages::MessageBuilder.new(User.find(@whatsapp_campaign.sender_id), conversation, message).perform
       sleep(2)
     end
   end
@@ -36,7 +37,7 @@ class CampaignConversationWorker
     Conversation.create({
       account_id: @whatsapp_campaign.account_id,
       inbox_id: @whatsapp_campaign.inbox_id,
-      whatsapp_campaign_id: @whatsapp_campaign.id
+      whatsapp_campaign_id: @whatsapp_campaign.id,
       contact_id: contact_attr.to_i,
       contact_inbox_id: contact_inbox_id,
       additional_attributes: contact[:additional_attributes],

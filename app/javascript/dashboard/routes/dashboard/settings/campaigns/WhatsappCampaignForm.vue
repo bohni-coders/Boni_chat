@@ -194,10 +194,10 @@ export default {
       // required,
     },
     targetInbox: {
-      required,
+      // required,
     },
     selectedContacts: {
-      required,
+      // required,
     },
   },
   computed: {

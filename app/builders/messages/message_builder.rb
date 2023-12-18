@@ -17,6 +17,7 @@ class Messages::MessageBuilder
   end
 
   def perform
+    puts @user
     @message = @conversation.messages.build(message_params)
     process_attachments
     process_emails
