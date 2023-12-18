@@ -100,6 +100,9 @@ export default {
         return [];
       }
       return this.campaigns.map(item => {
+
+        if (this.isWhatsapp) return item;
+
         return {
           ...item,
           url: item.trigger_rules.url,

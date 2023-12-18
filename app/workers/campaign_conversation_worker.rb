@@ -36,6 +36,7 @@ class CampaignConversationWorker
     Conversation.create({
       account_id: @whatsapp_campaign.account_id,
       inbox_id: @whatsapp_campaign.inbox_id,
+      whatsapp_campaign_id: @whatsapp_campaign.id
       contact_id: contact_attr.to_i,
       contact_inbox_id: contact_inbox_id,
       additional_attributes: contact[:additional_attributes],

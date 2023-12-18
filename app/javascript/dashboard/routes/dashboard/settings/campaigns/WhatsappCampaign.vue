@@ -56,7 +56,7 @@ export default {
       labelList: 'labels/getLabels',
     }),
     campaigns() {
-      let campaigns = this.$store.getters['campaigns/getWatsappCampaigns']()
+      let campaigns = this.$store.getters['campaigns/getWhatsappCampaigns']();
 
       console.log(campaigns);
 
