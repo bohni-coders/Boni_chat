@@ -1,6 +1,7 @@
 import * as MutationHelpers from 'shared/helpers/vuex/mutationHelpers';
 import types from '../mutation-types';
 import CampaignsAPI from '../../api/campaigns';
+import WhatsappCampaignsAPI from '../../api/whatsappCampaigns'
 import AnalyticsHelper from '../../helper/AnalyticsHelper';
 import { CAMPAIGNS_EVENTS } from '../../helper/AnalyticsHelper/events';
 
@@ -22,6 +23,9 @@ export const getters = {
       record => record.campaign_type === campaignType
     );
   },
+  getWhatsappCampaigns: _state => () => {
+    return _state.records;
+  },
   getAllCampaigns: _state => {
     return _state.records;
   },
@@ -32,6 +36,18 @@ export const actions = {
     commit(types.SET_CAMPAIGN_UI_FLAG, { isFetching: true });
     try {
       const response = await CampaignsAPI.get();
+      commit(types.SET_CAMPAIGNS, response.data);
+    } catch (error) {
+      // Ignore error
+    } finally {
+      commit(types.SET_CAMPAIGN_UI_FLAG, { isFetching: false });
+    }
+  },
+  // ------------------------------ here -------------------------------------------------
+  get: async function getWhatsappCampaigns({ commit }) {
+    commit(types.SET_CAMPAIGN_UI_FLAG, { isFetching: true });
+    try {
+      const response = await WhatsappCampaignsAPI.get();
       commit(types.SET_CAMPAIGNS, response.data);
     } catch (error) {
       // Ignore error

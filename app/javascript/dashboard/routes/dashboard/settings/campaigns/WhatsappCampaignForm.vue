@@ -118,10 +118,10 @@
         <button class="button clear" @click.prevent="onCancel">
           {{ $t('NEW_CONVERSATION.FORM.CANCEL') }}
         </button>
-        <!--  -->
+        <!-- @click.prevent="disableForm"    -->
         <woot-button
           type="submit"
-          @click.prevent="disableForm"   
+          
         >
           {{ 'Send Campaign' }}
         </woot-button>
@@ -338,7 +338,7 @@ export default {
     // },
 
     // async
-    onSubmit() {
+    async onSubmit() {
       // let data = {};
 
       // for (const item of contactItems) {
@@ -361,18 +361,18 @@ export default {
       // }
 
       const campaignDetails = {
-        message: this.message,
+        message: this.payload.length > 0 ? this.payload[0].message.content : this.message,
         enabled: true,
         inbox_id: this.targetInbox.id,
         sender_id: this.currentUser.id,
         contacts: this.selectedContacts,
-        message_template: this.payload, // contactItems[0].message,
+        message_template: this.payload.length > 0 ? this.payload[0] : {}, // contactItems[0].message,
       };
 
 
       console.log('campaign details', JSON.stringify(campaignDetails));
 
-      // await WhatsappCampaignsAPI.create(campaignDetails);
+      await WhatsappCampaignsAPI.create(campaignDetails);
 
       // return data;
     },

@@ -4,6 +4,10 @@ class Api::V1::Accounts::WhatsappCampaignsController < Api::V1::Accounts::BaseCo
   
     def index
       @whatsapp_campaigns = Current.account.whatsapp_campaigns
+
+      puts @whatsapp_campaigns
+
+      render json: @whatsapp_campaigns
     end
   
     def show; end
@@ -33,8 +37,10 @@ class Api::V1::Accounts::WhatsappCampaignsController < Api::V1::Accounts::BaseCo
   
     def campaign_params
       params.require(:whatsapp_campaign).permit(:message, :enabled, :inbox_id, :sender_id, :message_template => {}, 
-        :contacts => [:availability_status, :email, :id, :name, :phone_number, :identifier, :thumbnail, :conversations_count, :last_activity_at, :created_at, :additional_attributes => {}, :custom_attributes => {}]
+        :contacts => []
       )
+
+      # :availability_status, :email, :id, :name, :phone_number, :identifier, :thumbnail, :conversations_count, :last_activity_at, :created_at, :additional_attributes => {}, :custom_attributes => {}
     end
 
   end

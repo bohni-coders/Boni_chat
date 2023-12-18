@@ -56,7 +56,11 @@ export default {
       labelList: 'labels/getLabels',
     }),
     campaigns() {
-      return this.$store.getters['campaigns/getCampaigns'](this.campaignType);
+      let campaigns = this.$store.getters['campaigns/getWatsappCampaigns']()
+
+      console.log(campaigns);
+
+      return campaigns; // getWhatsappCampaigns
     },
     showEmptyResult() {
       const hasEmptyResults =
