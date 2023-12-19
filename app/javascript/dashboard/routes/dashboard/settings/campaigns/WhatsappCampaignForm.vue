@@ -191,13 +191,13 @@ export default {
       required: requiredIf('isAnEmailInbox'),
     },
     message: {
-      // required,
+      required: !requiredIf('hasWhatsappTemplates'),
     },
     targetInbox: {
-      // required,
+      required,
     },
     selectedContacts: {
-      // required,
+      required,
     },
   },
   computed: {
@@ -313,52 +313,15 @@ export default {
       this.onSubmit();
 
       this.disableForm();
-      // this.createConversation(this.emailMessagePayload);
     },
-    // async createConversation(payload) {
-    //   try {
-    //     const data = await this.onSubmit(payload);
-    //     const action = {
-    //       type: 'link',
-    //       to: `/app/accounts/${data.account_id}/conversations/${data.id}`,
-    //       message: this.$t('NEW_CONVERSATION.FORM.GO_TO_CONVERSATION'),
-    //     };
-    //     this.onSuccess();
-    //     this.showAlert(
-    //       this.$t('NEW_CONVERSATION.FORM.SUCCESS_MESSAGE'),
-    //       action
-    //     );
-    //   } catch (error) {
-    //     if (error instanceof ExceptionWithMessage) {
-    //       this.showAlert(error.data);
-    //     } else {
-    //       this.showAlert(this.$t('NEW_CONVERSATION.FORM.ERROR_MESSAGE'));
-    //     }
-    //   }
-    // },
 
     // async
     async onSubmit() {
-      // let data = {};
+      this.payload = this.prepareWhatsAppMessagePayload(this.payload);
 
-      // for (const item of contactItems) {
-      //   ConversationApi.create(item)
-      //     .then(res => {
-      //       data = res;
-      //     })
-      //     .catch(e => {
-      //       this.showAlert(e.data);
-      //     });
+      this.message = this.payload.length > 0 ? this.payload[0].message.content : this.message;
 
-      // this.$store.dispatch(
-      //   'contactConversations/create',
-      //   item
-      // ).then(res => {
-      //   data = res;
-      // }).catch(e => {
-      //   this.showAlert(e.data)
-      // });
-      // }
+      console.log("this.message", this.message)
 
       const campaignDetails = {
         message: this.payload.length > 0 ? this.payload[0].message.content : this.message,
@@ -393,9 +356,6 @@ export default {
       this.whatsappTemplateSelected = val;
     },
     onSendWhatsAppReply(messagePayload) {
-      console.log("message template, payload :", messagePayload);
-
-
       console.log("messagepayload", messagePayload);
 
       let payload_this = this.prepareWhatsAppMessagePayload(messagePayload);
@@ -405,7 +365,7 @@ export default {
 
 
 
-      this.payload = payload_this;
+      this.payload = messagePayload;
     },
     inboxReadableIdentifier(inbox) {
       return `${inbox.name} (${inbox.channel_type})`;
