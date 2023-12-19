@@ -20,7 +20,10 @@ class WhatsappCampaign < ApplicationRecord
   
   belongs_to :inbox
   before_create :set_display_id
-  # after_create :sent_message_to_contacts
+  after_save :send_message_to_contacts
+
+  belongs_to :account
+  belongs_to :inbox
   belongs_to :sender, class_name: 'User', optional: true
 
   has_many :conversations, dependent: :nullify, autosave: true
@@ -29,8 +32,11 @@ class WhatsappCampaign < ApplicationRecord
     self.display_id = self.account_id
   end
 
-  # def sent_message_to_contacts
-  #   CampaignConversationWorker.perform_async(id)
-  # end
+  def send_message_to_contacts
+    puts "inside send message ---------------------------"
+    puts "--------------------------------------------------"
+    puts "----------------------------------------------------"
 
+    CampaignConversationWorker.perform_async(self.id)
+  end
 end

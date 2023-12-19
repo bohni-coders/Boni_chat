@@ -15,7 +15,8 @@ class Api::V1::Accounts::WhatsappCampaignsController < Api::V1::Accounts::BaseCo
     def create
       @whatsapp_campaign = Current.account.whatsapp_campaigns.new(campaign_params)
       if @whatsapp_campaign.save
-        CampaignConversationWorker.perform_async(@whatsapp_campaign.id)
+        # CampaignConversationWorker.perform_async(@whatsapp_campaign.id)
+        render json: { message: "success" }
       end
       head :ok
     end

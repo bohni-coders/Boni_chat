@@ -1,5 +1,5 @@
 <template>
-  <div class="column content-box">
+  <div class="column content-box wa-campaign">
     <campaigns-table
       :campaigns="campaigns"
       :show-empty-result="showEmptyResult"
@@ -108,6 +108,10 @@ export default {
   display: flex;
   justify-content: flex-end;
   padding-bottom: var(--space-one);
+}
+
+.wa-campaign {
+  overflow: none;
 }
 
 .content-box .page-top-bar::v-deep {

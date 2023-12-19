@@ -4,8 +4,8 @@ class CampaignConversationWorker
   def perform(whatsapp_campaign_id)
     @whatsapp_campaign = WhatsappCampaign.find_by(id: whatsapp_campaign_id)
     return if @whatsapp_campaign.blank?
-
-    message = @whatsapp_campaign.message_template.with_indifferent_access
+    
+    message = {content: @whatsapp_campaign.message}.with_indifferent_access
     contacts = @whatsapp_campaign.contacts
     contacts.each do |contact_attr|
       puts "-----------------------------------------------------------------------------"
@@ -21,8 +21,10 @@ class CampaignConversationWorker
       conversation = create_conversation(contact_attr, contact_inbox.id, contact) if conversation.blank?
       next unless conversation.persisted?
 
+      user = User.find(@whatsapp_campaign.sender_id)
 
-      Messages::MessageBuilder.new(User.find(@whatsapp_campaign.sender_id), conversation, message).perform
+
+      Messages::MessageBuilder.new(user, conversation, message).perform
       sleep(2)
     end
   end
@@ -34,7 +36,9 @@ class CampaignConversationWorker
   end
 
   def create_conversation(contact_attr, contact_inbox_id, contact)
-    Conversation.create({
+    puts "id: #{@whatsapp_campaign.id}"
+
+    Conversation.create!({
       account_id: @whatsapp_campaign.account_id,
       inbox_id: @whatsapp_campaign.inbox_id,
       whatsapp_campaign_id: @whatsapp_campaign.id,

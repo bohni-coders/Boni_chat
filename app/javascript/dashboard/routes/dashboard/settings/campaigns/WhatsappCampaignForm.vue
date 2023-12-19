@@ -173,7 +173,7 @@ export default {
     return {
       name: '',
       subject: '',
-      message: [],
+      message: '',
       showCannedResponseMenu: false,
       cannedResponseSearchKey: '',
       bccEmails: '',
@@ -391,18 +391,21 @@ export default {
     // ------------------------------------------------------------------------------------------------------------------
     toggleWaTemplate(val) {
       this.whatsappTemplateSelected = val;
-
-
     },
     onSendWhatsAppReply(messagePayload) {
       console.log("message template, payload :", messagePayload);
 
 
-      const payload_ = this.prepareWhatsAppMessagePayload(messagePayload);
+      console.log("messagepayload", messagePayload);
 
-      this.payload = payload_;
+      let payload_this = this.prepareWhatsAppMessagePayload(messagePayload);
 
-      // await this.createConversation(payload);
+
+      console.log("payload", payload_this);
+
+
+
+      this.payload = payload_this;
     },
     inboxReadableIdentifier(inbox) {
       return `${inbox.name} (${inbox.channel_type})`;
