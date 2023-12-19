@@ -101,7 +101,7 @@ export default {
                 this.phoneNumber = '91' + this.phoneNumber;
             } else {
                 let parts = this.ct_code.split('+')[1];
-                console.log(parts)
+
                 this.phoneNumber = `${parts}` + `${this.phoneNumber}`
             }
 

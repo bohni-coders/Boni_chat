@@ -24,14 +24,12 @@ import Campaign from './Campaign.vue';
 import AddCampaign from './AddCampaign';
 import WhatsappCampaign from './WhatsappCampaign.vue';
 import WhatsappCampaignForm from './WhatsappCampaignForm.vue';
-import AddWhatsappCampaign from './AddWhatsappCampaign.vue';
 
 export default {
   components: {
     Campaign,
     WhatsappCampaign,
     WhatsappCampaignForm,
-    AddWhatsappCampaign,
     AddCampaign,
   },
   mixins: [campaignMixin],

@@ -62,19 +62,16 @@ export const getters = {
     const { message_templates: apiInboxMessageTemplates } =
       additionalAttributes || {};
     const messagesTemplates =
-      whatsAppMessageTemplates || apiInboxMessageTemplates;
-
-    console.log('message_templates', messagesTemplates);
-    
+      whatsAppMessageTemplates || apiInboxMessageTemplates;    
 
     // filtering out the whatsapp templates with media
     if (messagesTemplates instanceof Array) {
       return messagesTemplates
-      // .filter(template => {
-      //   return !template.components.some(
-      //     i => i.format === 'IMAGE' || i.format === 'VIDEO'
-      //   );
-      // });
+      .filter(template => {
+        return !template.components.some(
+          i => i.format === 'IMAGE' || i.format === 'VIDEO'
+        );
+      });
     }
     return [];
   },
