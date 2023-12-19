@@ -94,7 +94,14 @@ class Messages::MessageBuilder
     @params[:campaign_id].present? ? { additional_attributes: { campaign_id: @params[:campaign_id] } } : {}
   end
 
+  def whatsapp_campaign_id
+
+  end
+
   def template_params
+    puts @params[:template_params].present?
+    puts "----------------------------------"
+
     @params[:template_params].present? ? { additional_attributes: { template_params: JSON.parse(@params[:template_params].to_json) } } : {}
   end
 

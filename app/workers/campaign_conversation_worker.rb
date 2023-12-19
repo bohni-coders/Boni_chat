@@ -5,8 +5,13 @@ class CampaignConversationWorker
     @whatsapp_campaign = WhatsappCampaign.find_by(id: whatsapp_campaign_id)
     return if @whatsapp_campaign.blank?
     
-    message = {content: @whatsapp_campaign.message, template_params: @whatsapp_campaign.message_template.deep_symbolize_keys[:message][:template_params]}.with_indifferent_access
+
+
+    puts @whatsapp_campaign.message_template.deep_symbolize_keys[:message].to_h[:template_params]
+
+    message = {content: @whatsapp_campaign.message, template_params: @whatsapp_campaign.message_template.deep_symbolize_keys[:message].to_h[:template_params]}.with_indifferent_access
     contacts = @whatsapp_campaign.contacts
+
     contacts.each do |contact_attr|
       puts "-----------------------------------------------------------------------------"
       puts contact_attr, "------------------------------------------------------------------------------------------------------------------------"
