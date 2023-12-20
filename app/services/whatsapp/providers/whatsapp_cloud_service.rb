@@ -129,10 +129,15 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
     data.each do |item|
       if item[:text] =~ /^https:\/\//i
         item[:type] = "image"
-        item[:image] = item[:text]
+        
+        item[:image] = {
+          link: item[:text]
+        }
+        
         item.delete(:text)
       end
     end
+    
 
     puts "data------------------------"
     puts data
