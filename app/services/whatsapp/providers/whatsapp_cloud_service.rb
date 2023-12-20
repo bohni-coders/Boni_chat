@@ -10,6 +10,11 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
   end
 
   def send_template(phone_number, template_info)
+    puts "--------------------------------------------"
+    puts "template_info ------------------------------"
+    puts template_info
+    puts "--------------------------------------------"
+
     response = HTTParty.post(
       "#{phone_id_path}/messages",
       headers: api_headers,
@@ -119,16 +124,31 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
   end
 
   def template_body_parameters(template_info)
+    data = template_info[:parameters]
+
+    data.each do |item|
+      if item[:text] =~ /^https:\/\//i
+        item[:type] = "image"
+        item[:image] = item[:text]
+      end
+    end
+
     {
       name: template_info[:name],
       language: {
         policy: 'deterministic',
         code: template_info[:lang_code]
       },
-      components: [{
-        type: 'body',
-        parameters: template_info[:parameters]
-      }]
+      components: [
+        {
+          type: 'header',
+          parameters: data.select { |item| item[:type] == 'image'}
+        },
+        {
+          type: 'body',
+          parameters: data.select { |item| item[:type] == 'text' }
+        }
+      ]
     }
   end
 

@@ -82,6 +82,8 @@
       },
     },
     mounted() {
+      console.log("template :", JSON.stringify(this.template))
+
       this.generateVariables();
     },
     methods: {

@@ -137,7 +137,7 @@
         <!-- @click.prevent="disableForm"    -->
         <woot-button
           type="submit"
-          :is-disabled="this.payload.length === 0"
+          :is-disabled="this.enabled"
         >
           {{ 'Send Campaign' }}
         </woot-button>
@@ -202,6 +202,7 @@ export default {
       payload: [],
       modalVisible: false,
       enabled: true,
+      headerParams: [],
     };
   },
   validations: {
@@ -312,15 +313,24 @@ export default {
       this.showCannedMenu = value;
     },
     prepareWhatsAppMessagePayload({ message: content, templateParams }) {
+
+      let processed_params = {};
+      
+      [...Object.values(templateParams.processed_params), ...this.headerParams].forEach((value, index) => {
+        processed_params[index] = value;
+      });
+
       const payload = this.selectedContacts.map(contact => {
         return {
           inbox_id: this.targetInbox.id,
           source_id: this.targetInbox.sourceId,
           contact_id: contact.id,
-          message: { content, template_params: templateParams },
+          message: { content, template_params: {...templateParams, processed_params: processed_params} },
           assignee_id: this.currentUser.id,
         };
       });
+
+      console.log('payload: ', payload);
 
       return payload;
     },
@@ -340,8 +350,6 @@ export default {
     async onSubmit() {
       this.message = this.payload.length > 0 ? this.payload[0].message.content : this.message;
 
-      console.log("this.message", this.message)
-
       const campaignDetails = {
         title: this.title,
         message: this.payload.length > 0 ? this.payload[0].message.content : this.message,
@@ -352,16 +360,12 @@ export default {
         message_template: this.payload.length > 0 ? this.payload[0] : {}, // contactItems[0].message,
       };
 
-
-      console.log('campaign details', JSON.stringify(campaignDetails));
-
       await WhatsappCampaignsAPI.create(campaignDetails);
 
       // return data;
     },
     setContacts(contactsPayload) {
       this.selectedContacts = contactsPayload;
-      console.log('inside form', this.selectedContacts);
     },
     async contactsfun() {
       const res = await ContactAPI.get();
@@ -378,12 +382,34 @@ export default {
     onSendWhatsAppReply(messagePayload) {
       console.log("messagepayload", messagePayload);
 
-      let payload_this = this.prepareWhatsAppMessagePayload(messagePayload);
+      if(messagePayload.id) {
+        console.log("inside if")
 
 
-      console.log("payload", payload_this);
+        this.enabled = true;
 
-      this.payload = payload_this;
+        let headers = messagePayload.components.filter(comp => {
+          return comp.format === 'IMAGE';
+        })
+
+        this.headerParams = headers.map(header => header.example.header_handle).flat();
+
+        console.log(this.headerParams);
+
+      }else if(messagePayload.message) {
+        console.log("else if")
+
+
+        this.enabled = false;
+  
+        let payload_this = this.prepareWhatsAppMessagePayload(messagePayload);
+  
+  
+        console.log("payload", payload_this);
+  
+        this.payload = payload_this;
+      }
+
     },
     inboxReadableIdentifier(inbox) {
       return `${inbox.name} (${inbox.channel_type})`;
