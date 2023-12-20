@@ -129,6 +129,10 @@ export default {
       type: [String, Number],
       default: 0,
     },
+    onClose: {
+      type: Function,
+      default: () => {},
+    }
   },
   data() {
     return {
@@ -287,6 +291,8 @@ export default {
       console.log('on change in contacts view', this.selectedContactIds);
 
       this.$emit('on-change-selection', this.selectedContactIds);
+
+      this.onClose();
     },
     onChangeSelection(selectedIds) {
       console.log('store ids in contacts view');

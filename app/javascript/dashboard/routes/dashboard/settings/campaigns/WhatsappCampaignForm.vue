@@ -10,6 +10,18 @@
     <!-- v-else -->
     <div v-else >
       <div>
+        <div class="columns">
+          <woot-input
+            v-model="title"
+            :label="$t('CAMPAIGN.ADD.FORM.TITLE.LABEL')"
+            type="text"
+            :class="{ error: $v.title.$error }"
+            :error="$v.title.$error ? $t('CAMPAIGN.ADD.FORM.TITLE.ERROR') : ''"
+            :placeholder="$t('CAMPAIGN.ADD.FORM.TITLE.PLACEHOLDER')"
+            @blur="$v.title.$touch"
+          />
+        </div>
+
         <div class="row gutter-small">
           <div class="columns">
             <label>
@@ -18,6 +30,7 @@
             <div class="multiselect-wrap--small">
               <multiselect
                 v-model="targetInbox"
+                v-bind:disabled="this.selectedContacts.length === 0"
                 track-by="id"
                 label="name"
                 :placeholder="$t('FORMS.MULTISELECT.SELECT')"
@@ -62,7 +75,7 @@
             <!-- multiselect-wrap--small -->
             <div v-if="contacts" class="multiselect-container" @click.prevent="modalVisible = true">
               <button class="modal-button" >
-                Select Contacts
+                {{ this.selectedContacts.length > 0 ? `${this.selectedContacts.length} Contacts Selected` : "Select Contacts" }}
               </button>
               <fluent-icon
                   class="icon"
@@ -77,6 +90,7 @@
               >
                 <whatsapp-campaign-contacts-view
                   @on-change-selection="setContacts"
+                  :on-close="hideContactsModal"
                 />
               </woot-modal>
             </div>
@@ -114,6 +128,8 @@
         </div>
       </div>
 
+      <div :style="{ border: 'solid 1px', marginTop: '10px' }" ></div>
+
       <div class="modal-footer">
         <button class="button clear" @click.prevent="onCancel">
           {{ $t('NEW_CONVERSATION.FORM.CANCEL') }}
@@ -121,7 +137,7 @@
         <!-- @click.prevent="disableForm"    -->
         <woot-button
           type="submit"
-          
+          :is-disabled="this.payload.length === 0"
         >
           {{ 'Send Campaign' }}
         </woot-button>
@@ -171,6 +187,7 @@ export default {
   },
   data() {
     return {
+      title: '',
       name: '',
       subject: '',
       message: '',
@@ -182,13 +199,17 @@ export default {
       selectedContacts: [],
       contacts: [],
       whatsappTemplateSelected: false,
-      payload: {},
+      payload: [],
       modalVisible: false,
+      enabled: true,
     };
   },
   validations: {
     subject: {
       required: requiredIf('isAnEmailInbox'),
+    },
+    title: {
+      required,
     },
     message: {
       required: !requiredIf('hasWhatsappTemplates'),
@@ -317,13 +338,12 @@ export default {
 
     // async
     async onSubmit() {
-      this.payload = this.prepareWhatsAppMessagePayload(this.payload);
-
       this.message = this.payload.length > 0 ? this.payload[0].message.content : this.message;
 
       console.log("this.message", this.message)
 
       const campaignDetails = {
+        title: this.title,
         message: this.payload.length > 0 ? this.payload[0].message.content : this.message,
         enabled: true,
         inbox_id: this.targetInbox.id,
@@ -363,9 +383,7 @@ export default {
 
       console.log("payload", payload_this);
 
-
-
-      this.payload = messagePayload;
+      this.payload = payload_this;
     },
     inboxReadableIdentifier(inbox) {
       return `${inbox.name} (${inbox.channel_type})`;
@@ -386,7 +404,7 @@ export default {
 
 <style scoped lang="scss">
 .modal-footer {
-  margin-top: 15px;
+  margin-top: 25px;
   display: flex;
   justify-content: flex-end;
 }

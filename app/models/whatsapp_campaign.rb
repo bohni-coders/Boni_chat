@@ -8,6 +8,7 @@
 #  enabled          :boolean          default(TRUE)
 #  message          :text             not null
 #  message_template :jsonb
+#  title            :string
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  account_id       :bigint           not null

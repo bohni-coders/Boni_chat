@@ -37,7 +37,7 @@ class Api::V1::Accounts::WhatsappCampaignsController < Api::V1::Accounts::BaseCo
     end
   
     def campaign_params
-      params.require(:whatsapp_campaign).permit(:message, :enabled, :inbox_id, :sender_id, :message_template => {}, 
+      params.require(:whatsapp_campaign).permit(:title, :message, :enabled, :inbox_id, :sender_id, :message_template => {}, 
         :contacts => []
       )
 

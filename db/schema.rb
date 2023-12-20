@@ -941,6 +941,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_18_102102) do
     t.jsonb "contacts", default: []
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title"
   end
 
   create_table "working_hours", force: :cascade do |t|

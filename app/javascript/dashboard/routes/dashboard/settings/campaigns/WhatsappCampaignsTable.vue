@@ -152,7 +152,9 @@ export default {
           title: this.$t('CAMPAIGN.LIST.TABLE_HEADER.INBOX'),
           align: this.isRTLView ? 'right' : 'left',
           renderBodyCell: ({ row }) => {
-            return <InboxName inbox={row.inbox} />;
+            const inbox = this.inboxes.filter(inb => row.inbox_id == inb.id)[0];
+
+            return <InboxName inbox={{name: inbox.name, phone_number: inbox.phone_number, channel_type: inbox.channel_type}} />;
           },
         },
       ];
