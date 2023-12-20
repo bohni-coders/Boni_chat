@@ -130,10 +130,15 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
       if item[:text] =~ /^https:\/\//i
         item[:type] = "image"
         item[:image] = item[:text]
+        item.delete(:text)
       end
     end
 
-    {
+    puts "data------------------------"
+    puts data
+    puts "----------------------------"
+
+    return {
       name: template_info[:name],
       language: {
         policy: 'deterministic',
