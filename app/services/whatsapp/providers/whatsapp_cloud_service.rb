@@ -118,6 +118,10 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
     if response.success?
       response['messages'].first['id']
     else
+      puts "---------------------------------------------------"
+      puts "logger---------------------------------------------"
+      puts response.body
+      puts "---------------------------------------------------"
       Rails.logger.error response.body
       nil
     end

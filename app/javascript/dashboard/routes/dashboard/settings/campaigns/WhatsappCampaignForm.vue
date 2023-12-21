@@ -128,7 +128,7 @@
         </div>
       </div>
 
-      <div :style="{ border: 'solid 1px', marginTop: '10px' }" ></div>
+      <div :style="{ border: 'solid 0.5px', marginTop: '10px' }" ></div>
 
       <div class="modal-footer">
         <button class="button clear" @click.prevent="onCancel">

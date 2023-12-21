@@ -34,10 +34,8 @@ class WhatsappCampaign < ApplicationRecord
   end
 
   def send_message_to_contacts
-    puts "inside send message ---------------------------"
-    puts "--------------------------------------------------"
-    puts "----------------------------------------------------"
-
-    CampaignConversationWorker.perform_async(self.id)
+    ActiveRecord::Base.transaction do
+      CampaignConversationWorker.perform_async(self.id)
+    end
   end
 end

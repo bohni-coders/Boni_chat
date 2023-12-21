@@ -30,7 +30,7 @@ class CampaignConversationWorker
 
 
       Messages::MessageBuilder.new(user, conversation, message).perform
-      sleep(2)
+      sleep(20)
     end
   end
 
