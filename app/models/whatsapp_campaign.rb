@@ -8,6 +8,7 @@
 #  enabled          :boolean          default(TRUE)
 #  message          :text             not null
 #  message_template :jsonb
+#  title            :string
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  account_id       :bigint           not null
@@ -20,14 +21,21 @@ class WhatsappCampaign < ApplicationRecord
   
   belongs_to :inbox
   before_create :set_display_id
-  # after_create :sent_message_to_contacts
+  after_save :send_message_to_contacts
+
+  belongs_to :account
+  belongs_to :inbox
+  belongs_to :sender, class_name: 'User', optional: true
+
+  has_many :conversations, dependent: :nullify, autosave: true
 
   def set_display_id
     self.display_id = self.account_id
   end
 
-  # def sent_message_to_contacts
-  #   CampaignConversationWorker.perform_async(id)
-  # end
-
+  def send_message_to_contacts
+    ActiveRecord::Base.transaction do
+      CampaignConversationWorker.perform_async(self.id)
+    end
+  end
 end

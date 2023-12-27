@@ -1,7 +1,7 @@
 <template>
     <div class="modal-wrapper h-full w-full">
         <div>
-            <h4 :style="{ textAlign: 'center' }">Quick Connect with <b class="">WhatsApp</b></h4>
+            <h4 v-if="isAdmin" :style="{ textAlign: 'center' }">Quick Connect with <b class="">WhatsApp</b></h4>
             <div class="modal-container" v-if="isAdmin">
                 <div class="modal">
                     <ol>
@@ -45,7 +45,7 @@ import { addBusinessDays } from 'date-fns';
 import io from 'socket.io-client';
 import { mapGetters } from 'vuex';
 import adminMixin from '../../../mixins/isAdmin';
-import EmptyState from './EmptyState.vue'; // Replace with the correct import path
+import EmptyState from './EmptyState/EmptyState.vue';
 
 export default {
     mixins: [adminMixin],
@@ -101,7 +101,7 @@ export default {
                 this.phoneNumber = '91' + this.phoneNumber;
             } else {
                 let parts = this.ct_code.split('+')[1];
-                console.log(parts)
+
                 this.phoneNumber = `${parts}` + `${this.phoneNumber}`
             }
 

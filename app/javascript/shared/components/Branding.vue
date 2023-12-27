@@ -7,9 +7,8 @@
       :href="brandRedirectURL"
       rel="noreferrer noopener nofollow"
       target="_blank"
-      class="branding--link justify-center"
+      class="branding--link justify-center items-center leading-3"
     >
-      <!-- globalConfig.logoThumbnail  -->
       <img
         class="branding--image"
         :alt="globalConfig.brandName"
@@ -51,11 +50,9 @@ export default {
   },
   computed: {
     brandRedirectURL() {
-      // Here change brand url --------------------
       try {
         const referrerHost = this.$store.getters['appConfig/getReferrerHost'];
-        // this.globalConfig.widgetBrandURL
-        const baseURL = `${'https://boni.one'}?utm_source=${
+        const baseURL = `${this.globalConfig.widgetBrandURL}?utm_source=${
           referrerHost ? 'widget_branding' : 'survey_branding'
         }`;
         if (referrerHost) {
@@ -76,24 +73,18 @@ export default {
 
 .branding--image {
   margin-right: $space-smaller;
-  max-width: 36px; // $space-slab
-  max-height: 36px;
+  max-width: $space-slab;
+  max-height: $space-slab;
 }
 
 .branding--link {
   color: $color-light-gray;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   filter: grayscale(1);
   font-size: $font-size-small;
   opacity: 0.9;
   text-decoration: none;
-  align-items: center;
-  max-width: 400px;
-
-  span {
-    white-space: nowrap;
-  }
 
   &:hover {
     filter: grayscale(0);

@@ -26,7 +26,7 @@ const campaigns = accountId => ({
       label: 'WHATSAPP',
       hasSubMenu: false,
       toState: frontendURL(`accounts/${accountId}/campaigns/whatsapp`),
-      toStateName: 'whatsapp_campaigns', // cross check -----------------------------------
+      toStateName: 'whatsapp_campaigns',
     },
   ],
 });

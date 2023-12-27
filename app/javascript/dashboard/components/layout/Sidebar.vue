@@ -1,8 +1,7 @@
 <template>
-  <aside class="woot-sidebar">
-    <!-- isCustomBrandedInstance = true; -->
+  <aside class="h-full flex">
     <primary-sidebar
-      :logo-source="globalConfig.logoThumbnail"
+      :logo-source="prefersDarkMode ? '/brand-assets/logo_dark.svg' : globalConfig.logoThumbnail"
       :installation-name="globalConfig.installationName"
       :is-a-custom-branded-instance="isACustomBrandedInstance"
       :account-id="accountId"
@@ -12,22 +11,20 @@
       @key-shortcut-modal="toggleKeyShortcutModal"
       @open-notification-panel="openNotificationPanel"
     />
-    <div class="secondary-sidebar">
-      <secondary-sidebar
-        v-if="showSecondarySidebar"
-        :class="sidebarClassName"
-        :account-id="accountId"
-        :inboxes="inboxes"
-        :labels="labels"
-        :teams="teams"
-        :custom-views="customViews"
-        :menu-config="activeSecondaryMenu"
-        :current-role="currentRole"
-        :is-on-chatwoot-cloud="isOnChatwootCloud"
-        @add-label="showAddLabelPopup"
-        @toggle-accounts="toggleAccountModal"
-      />
-    </div>
+    <secondary-sidebar
+      v-if="showSecondarySidebar"
+      :class="sidebarClassName"
+      :account-id="accountId"
+      :inboxes="inboxes"
+      :labels="labels"
+      :teams="teams"
+      :custom-views="customViews"
+      :menu-config="activeSecondaryMenu"
+      :current-role="currentRole"
+      :is-on-chatwoot-cloud="isOnChatwootCloud"
+      @add-label="showAddLabelPopup"
+      @toggle-accounts="toggleAccountModal"
+    />
   </aside>
 </template>
 
@@ -36,9 +33,10 @@ import { mapGetters } from 'vuex';
 import adminMixin from '../../mixins/isAdmin';
 import { getSidebarItems } from './config/default-sidebar';
 import alertMixin from 'shared/mixins/alertMixin';
+import darkModeMixin from '../../../widget/mixins/darkModeMixin.js';
 
-import PrimarySidebar from './sidebarComponents/Primary';
-import SecondarySidebar from './sidebarComponents/Secondary';
+import PrimarySidebar from './sidebarComponents/Primary.vue';
+import SecondarySidebar from './sidebarComponents/Secondary.vue';
 import {
   hasPressedAltAndCKey,
   hasPressedAltAndRKey,
@@ -55,7 +53,7 @@ export default {
     PrimarySidebar,
     SecondarySidebar,
   },
-  mixins: [adminMixin, alertMixin, eventListenerMixins],
+  mixins: [adminMixin, alertMixin, eventListenerMixins, darkModeMixin],
   props: {
     showSecondarySidebar: {
       type: Boolean,
@@ -77,13 +75,14 @@ export default {
       accountId: 'getCurrentAccountId',
       currentRole: 'getCurrentRole',
       currentUser: 'getCurrentUser',
-      globalConfig: 'globalConfig/get', // globalConfig.js
+      globalConfig: 'globalConfig/get',
       inboxes: 'inboxes/getInboxes',
       isACustomBrandedInstance: 'globalConfig/isACustomBrandedInstance',
       isFeatureEnabledonAccount: 'accounts/isFeatureEnabledonAccount',
       isOnChatwootCloud: 'globalConfig/isOnChatwootCloud',
       labels: 'labels/getLabelsOnSidebar',
       teams: 'teams/getMyTeams',
+      darkMode: 'appConfig/darkMode',
     }),
     activeCustomView() {
       if (this.activePrimaryMenu.key === 'contacts') {
@@ -116,7 +115,12 @@ export default {
         if (!isAvailableForTheUser) {
           return false;
         }
-
+        if (
+          menuItem.alwaysVisibleOnChatwootInstances &&
+          !this.isACustomBrandedInstance
+        ) {
+          return true;
+        }
         if (menuItem.featureFlag) {
           return this.isFeatureEnabledonAccount(
             this.accountId,
@@ -215,87 +219,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.woot-sidebar {
-  background: var(--white);
-  display: flex;
-  min-height: 0;
-  height: 100%;
-  width: fit-content;
-}
-</style>
-
-<style lang="scss">
-@import '~dashboard/assets/scss/variables';
-
-.account-selector--modal {
-  .modal-container {
-    width: 40rem;
-  }
-}
-
-.secondary-sidebar {
-  overflow-y: auto;
-  height: 100%;
-}
-
-.account-selector {
-  cursor: pointer;
-  padding: $space-small $space-large;
-
-  .selected--account {
-    margin-top: -$space-smaller;
-
-    & + .account--details {
-      padding-left: $space-normal - $space-micro;
-    }
-  }
-
-  .account--details {
-    padding-left: $space-large + $space-smaller;
-  }
-
-  &:last-child {
-    margin-bottom: $space-large;
-  }
-
-  a {
-    align-items: center;
-    cursor: pointer;
-    display: flex;
-
-    .account--name {
-      cursor: pointer;
-      font-size: $font-size-medium;
-      font-weight: $font-weight-medium;
-      line-height: 1;
-    }
-
-    .account--role {
-      cursor: pointer;
-      font-size: $font-size-mini;
-      text-transform: capitalize;
-    }
-  }
-}
-
-.app-context-menu {
-  align-items: center;
-  cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  height: 6rem;
-}
-
-.current-user--options {
-  font-size: $font-size-big;
-  margin-bottom: auto;
-  margin-left: auto;
-  margin-top: auto;
-}
-
-.secondary-menu .nested.vertical.menu {
-  margin-left: var(--space-small);
-}
-</style>

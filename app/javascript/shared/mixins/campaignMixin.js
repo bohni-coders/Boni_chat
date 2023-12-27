@@ -1,19 +1,40 @@
 import { CAMPAIGN_TYPES } from '../constants/campaign';
 
 export default {
-  computed: {
-    campaignType() {
+  data() {
+    return {
+      campaignType: this.getCampaignType(),
+      isOngoingType: this.getIsOngoingType(),
+      isOnOffType: this.getIsOnOffType(),
+      isWhatsapp: this.getIsWhatsapp(),
+    };
+  },
+  watch: {
+    // eslint-disable-next-line
+    '$route'() {
+      this.campaignType = this.getCampaignType();
+      this.isOngoingType = this.getIsOngoingType();
+      this.isOnOffType = this.getIsOnOffType();
+      this.isWhatsapp = this.getIsWhatsapp();
+    },
+  },
+  methods: {
+    getCampaignType() {
       const pageURL = window.location.href;
       return pageURL.substring(pageURL.lastIndexOf('/') + 1);
     },
-    isOngoingType() {
-      return this.campaignType === CAMPAIGN_TYPES.ONGOING;
+    getIsOngoingType() {
+      return this.getCampaignType() === CAMPAIGN_TYPES.ONGOING;
     },
-    isOnOffType() {
-      return this.campaignType === CAMPAIGN_TYPES.ONE_OFF;
+    getIsOnOffType() {
+      return this.getCampaignType() === CAMPAIGN_TYPES.ONE_OFF;
     },
-    isWhatsapp() {
-      return this.campaignType === CAMPAIGN_TYPES.WHATSAPP; // whatsapp
+    getIsWhatsapp() {
+      const campaignType = this.getCampaignType();
+      return (
+        campaignType === CAMPAIGN_TYPES.WHATSAPP ||
+        campaignType.includes(CAMPAIGN_TYPES.WHATSAPP)
+      );
     },
   },
 };

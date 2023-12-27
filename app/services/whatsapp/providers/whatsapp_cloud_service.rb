@@ -10,6 +10,11 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
   end
 
   def send_template(phone_number, template_info)
+    puts "--------------------------------------------"
+    puts "template_info ------------------------------"
+    puts template_info
+    puts "--------------------------------------------"
+
     response = HTTParty.post(
       "#{phone_id_path}/messages",
       headers: api_headers,
@@ -78,6 +83,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
       headers: api_headers,
       body: {
         messaging_product: 'whatsapp',
+        context: whatsapp_reply_context(message),
         to: phone_number,
         text: { body: message.content },
         type: 'text'
@@ -100,6 +106,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
       headers: api_headers,
       body: {
         :messaging_product => 'whatsapp',
+        :context => whatsapp_reply_context(message),
         'to' => phone_number,
         'type' => type,
         type.to_s => type_content
@@ -113,22 +120,60 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
     if response.success?
       response['messages'].first['id']
     else
+      puts "---------------------------------------------------"
+      puts "logger---------------------------------------------"
+      puts response.body
+      puts "---------------------------------------------------"
       Rails.logger.error response.body
       nil
     end
   end
 
   def template_body_parameters(template_info)
-    {
+    data = template_info[:parameters]
+
+    data.each do |item|
+      if item[:text] =~ /^https:\/\//i
+        item[:type] = "image"
+        
+        item[:image] = {
+          link: item[:text]
+        }
+        
+        item.delete(:text)
+      end
+    end
+    
+
+    puts "data------------------------"
+    puts data
+    puts "----------------------------"
+
+    return {
       name: template_info[:name],
       language: {
         policy: 'deterministic',
         code: template_info[:lang_code]
       },
-      components: [{
-        type: 'body',
-        parameters: template_info[:parameters]
-      }]
+      components: [
+        {
+          type: 'header',
+          parameters: data.select { |item| item[:type] == 'image'}
+        },
+        {
+          type: 'body',
+          parameters: data.select { |item| item[:type] == 'text' }
+        }
+      ]
+    }
+  end
+
+  def whatsapp_reply_context(message)
+    reply_to = message.content_attributes[:in_reply_to_external_id]
+    return nil if reply_to.blank?
+
+    {
+      message_id: reply_to
     }
   end
 

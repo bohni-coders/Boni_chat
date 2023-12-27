@@ -80,14 +80,10 @@ export default {
     },
     quantileRange() {
       const flattendedData = this.heatData.map(data => data.value);
-      return getQuantileIntervals(flattendedData, [
-        0.2,
-        0.4,
-        0.6,
-        0.8,
-        0.9,
-        0.99,
-      ]);
+      return getQuantileIntervals(
+        flattendedData,
+        [0.2, 0.4, 0.6, 0.8, 0.9, 0.99]
+      );
     },
   },
   methods: {
@@ -152,15 +148,15 @@ $heatmap-colors: (
 );
 
 $heatmap-hover-border-color: (
-  level-1: var(--w-25),
-  level-2: var(--w-50),
-  level-3: var(--w-100),
-  level-4: var(--w-300),
-  level-5: var(--w-500),
-  level-6: var(--w-700),
+  level-1: var(--w-50),
+  level-2: var(--w-100),
+  level-3: var(--w-300),
+  level-4: var(--w-500),
+  level-5: var(--w-700),
+  level-6: var(--w-900),
 );
 
-$tile-height: 3rem;
+$tile-height: 1.875rem;
 $tile-gap: var(--space-smaller);
 $container-gap-row: var(--space-one);
 $container-gap-column: var(--space-two);
@@ -223,10 +219,12 @@ $marker-height: var(--space-two);
     flex-direction: column;
     align-items: end;
     justify-content: center;
+    @apply text-slate-800 dark:text-slate-200;
 
     time {
       font-size: var(--font-size-micro);
       font-weight: var(--font-weight-normal);
+      @apply text-slate-700 dark:text-slate-200;
     }
   }
 }
@@ -253,7 +251,9 @@ $marker-height: var(--space-two);
       box-shadow: var(--shadow-large);
 
       transform: translateY(-2px);
-      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+      transition:
+        transform 0.2s ease-in-out,
+        box-shadow 0.2s ease-in-out;
     }
 
     &:not(.l1):not(.l2):not(.l3):not(.l4):not(.l5):not(.l6) {
@@ -297,6 +297,7 @@ $marker-height: var(--space-two);
   font-weight: var(--font-weight-bold);
   height: $marker-height;
   color: var(--color-body);
+  @apply text-slate-800 dark:text-slate-200;
 
   div {
     display: flex;

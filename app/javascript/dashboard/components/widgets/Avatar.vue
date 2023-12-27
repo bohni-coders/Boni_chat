@@ -1,6 +1,6 @@
 <template>
   <div class="avatar-container" :style="style" aria-hidden="true">
-    {{ userInitial }}
+    <slot>{{ userInitial }}</slot>
   </div>
 </template>
 
@@ -21,7 +21,6 @@ export default {
     style() {
       return {
         fontSize: `${Math.floor(this.size / 2.5)}px`,
-        color: '#1DC775',
       };
     },
     userInitial() {
@@ -39,16 +38,18 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
+@tailwind components;
+@layer components {
+  .avatar-color {
+    background-image: linear-gradient(to top, #E6F8E6 0%, #E6F8E6 100%);
+  }
+
+  .dark-avatar-color {
+    background-image: linear-gradient(to top, #1DC775 0%, #1DC775 100%);
+  }
+}
 .avatar-container {
-  display: flex;
-  line-height: 100%;
-  font-weight: 500;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  background-image: linear-gradient(to top, var(--w-100) 0%, var(--w-75) 100%);
-  color: var(--w-600);
-  cursor: default;
+  @apply flex leading-[100%] font-medium items-center justify-center text-center cursor-default avatar-color dark:dark-avatar-color text-woot-600 dark:text-woot-800;
 }
 </style>

@@ -1,3 +1,0 @@
-# add 'agent-ruby' label to all new issues
-agent-ruby:
-  - '.*'
