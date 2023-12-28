@@ -3,18 +3,18 @@
   --white-transparent: rgba(255, 255, 255, 0.9);
   --black-transparent: rgba(0, 0, 0, 0.9);
 
-  --b-25: #F5FAFF;
-  --b-50: #e2d7ff;
-  --b-75: #D6EBFF;
-  --b-100: #C2E1FF;
-  --b-200: #99CEFF;
-  --b-300: #70BAFF;
-  --b-400: #47A6FF;
-  --b-500: #1DC775;
-  --b-600: #e2d7ff;
-  --b-700: #135899;
-  --b-800: #0C3B66;
-  --b-900: #061D33;
+  // --w-25: #F5FAFF;
+  // --w-50: #EBF5FF;
+  // --w-75: #D6EBFF;
+  // --w-100: #C2E1FF;
+  // --w-200: #99CEFF;
+  // --w-300: #70BAFF;
+  // --w-400: #47A6FF;
+  // --w-500: #1F93FF;
+  // --w-600: #1976CC;
+  // --w-700: #135899;
+  // --w-800: #0C3B66;
+  // --w-900: #061D33;
 
   --w-50: #E6F8E6;
   --w-100: #C4EEC2;
@@ -27,6 +27,20 @@
   --w-800: #009000;
   --w-900: #007000;
 
+
+  --g-25: #E6F8E6; 
+  --g-50: #E6F8E6;
+  --g-75: #C4EEC2;
+  --g-100: #C4EEC2;
+  --g-200: #9DE29A;
+  --g-300: #6FD86F;
+  --g-400: #44CE4B;
+  --g-500: #00C41D;
+  --g-600: #00B412;
+  --g-700: #00A200;
+  --g-800: #009000;
+  --g-900: #007000;
+
   --y-50: #FEFDE8;
   --y-100: #FDFCC4;
   --y-200: #FCF68C;
@@ -38,18 +52,31 @@
   --y-800: #835510;
   --y-900: #6F4514;
 
-  --s-25: #F8FAFC;
-  --s-50: #F1F5F8;
-  --s-75: #EBF0F5;
-  --s-100: #E4EBF1;
-  --s-200: #C9D7E3;
-  --s-300: #AEC3D5;
-  --s-400: #93AFC8;
-  --s-500: #779BBB;
-  --s-600: #446888;
-  --s-700: #37546D;
-  --s-800: #293F51;
-  --s-900: #1B2836;
+  // --s-25: #F8FAFC;
+  // --s-50: #F1F5F8;
+  // --s-75: #EBF0F5;
+  // --s-100: #E4EBF1;
+  // --s-200: #C9D7E3;
+  // --s-300: #AEC3D5;
+  // --s-400: #93AFC8;
+  // --s-500: #779BBB;
+  // --s-600: #446888;
+  // --s-700: #37546D;
+  // --s-800: #293F51;
+  // --s-900: #1B2836;
+
+  --s-25: #E6F8E6; 
+  --s-50: #E6F8E6;
+  --s-75: #C4EEC2;
+  --s-100: #C4EEC2;
+  --s-200: #9DE29A;
+  --s-300: #6FD86F;
+  --s-400: #44CE4B;
+  --s-500: #00C41D;
+  --s-600: #00B412;
+  --s-700: #00A200;
+  --s-800: #009000;
+  --s-900: #007000;
 
   --b-50: #F7F7F7;
   --b-100: #ECECED;
@@ -85,17 +112,17 @@
   --v-900: #2B0052;
 
   // Common color aliases
-  --color-woot: var(--w-500);
+  --color-woot: var(--w-500); // color-woot
 
   --color-heading: #1f2d3d;
   --color-body: #3c4858;
 
   --color-border: var(--s-75);
   --color-border-light: var(--s-50);
-  --color-border-dark: var(--s-100);
+  --color-border-dark: var(--s-100); 
 
-  --color-background: var(--s-50);
-  --color-background-light: var(--s-25);
+  --color-background: var(--s-50); 
+  --color-background-light: var(--s-25); 
 
   // Social and inboxes brand colors
   --color-facebook-brand: #3b5998;

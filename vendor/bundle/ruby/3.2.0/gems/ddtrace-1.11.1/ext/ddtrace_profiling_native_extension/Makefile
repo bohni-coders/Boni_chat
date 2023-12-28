@@ -1,1 +1,0 @@
-all install clean: # dummy makefile that does nothing

@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <templates-picker
+    <wa-templates-picker
       v-if="!selectedWaTemplate"
       :inbox-id="inboxId"
       @onSelect="pickTemplate"
@@ -15,14 +15,12 @@
 </template>
 
 <script>
-import TemplatesPicker from 'dashboard/components/widgets/conversation/WhatsappTemplates/TemplatesPicker.vue';
-import TemplateParser from 'dashboard/components/widgets/conversation/WhatsappTemplates/TemplateParser.vue';
+import WaTemplatesPicker from './WaTemplatePicker.vue';
 import WaTemplateParser from './WaTemplateParser.vue';
 
 export default {
   components: {
-    TemplatesPicker,
-    TemplateParser,
+    WaTemplatesPicker,
     WaTemplateParser,
   },
   props: {
