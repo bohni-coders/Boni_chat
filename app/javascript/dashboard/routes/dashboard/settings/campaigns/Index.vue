@@ -1,5 +1,5 @@
 <template>
-  <div class="column content-box">
+  <div class="flex-1 overflow-auto p-4">
     <woot-button
       color-scheme="success"
       class-names="button--fixed-top"
@@ -8,13 +8,20 @@
     >
       {{ buttonText }}
     </woot-button>
-    <campaign v-if="!this.isWhatsapp"/>
-    <woot-modal v-if="!this.isWhatsapp" :show.sync="showAddPopup" :on-close="hideAddPopup">
+    <campaign v-if="!this.isWhatsapp" />
+    <woot-modal
+      v-if="!this.isWhatsapp"
+      :show.sync="showAddPopup"
+      :on-close="hideAddPopup"
+    >
       <add-campaign @on-close="hideAddPopup" />
     </woot-modal>
     <!-- WhatsappCampaign -->
     <whatsapp-campaign v-if="this.isWhatsapp && !this.showWhatsappForm" />
-    <whatsapp-campaign-form v-if="this.isWhatsapp && this.showWhatsappForm" :disable-form="hideAddPopup" />
+    <whatsapp-campaign-form
+      v-if="this.isWhatsapp && this.showWhatsappForm"
+      :disable-form="hideAddPopup"
+    />
   </div>
 </template>
 
@@ -34,20 +41,20 @@ export default {
   },
   mixins: [campaignMixin],
   data() {
-    return { 
+    return {
       showAddPopup: false,
-      showWhatsappForm: false, 
+      showWhatsappForm: false,
     };
   },
   computed: {
     buttonText() {
-      if (this.isWhatsapp) return this.$t('CAMPAIGN.HEADER_BTN_TXT.WHATSAPP');
-
-      if (this.isOngoingType) return this.$t('CAMPAIGN.HEADER_BTN_TXT.ONGOING');
-
-      if (this.isOnOffType) return this.$t('CAMPAIGN.HEADER_BTN_TXT.ONE_OFF');
-
-      return this.$t('CAMPAIGN.HEADER_BTN_TXT.WHATSAPP');
+      if (this.isOngoingType) {
+        return this.$t('CAMPAIGN.HEADER_BTN_TXT.ONGOING');
+      } else if (this.isOnOffType) {
+        return this.$t('CAMPAIGN.HEADER_BTN_TXT.ONE_OFF');
+      } else {
+        return this.$t('CAMPAIGN.HEADER_BTN_TXT.WHATSAPP');
+      }
     },
   },
   mounted() {

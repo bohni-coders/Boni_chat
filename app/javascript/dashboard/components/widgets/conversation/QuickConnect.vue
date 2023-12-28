@@ -45,7 +45,7 @@ import { addBusinessDays } from 'date-fns';
 import io from 'socket.io-client';
 import { mapGetters } from 'vuex';
 import adminMixin from '../../../mixins/isAdmin';
-import EmptyState from './EmptyState.vue'; // Replace with the correct import path
+import EmptyState from './EmptyState/EmptyState.vue';
 
 export default {
     mixins: [adminMixin],

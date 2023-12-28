@@ -1,4 +1,0 @@
-FRAMEWORK:
-  #- rails-main
-  - sinatra-main
-  - grape-master

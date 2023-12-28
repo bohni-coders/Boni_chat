@@ -15,7 +15,6 @@ export const state = {
 
 export const getters = {
   getUIFlags(_state) {
-    // -------------------------------------- here -------------------------------
     return _state.uiFlags;
   },
   getCampaigns: _state => campaignType => {
@@ -43,7 +42,6 @@ export const actions = {
       commit(types.SET_CAMPAIGN_UI_FLAG, { isFetching: false });
     }
   },
-  // ------------------------------ here -------------------------------------------------
   get: async function getWhatsappCampaigns({ commit }) {
     commit(types.SET_CAMPAIGN_UI_FLAG, { isFetching: true });
     try {

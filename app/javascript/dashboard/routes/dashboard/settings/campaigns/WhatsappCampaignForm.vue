@@ -1,16 +1,14 @@
 <template>
-  <!-- @submit.prevent="onFormSubmit" -->
-  <form class="conversation--form" @submit.prevent="onFormSubmit" >
+  <form class="conversation--form h-auto overflow-auto flex flex-col" @submit.prevent="onFormSubmit" >
     <div v-if="showNoInboxAlert" class="callout warning">
       <p>
         {{ $t('NEW_CONVERSATION.NO_INBOX') }}
       </p>
     </div>
 
-    <!-- v-else -->
     <div v-else >
       <div>
-        <div class="columns">
+        <div class="flex flex-col">
           <woot-input
             v-model="title"
             :label="$t('CAMPAIGN.ADD.FORM.TITLE.LABEL')"
@@ -22,12 +20,12 @@
           />
         </div>
 
-        <div class="row gutter-small">
-          <div class="columns">
+        <div class="flex justify-between">
+          <div class="flex flex-col w-[45%]">
             <label>
               {{ $t('NEW_CONVERSATION.FORM.INBOX.LABEL') }}
             </label>
-            <div class="multiselect-wrap--small">
+            <div class="h-[42px]">
               <multiselect
                 v-model="targetInbox"
                 v-bind:disabled="this.selectedContacts.length === 0"
@@ -62,25 +60,26 @@
               </multiselect>
             </div>
             <label :class="{ error: $v.targetInbox.$error }">
-              <span v-if="$v.targetInbox.$error" class="message">
+              <span v-if="$v.targetInbox.$error && !selectedContacts" class="message">
                 {{ $t('NEW_CONVERSATION.FORM.INBOX.ERROR') }}
               </span>
             </label>
           </div>
 
-          <div class="columns">
+          <div class="flex flex-col w-[45%]">
             <label>
               {{ $t('NEW_CONVERSATION.FORM.TO.LABEL') }}
             </label>
-            <!-- multiselect-wrap--small -->
-            <div v-if="contacts" class="multiselect-container" @click.prevent="modalVisible = true">
-              <button class="modal-button" >
-                {{ this.selectedContacts.length > 0 ? `${this.selectedContacts.length} Contacts Selected` : "Select Contacts" }}
-              </button>
-              <fluent-icon
-                  class="icon"
-                  icon="edit"
-              />
+            <div v-if="contacts" class="multiselect-container">
+              <div
+                class="flex justify-around w-full items-center"
+                @click.prevent="showContactsModal"
+              >
+                <button class="modal-button">
+                  {{ this.selectedContacts.length > 0 ? `${this.selectedContacts.length} Contacts Selected` : "Select Contacts" }}
+                </button>
+                <fluent-icon class="icon" icon="edit" />
+              </div>
 
               <woot-modal
                 class="contacts-modal"
@@ -102,9 +101,8 @@
           </div>
         </div>
 
-        <div class="row">
-          <div class="columns">
-            <!-- v-else-if -->
+        <div class="flex">
+          <div class="flex flex-col w-full">
             <whatsapp-campaign-template
               v-if="hasWhatsappTemplates"
               :inbox-id="targetInbox.id"
@@ -123,7 +121,7 @@
               <span v-if="$v.message.$error" class="message">
                 {{ $t('NEW_CONVERSATION.FORM.MESSAGE.ERROR') }}
               </span>
-            </label>
+            </label>         
           </div>
         </div>
       </div>
@@ -134,17 +132,16 @@
         <button class="button clear" @click.prevent="onCancel">
           {{ $t('NEW_CONVERSATION.FORM.CANCEL') }}
         </button>
-        <!-- @click.prevent="disableForm"    -->
         <woot-button
           type="submit"
-          :is-disabled="this.enabled"
+          :is-disabled="this.enabled && this.message.length === 0"
         >
           {{ 'Send Campaign' }}
         </woot-button>
       </div>
     </div>
   </form>
-</template>
+</template> 
 
 <script>
 import { mapGetters } from 'vuex';
@@ -158,13 +155,16 @@ import alertMixin from 'shared/mixins/alertMixin';
 import { INBOX_TYPES } from 'shared/mixins/inboxMixin';
 import { ExceptionWithMessage } from 'shared/helpers/CustomErrors';
 import { getInboxSource } from 'dashboard/helper/inbox';
-import { required, requiredIf } from 'vuelidate/lib/validators';
+
 import ContactAPI from 'dashboard/api/contacts';
 import WhatsappCampaignsAPI from 'dashboard/api/whatsappCampaigns';
 import ConversationApi from 'dashboard/api/conversations';
 import ContactDropdownItem from 'dashboard/modules/contact/components/ContactDropdownItem.vue';
 import WhatsappCampaignTemplate from './WhatsappCampaignTemplate.vue';
 import WhatsappCampaignContactsView from './WhatsappCampaignContactsView.vue';
+
+import { required, requiredIf } from 'vuelidate/lib/validators';
+
 
 export default {
   components: {
@@ -220,7 +220,7 @@ export default {
     },
     selectedContacts: {
       required,
-    },
+    },  
   },
   computed: {
     ...mapGetters({
@@ -288,6 +288,10 @@ export default {
         this.showAlert(e.data);
       });
 
+      // console.log(inboxList);
+
+      // console.log($v.targetInbox);
+
     // ----------------------------------------------------------------------------------------------------------------------
   },
   watch: {
@@ -305,6 +309,9 @@ export default {
     },
     hideContactsModal() {
       this.modalVisible = false;
+    },
+    showContactsModal() {
+      this.modalVisible = true;
     },
     replaceTextWithCannedResponse(message) {
       this.message = message;
@@ -346,13 +353,12 @@ export default {
       this.disableForm();
     },
 
-    // async
     async onSubmit() {
       this.message = this.payload.length > 0 ? this.payload[0].message.content : this.message;
 
       const campaignDetails = {
         title: this.title,
-        message: this.payload.length > 0 ? this.payload[0].message.content : this.message,
+        message: this.message,
         enabled: true,
         inbox_id: this.targetInbox.id,
         sender_id: this.currentUser.id,
@@ -362,7 +368,9 @@ export default {
 
       await WhatsappCampaignsAPI.create(campaignDetails);
 
-      // return data;
+      this.$track(CAMPAIGNS_EVENTS.CREATE_CAMPAIGN, {
+          type: 'whatsapp',
+      });
     },
     setContacts(contactsPayload) {
       this.selectedContacts = contactsPayload;
@@ -428,11 +436,16 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .modal-footer {
   margin-top: 25px;
   display: flex;
   justify-content: flex-end;
+}
+
+.message-input {
+  width: 100%;
+  height: 8rem;
 }
 
 .multiselect-container {
@@ -440,7 +453,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   min-width: 100%;
-  height: 3.9rem;
+  height: 43px;
   background-color: white;
 
   padding: var(--space-smaller) var(--space-small);
@@ -458,57 +471,5 @@ export default {
 .conversation--form {
   padding: var(--space-normal) var(--space-large) var(--space-large);
   width: 600px;
-}
-
-.canned-response {
-  position: relative;
-}
-
-.input-group-label {
-  font-size: var(--font-size-small);
-}
-
-.contact-input {
-  display: flex;
-  align-items: center;
-  height: 3.9rem;
-  background: var(--color-background-light);
-  border: 1px solid var(--color-border);
-  padding: var(--space-smaller) var(--space-small);
-  border-radius: var(--border-radius-small);
-
-  .contact-name {
-    margin: 0;
-    margin-left: var(--space-small);
-    margin-right: var(--space-small);
-  }
-}
-
-.message-input {
-  min-height: 8rem;
-}
-
-.row.gutter-small {
-  gap: var(--space-small);
-}
-
-::v-deep {
-  .mention--box {
-    left: 0;
-    margin: auto;
-    right: 0;
-    top: unset;
-    height: fit-content;
-  }
-
-  /* TODO: Remove when have standardized a component out of multiselect  */
-  .multiselect .multiselect__content .multiselect__option span {
-    display: inline-flex;
-    width: var(--space-medium);
-    color: var(--s-600);
-  }
-  .multiselect .multiselect__content .multiselect__option {
-    padding: var(--space-micro) var(--space-smaller);
-  }
 }
 </style>

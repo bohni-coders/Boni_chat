@@ -1,8 +1,0 @@
-base_locale: en
-
-data:
-  read:
-    - config/locales/administrate-field-active_storage.%{locale}.yml
-
-ignore:
-  - 'administrate.actions.*'

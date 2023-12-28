@@ -78,7 +78,7 @@
         @clearFilters="clearFilters"
       />
     </woot-modal>
-    <woot-button :style="{ width: '100%' }" @click.prevent="saveContacts">Save</woot-button>
+    <woot-button class="expanded" @click.prevent="saveContacts">Save</woot-button>
   </div>
 </template>
 
@@ -512,6 +512,7 @@ export default {
       let selectedRows = this.$refs.contactsTable.selectAllRows();
       // bus.$emit('newToastMessage', selectedRows);
       this.$emit('set-contacts', selectedRows);
+      this.selectedContactIds = selectedRows.map(row => row.id);
     },
   },
 };
@@ -525,6 +526,6 @@ export default {
 .left-wrap {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 700px;
 }
 </style>

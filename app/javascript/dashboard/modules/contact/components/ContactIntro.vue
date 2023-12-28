@@ -31,6 +31,7 @@
         {{ $t('CONTACT_PANEL.NEW_MESSAGE') }}
       </woot-button>
       <woot-button
+        class="edit-info"
         variant="hollow"
         size="small expanded"
         icon="edit"
@@ -42,8 +43,8 @@
   </div>
 </template>
 <script>
-import Thumbnail from 'dashboard/components/widgets/Thumbnail';
-import SocialIcons from 'dashboard/routes/dashboard/conversation/contact/SocialIcons';
+import Thumbnail from 'dashboard/components/widgets/Thumbnail.vue';
+import SocialIcons from 'dashboard/routes/dashboard/conversation/contact/SocialIcons.vue';
 
 export default {
   components: {
@@ -108,8 +109,9 @@ export default {
   margin: var(--space-smaller) 0 0;
 }
 
-.button.new-message {
-  margin-right: var(--space-small);
+.button.edit-info {
+  background-color: $white;
+  color: $color-woot;
 }
 
 .contact-actions {

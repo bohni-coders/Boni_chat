@@ -1,8 +1,9 @@
 <template>
-  <section class="campaigns-table-wrap">
+  <div class="flex items-center w-full">
     <empty-state v-if="showEmptyResult" :title="emptyMessage" />
     <ve-table
       v-else
+      class="h-[600px] w-[1550px] overflow-auto"
       :columns="columns"
       scroll-width="190rem"
       :table-data="tableData"
@@ -12,7 +13,7 @@
       <spinner />
       <span>{{ $t('CAMPAIGN.LIST.LOADING_MESSAGE') }}</span>
     </div>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -99,18 +100,19 @@ export default {
       if (this.isLoading) {
         return [];
       }
-      return this.campaigns.map(item => {
-        if (this.isWhatsapp) return item;
+      return this.isWhatsapp ? this.campaigns : [];
+      // return this.campaigns.map(item => {
+      //   if (this.isWhatsapp) return item;
 
-        return {
-          ...item,
-          url: item.trigger_rules.url,
-          timeOnPage: item.trigger_rules.time_on_page,
-          scheduledAt: item.scheduled_at
-            ? this.messageStamp(new Date(item.scheduled_at), 'LLL d, h:mm a')
-            : '---',
-        };
-      });
+      //   return {
+      //     ...item,
+      //     url: item.trigger_rules.url,
+      //     timeOnPage: item.trigger_rules.time_on_page,
+      //     scheduledAt: item.scheduled_at
+      //       ? this.messageStamp(new Date(item.scheduled_at), 'LLL d, h:mm a')
+      //       : '---',
+      //   };
+      // });
     },
     columns() {
       const visibleToAllTable = [
@@ -121,8 +123,8 @@ export default {
           fixed: 'left',
           align: this.isRTLView ? 'right' : 'left',
           renderBodyCell: ({ row }) => (
-            <div class="row--title-block">
-              <h6 class="sub-block-title title text-truncate">{row.title}</h6>
+            <div class="flex block title">
+              <span>{row.title}</span>
             </div>
           ),
         },
@@ -152,9 +154,22 @@ export default {
           title: this.$t('CAMPAIGN.LIST.TABLE_HEADER.INBOX'),
           align: this.isRTLView ? 'right' : 'left',
           renderBodyCell: ({ row }) => {
-            const inbox = this.inboxes.filter(inb => row.inbox_id == inb.id)[0];
+            const inbox = this.inboxes.filter(inb => {
+              return row.inbox_id === inb.id;
+            })[0];
 
-            return <InboxName inbox={{name: inbox.name, phone_number: inbox.phone_number, channel_type: inbox.channel_type}} />;
+            if (inbox) {
+              return (
+                <InboxName
+                  inbox={{
+                    name: inbox.name,
+                    phone_number: inbox.phone_number,
+                    channel_type: inbox.channel_type,
+                  }}
+                />
+              );
+            }
+            return <div></div>;
           },
         },
       ];

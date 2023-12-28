@@ -154,7 +154,7 @@ export default {
                   status={row.availability_status}
                 />
                 <div class="user-block">
-                  <h6 class="sub-block-title text-truncate">
+                  <span class="sub-block-title text-truncate">
                     {row.name}
                     {/* <router-link
                       to={`/app/accounts/${this.$route.params.accountId}/contacts/${row.id}`}
@@ -162,7 +162,7 @@ export default {
                     >
                       {row.name}
                     </router-link> */}
-                  </h6>
+                  </span>
                   {/* <button class="button clear small link view-details--button">
                     {this.$t('CONTACTS_PAGE.LIST.VIEW_DETAILS')}
                   </button> */}
