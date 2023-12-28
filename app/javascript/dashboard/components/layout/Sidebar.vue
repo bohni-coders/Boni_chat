@@ -1,7 +1,7 @@
 <template>
   <aside class="h-full flex">
     <primary-sidebar
-      :logo-source="globalConfig.logoThumbnail"
+      :logo-source="isDark ? '/brand-assets/logo_dark.svg' : globalConfig.logoThumbnail"
       :installation-name="globalConfig.installationName"
       :is-a-custom-branded-instance="isACustomBrandedInstance"
       :account-id="accountId"
@@ -33,6 +33,9 @@ import { mapGetters } from 'vuex';
 import adminMixin from '../../mixins/isAdmin';
 import { getSidebarItems } from './config/default-sidebar';
 import alertMixin from 'shared/mixins/alertMixin';
+
+import { LocalStorage } from 'shared/helpers/localStorage';
+import { LOCAL_STORAGE_KEYS } from 'dashboard/constants/localStorage';
 
 import PrimarySidebar from './sidebarComponents/Primary.vue';
 import SecondarySidebar from './sidebarComponents/Secondary.vue';
@@ -145,12 +148,20 @@ export default {
         ) || {};
       return activePrimaryMenu;
     },
+    isDark() {
+      return this.storage === 'dark';
+    },
+    storage() {
+      return LocalStorage.get(LOCAL_STORAGE_KEYS.COLOR_SCHEME);
+    },
   },
-
   watch: {
     activeCustomView() {
       this.fetchCustomViews();
     },
+    storage() {
+      console.log(LocalStorage.get(LOCAL_STORAGE_KEYS.COLOR_SCHEME));
+    }
   },
   mounted() {
     this.$store.dispatch('labels/get');
