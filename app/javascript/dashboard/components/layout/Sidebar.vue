@@ -1,7 +1,7 @@
 <template>
   <aside class="h-full flex">
     <primary-sidebar
-      :logo-source="prefersDarkMode ? '/brand-assets/logo_dark.svg' : globalConfig.logoThumbnail"
+      :logo-source="isDark ? '/brand-assets/logo_dark.svg' : globalConfig.logoThumbnail"
       :installation-name="globalConfig.installationName"
       :is-a-custom-branded-instance="isACustomBrandedInstance"
       :account-id="accountId"
@@ -33,7 +33,9 @@ import { mapGetters } from 'vuex';
 import adminMixin from '../../mixins/isAdmin';
 import { getSidebarItems } from './config/default-sidebar';
 import alertMixin from 'shared/mixins/alertMixin';
-import darkModeMixin from '../../../widget/mixins/darkModeMixin.js';
+
+import { LocalStorage } from 'shared/helpers/localStorage';
+import { LOCAL_STORAGE_KEYS } from 'dashboard/constants/localStorage';
 
 import PrimarySidebar from './sidebarComponents/Primary.vue';
 import SecondarySidebar from './sidebarComponents/Secondary.vue';
@@ -53,7 +55,7 @@ export default {
     PrimarySidebar,
     SecondarySidebar,
   },
-  mixins: [adminMixin, alertMixin, eventListenerMixins, darkModeMixin],
+  mixins: [adminMixin, alertMixin, eventListenerMixins],
   props: {
     showSecondarySidebar: {
       type: Boolean,
@@ -67,6 +69,7 @@ export default {
   data() {
     return {
       showOptionsMenu: false,
+      isDark: LocalStorage.get(LOCAL_STORAGE_KEYS.COLOR_SCHEME) === 'dark',
     };
   },
 
@@ -82,7 +85,6 @@ export default {
       isOnChatwootCloud: 'globalConfig/isOnChatwootCloud',
       labels: 'labels/getLabelsOnSidebar',
       teams: 'teams/getMyTeams',
-      darkMode: 'appConfig/darkMode',
     }),
     activeCustomView() {
       if (this.activePrimaryMenu.key === 'contacts') {
@@ -147,11 +149,16 @@ export default {
         ) || {};
       return activePrimaryMenu;
     },
+    storage() {
+      return LocalStorage.get(LOCAL_STORAGE_KEYS.COLOR_SCHEME)
+    },
   },
-
   watch: {
     activeCustomView() {
       this.fetchCustomViews();
+    },
+    storage(newVal, oldVal) {
+      if (newVal != oldVal) this.isDark = newVal === 'dark';
     },
   },
   mounted() {

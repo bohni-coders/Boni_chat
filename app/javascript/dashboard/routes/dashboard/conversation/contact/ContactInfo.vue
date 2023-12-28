@@ -113,12 +113,12 @@
           @click="toggleEditModal"
         />
         <woot-button
+          class="merge-info"
           v-tooltip="$t('CONTACT_PANEL.MERGE_CONTACT')"
           title="$t('CONTACT_PANEL.MERGE_CONTACT')"
           icon="merge"
           variant="smooth"
           size="small"
-          color-scheme="secondary"
           :disabled="uiFlags.isMerging"
           @click="openMergeModal"
         />
@@ -329,6 +329,11 @@ export default {
 .button.edit-info {
   color: var(--w-700);
   background-color: var(--g-25);
+}
+
+.button.merge-info {
+  color: var(--s-700);
+  background-color: var(--s-50);
 }
 
 </style>

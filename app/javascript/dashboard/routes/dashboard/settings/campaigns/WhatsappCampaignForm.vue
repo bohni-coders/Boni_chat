@@ -20,14 +20,15 @@
           />
         </div>
 
-        <div class="flex justify-between">
+        <div class="flex justify-between mb-4">
           <div class="flex flex-col w-[45%]">
             <label>
               {{ $t('NEW_CONVERSATION.FORM.INBOX.LABEL') }}
             </label>
-            <div class="h-[42px]">
+            <div class="multiselect-wrap--small">
               <multiselect
                 v-model="targetInbox"
+                class=""
                 v-bind:disabled="this.selectedContacts.length === 0"
                 track-by="id"
                 label="name"
@@ -112,6 +113,7 @@
             <label v-else :class="{ error: $v.message.$error }">
               {{ $t('NEW_CONVERSATION.FORM.MESSAGE.LABEL') }}
               <textarea
+                v-bind:disabled="!targetInbox"
                 v-model="message"
                 class="message-input"
                 type="text"
@@ -121,7 +123,7 @@
               <span v-if="$v.message.$error" class="message">
                 {{ $t('NEW_CONVERSATION.FORM.MESSAGE.ERROR') }}
               </span>
-            </label>
+            </label>         
           </div>
         </div>
       </div>
@@ -129,7 +131,7 @@
       <div :style="{ border: 'solid 0.5px', marginTop: '10px' }" ></div>
 
       <div class="modal-footer">
-        <button class="button clear" @click.prevent="onCancel">
+        <button class="button clear mr-5" @click.prevent="onCancel">
           {{ $t('NEW_CONVERSATION.FORM.CANCEL') }}
         </button>
         <woot-button
@@ -141,7 +143,7 @@
       </div>
     </div>
   </form>
-</template>
+</template> 
 
 <script>
 import { mapGetters } from 'vuex';
@@ -220,7 +222,7 @@ export default {
     },
     selectedContacts: {
       required,
-    },
+    },  
   },
   computed: {
     ...mapGetters({
@@ -296,7 +298,7 @@ export default {
   },
   watch: {
     message(value) {
-
+      
     },
   },
   methods: {
@@ -322,7 +324,7 @@ export default {
     prepareWhatsAppMessagePayload({ message: content, templateParams }) {
 
       let processed_params = {};
-
+      
       [...Object.values(templateParams.processed_params), ...this.headerParams].forEach((value, index) => {
         processed_params[index] = value;
       });
@@ -409,12 +411,12 @@ export default {
 
 
         this.enabled = false;
-
+  
         let payload_this = this.prepareWhatsAppMessagePayload(messagePayload);
-
-
+  
+  
         console.log("payload", payload_this);
-
+  
         this.payload = payload_this;
       }
 

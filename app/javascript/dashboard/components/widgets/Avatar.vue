@@ -42,7 +42,7 @@ export default {
 @tailwind components;
 @layer components {
   .avatar-color {
-    background-image: linear-gradient(to top, #E6F8E6 0%, #E6F8E6 100%);
+    background-image: linear-gradient(to top, #D6FEEB 0%, #D6FEEB 100%);
   }
 
   .dark-avatar-color {
@@ -50,6 +50,8 @@ export default {
   }
 }
 .avatar-container {
-  @apply flex leading-[100%] font-medium items-center justify-center text-center cursor-default avatar-color dark:dark-avatar-color text-woot-600 dark:text-woot-800;
+  @apply flex leading-[100%] font-medium items-center justify-center text-center cursor-default avatar-color dark:dark-avatar-color dark:text-woot-800;
+
+  color: #1DC775;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row w-full">
     <wa-templates-picker
       v-if="!selectedWaTemplate"
       :inbox-id="inboxId"

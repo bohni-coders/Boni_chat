@@ -1,8 +1,7 @@
 <template>
   <div class="message-text__wrap" :class="attachmentTypeClasses">
-    <!--  && !isImageError -->
     <img
-      v-if="isImage"
+      v-if="isImage && !isImageError"
       :src="attachment.data_url"
       @click="onClick"
       @error="onImgError"

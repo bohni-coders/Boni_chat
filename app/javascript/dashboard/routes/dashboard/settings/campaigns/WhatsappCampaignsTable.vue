@@ -154,22 +154,9 @@ export default {
           title: this.$t('CAMPAIGN.LIST.TABLE_HEADER.INBOX'),
           align: this.isRTLView ? 'right' : 'left',
           renderBodyCell: ({ row }) => {
-            const inbox = this.inboxes.filter(inb => {
-              return row.inbox_id === inb.id;
-            })[0];
+            const inbox = this.inboxes.filter(inb => row.inbox_id == inb.id)[0];
 
-            if (inbox) {
-              return (
-                <InboxName
-                  inbox={{
-                    name: inbox.name,
-                    phone_number: inbox.phone_number,
-                    channel_type: inbox.channel_type,
-                  }}
-                />
-              );
-            }
-            return <div></div>;
+            return <InboxName inbox={{name: inbox.name, phone_number: inbox.phone_number, channel_type: inbox.channel_type}} />;
           },
         },
       ];
@@ -294,6 +281,30 @@ export default {
             </div>
           ),
         },
+      ];
+      return [
+        ...visibleToAllTable,
+        // {
+        //   field: 'campaign_status',
+        //   key: 'campaign_status',
+        //   title: this.$t('CAMPAIGN.LIST.TABLE_HEADER.STATUS'),
+        //   align: this.isRTLView ? 'right' : 'left',
+        //   renderBodyCell: ({ row }) => {
+        //     const labelText =
+        //       row.campaign_status === 'completed'
+        //         ? this.$t('CAMPAIGN.LIST.STATUS.COMPLETED')
+        //         : this.$t('CAMPAIGN.LIST.STATUS.ACTIVE');
+        //     const colorScheme =
+        //       row.campaign_status === 'completed' ? 'secondary' : 'success';
+        //     return <Label title={labelText} colorScheme={colorScheme} />;
+        //   },
+        // },
+        // {
+        //   field: 'scheduledAt',
+        //   key: 'scheduledAt',
+        //   title: this.$t('CAMPAIGN.LIST.TABLE_HEADER.SCHEDULED_AT'),
+        //   align: this.isRTLView ? 'right' : 'left',
+        // },
       ];
     },
   },

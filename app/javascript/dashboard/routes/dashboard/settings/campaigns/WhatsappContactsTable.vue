@@ -120,12 +120,12 @@ export default {
           align: 'center',
           width: 50,
           renderBodyCell: ({ row }) => (
-            <input
-              type="checkbox"
-              value={row.id}
+            <input 
+              type="checkbox" 
+              value={row.id} 
               checked={this.selectedRows.includes(row.id)}
               onClick={(e) => {
-                if (e.target.checked && !this.selectedRows.includes(row.id)) this.selectedRows.push(row.id);
+                if (e.target.checked && !this.selectedRows.includes(row.id)) this.selectedRows.push(row.id); 
                 else this.selectedRows = this.selectedRows.filter(item => item != row.id);
 
                 this.emitSelectedRows(this.selectedRows);
@@ -154,7 +154,7 @@ export default {
                   status={row.availability_status}
                 />
                 <div class="user-block">
-                  <span class="sub-block-title text-truncate">
+                  <span class="sub-block-title w-[200px] hover:w-full overflow-hidden whitespace-nowrap text-ellipsis">
                     {row.name}
                     {/* <router-link
                       to={`/app/accounts/${this.$route.params.accountId}/contacts/${row.id}`}

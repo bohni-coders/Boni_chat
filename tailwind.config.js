@@ -51,6 +51,7 @@ module.exports = {
         900: blueDark.blue2,
       },
       woot: {
+        10: '#D6FEEB',
         25: greenDark.green12,
         50: greenDark.green11,
         75: green.green5,

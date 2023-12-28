@@ -114,7 +114,7 @@
     }
 
     &:hover {
-      @apply hover:bg-woot-50 dark:hover:bg-woot-900/50 hover:text-woot-500 dark:hover:text-woot-100;
+      @apply hover:bg-woot-75 dark:hover:bg-woot-900/50 hover:text-woot-500 dark:hover:text-woot-100;
 
       &.secondary {
         @apply hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-800 dark:hover:text-slate-100;

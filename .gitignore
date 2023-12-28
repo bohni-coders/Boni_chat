@@ -32,9 +32,6 @@ master.key
 
 
 vendor/bundle
-
-
-
 public/uploads
 public/packs*
 

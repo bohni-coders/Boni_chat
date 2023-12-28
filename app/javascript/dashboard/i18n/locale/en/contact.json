@@ -81,13 +81,6 @@
     "SUCCESS_MESSAGE": "Export is in progress. You will be notified on email when the export file is ready to download.",
     "ERROR_MESSAGE": "There was an error, please try again"
   },
-  "EXPORT_CONTACTS": {
-    "BUTTON_LABEL": "Export",
-    "TITLE": "Export Contacts",
-    "DESC": "Export contacts to a CSV file.",
-    "SUCCESS_MESSAGE": "Export is in progress. You will be notified on email when the export file is ready to download.",
-    "ERROR_MESSAGE": "There was an error, please try again"
-  },  
   "DELETE_NOTE": {
     "CONFIRM": {
       "TITLE": "Confirm Deletion",

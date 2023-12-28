@@ -135,12 +135,12 @@ export default {
                   status={row.availability_status}
                 />
                 <div class="user-block">
-                  <h6 class="sub-block-title overflow-hidden whitespace-nowrap text-ellipsis">
+                  <h6 class="sub-block-title overflow-hidden w-[200px] hover:w-full whitespace-nowrap text-ellipsis">
                     <router-link
                       to={`/app/accounts/${this.$route.params.accountId}/contacts/${row.id}`}
-                      class="user-name"
+                      class="user-name" 
                     >
-                      {row.name}
+                      <span class="@apply dark:text-white">{row.name}</span>
                     </router-link>
                   </h6>
                   <button class="button clear small link view-details--button">

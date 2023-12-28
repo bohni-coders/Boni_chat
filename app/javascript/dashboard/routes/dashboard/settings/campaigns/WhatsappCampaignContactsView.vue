@@ -254,7 +254,7 @@ export default {
   mounted() {
     // this.contactsfun(this.pageParameter).then(res => {
     //     console.log('contacts fetched', res);
-
+        
     //     this.records = res;
     //   }).catch(e => {
     //     console.log(e);

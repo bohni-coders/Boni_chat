@@ -34,16 +34,6 @@
               </p>
               <p class="label-body">{{ getTemplatebody(template) }}</p>
             </div>
-            <p class="strong" v-if="getTemplateDoc(template).length > 0">
-                {{ "ATTACHMENTS" }}
-            </p>
-            <div v-for="(attachment, j) in getTemplateDoc(template)" :key="j">
-              <bubble-image-audio-video
-                v-if="true"
-                :attachment="attachment"
-                @error="onImageLoadError"
-              />
-            </div>
             <div class="label-category">
               <p class="strong">
                 {{ $t('WHATSAPP_TEMPLATES.PICKER.LABELS.CATEGORY') }}
@@ -65,15 +55,10 @@
 </template>
 
 <script>
-
-import BubbleImageAudioVideo from 'dashboard/components/widgets/conversation/bubble/ImageAudioVideo.vue';
 // TODO: Remove this when we support all formats
 const formatsToRemove = ['DOCUMENT', 'IMAGE', 'VIDEO'];
 
 export default {
-  components: {
-    BubbleImageAudioVideo,
-  },
   props: {
     inboxId: {
       type: Number,
@@ -88,17 +73,13 @@ export default {
   computed: {
     whatsAppTemplateMessages() {
       // TODO: Remove the last filter when we support all formats
-      let templates = this.$store.getters['inboxes/getWhatsAppTemplates'](
-        this.inboxId
-      );
-      return templates.filter(
-        template => template.status.toLowerCase() === 'approved'
-      );
-      // .filter(template => {
-      //   return template.components.every(component => {
-      //     return !formatsToRemove.includes(component.format);
-      //   });
-      // });
+      return this.$store.getters['inboxes/getWhatsAppTemplates'](this.inboxId)
+        .filter(template => template.status.toLowerCase() === 'approved')
+        .filter(template => {
+          return template.components.every(component => {
+            return !formatsToRemove.includes(component.format);
+          });
+        });
     },
     filteredTemplateMessages() {
       return this.whatsAppTemplateMessages.filter(template =>
@@ -107,24 +88,6 @@ export default {
     },
   },
   methods: {
-    isAttachmentImageVideoAudio(attachment) {
-      
-    },
-    onImageLoadError() {
-      console.log('error....');
-    },
-    getTemplateDoc(template) {
-      const components = template.components.find(component => component.type === 'HEADER');
-
-      if(components && formatsToRemove.includes(components.format)) {
-        return components.example.header_handle.map(d_url => ({
-            file_type: components.format.toLowerCase(),
-            data_url: d_url,
-        }))
-      }
-
-      return [];
-    },
     getTemplatebody(template) {
       return template.components.find(component => component.type === 'BODY')
         .text;

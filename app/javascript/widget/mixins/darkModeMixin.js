@@ -5,6 +5,8 @@ export default {
     ...mapGetters({ darkMode: 'appConfig/darkMode' }),
     prefersDarkMode() {
 
+      console.log(this.darkMode);
+
       const isOSOnDarkMode =
         this.darkMode === 'auto' &&
         window.matchMedia('(prefers-color-scheme: dark)').matches;
