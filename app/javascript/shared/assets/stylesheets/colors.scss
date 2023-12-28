@@ -3,20 +3,36 @@
   --white-transparent: rgba(255, 255, 255, 0.9);
   --black-transparent: rgba(0, 0, 0, 0.9);
 
-  --w-25: #F5FAFF;
-  --w-50: #EBF5FF;
-  --w-75: #D6EBFF;
-  --w-100: #C2E1FF;
-  --w-200: #99CEFF;
-  --w-300: #70BAFF;
-  --w-400: #47A6FF;
-  --w-500: #1F93FF;
-  --w-600: #1976CC;
-  --w-700: #135899;
-  --w-800: #0C3B66;
-  --w-900: #061D33;
+  // --w-25: #F5FAFF;
+  // --w-50: #EBF5FF;
+  // --w-75: #D6EBFF;
+  // --w-100: #C2E1FF;
+  // --w-200: #99CEFF;
+  // --w-300: #70BAFF;
+  // --w-400: #47A6FF;
+  // --w-500: #1F93FF;
+  // --w-600: #1976CC;
+  // --w-700: #135899;
+  // --w-800: #0C3B66;
+  // --w-900: #061D33;
 
+  --w-25: #D8F2E5;
+  --w-50: #D8F2E5;
+  --w-75: #BBF5D9;
+  --w-100: #BBF5D9;
+  --w-200: #74E3AD;
+  --w-300: #55E9A1;
+  --w-400: #34DE8C;
+  --w-500: #1DC775;
+  --w-600: #1C9C5F;
+  --w-700: #1A7147;
+  --w-800: #145636;
+  --w-900: #14442D;
+
+
+  --g-25: #E6F8E6; 
   --g-50: #E6F8E6;
+  --g-75: #C4EEC2;
   --g-100: #C4EEC2;
   --g-200: #9DE29A;
   --g-300: #6FD86F;
@@ -85,17 +101,17 @@
   --v-900: #2B0052;
 
   // Common color aliases
-  --color-woot: var(--w-500);
+  --color-woot: var(--w-500); // color-woot
 
   --color-heading: #1f2d3d;
   --color-body: #3c4858;
 
   --color-border: var(--s-75);
   --color-border-light: var(--s-50);
-  --color-border-dark: var(--s-100);
+  --color-border-dark: var(--s-100); 
 
-  --color-background: var(--s-50);
-  --color-background-light: var(--s-25);
+  --color-background: var(--s-50); 
+  --color-background-light: var(--s-25); 
 
   // Social and inboxes brand colors
   --color-facebook-brand: #3b5998;
