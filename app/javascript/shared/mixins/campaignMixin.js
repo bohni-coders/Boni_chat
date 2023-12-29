@@ -30,15 +30,7 @@ export default {
       return this.getCampaignType() === CAMPAIGN_TYPES.ONE_OFF;
     },
     getIsWhatsapp() {
-
       return this.getCampaignType() === CAMPAIGN_TYPES.WHATSAPP;
-
-      const campaignType = this.getCampaignType();
-      return (
-        campaignType === CAMPAIGN_TYPES.WHATSAPP ||
-        campaignType.includes(CAMPAIGN_TYPES.WHATSAPP)
-      );
-
     },
   },
 };

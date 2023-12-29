@@ -128,6 +128,16 @@
         </div>
       </div>
 
+      <label>
+          {{ $t('CAMPAIGN.ADD.FORM.SCHEDULED_AT.LABEL') }}
+          <woot-date-time-picker
+            :value="scheduledAt"
+            :confirm-text="$t('CAMPAIGN.ADD.FORM.SCHEDULED_AT.CONFIRM')"
+            :placeholder="$t('CAMPAIGN.ADD.FORM.SCHEDULED_AT.PLACEHOLDER')"
+            @change="onTimeChange"
+          />
+        </label>
+
       <div :style="{ border: 'solid 0.5px', marginTop: '10px' }" ></div>
 
       <div class="modal-footer">
@@ -138,7 +148,7 @@
           type="submit"
           :is-disabled="this.enabled && this.message.length === 0"
         >
-          {{ 'Send Campaign' }}
+          {{ 'Send Campaign' }}      
         </woot-button>
       </div>
     </div>
@@ -164,6 +174,7 @@ import ConversationApi from 'dashboard/api/conversations';
 import ContactDropdownItem from 'dashboard/modules/contact/components/ContactDropdownItem.vue';
 import WhatsappCampaignTemplate from './WhatsappCampaignTemplate.vue';
 import WhatsappCampaignContactsView from './WhatsappCampaignContactsView.vue';
+import WootDateTimePicker from 'dashboard/components/ui/DateTimePicker.vue';
 
 import { required, requiredIf } from 'vuelidate/lib/validators';
 
@@ -172,6 +183,7 @@ export default {
   components: {
     Thumbnail,
     WootMessageEditor,
+    WootDateTimePicker,
     ReplyEmailHead,
     CannedResponse,
     WhatsappTemplates,
@@ -205,6 +217,8 @@ export default {
       modalVisible: false,
       enabled: true,
       headerParams: [],
+      scheduledAt: null,
+      toLink: `/app/accounts/${this.$route.params.accountId}/campaigns/whatsapp`,
     };
   },
   validations: {
@@ -289,12 +303,6 @@ export default {
       .catch(e => {
         this.showAlert(e.data);
       });
-
-      // console.log(inboxList);
-
-      // console.log($v.targetInbox);
-
-    // ----------------------------------------------------------------------------------------------------------------------
   },
   watch: {
     message(value) {
@@ -308,6 +316,9 @@ export default {
     },
     onSuccess() {
       this.$emit('success');
+    },
+    onTimeChange(value) {
+      this.scheduledAt = value;
     },
     hideContactsModal() {
       this.modalVisible = false;
@@ -353,6 +364,10 @@ export default {
       this.onSubmit();
 
       this.disableForm();
+
+      this.$router.push({
+        name: 'whatsapp_campaigns'
+      })
     },
 
     async onSubmit() {
@@ -366,13 +381,14 @@ export default {
         sender_id: this.currentUser.id,
         contacts: this.selectedContacts,
         message_template: this.payload.length > 0 ? this.payload[0] : {}, // contactItems[0].message,
+        scheduled_at: this.scheduledAt,
       };
 
       await WhatsappCampaignsAPI.create(campaignDetails);
 
-      this.$track(CAMPAIGNS_EVENTS.CREATE_CAMPAIGN, {
-          type: 'whatsapp',
-      });
+      // this.$track(CAMPAIGNS_EVENTS.CREATE_CAMPAIGN, {
+      //     type: 'whatsapp',
+      // });
     },
     setContacts(contactsPayload) {
       this.selectedContacts = contactsPayload;

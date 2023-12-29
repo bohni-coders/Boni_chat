@@ -32,6 +32,8 @@ class CampaignConversationWorker
       Messages::MessageBuilder.new(user, conversation, message).perform
       sleep(20)
     end
+
+    @whatsapp_campaign.update(campaign_status: 1)
   end
 
   private

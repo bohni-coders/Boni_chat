@@ -28,6 +28,7 @@
 #  inbox_id               :integer          not null
 #  sla_policy_id          :bigint
 #  team_id                :bigint
+#  whatsapp_campaign_id   :integer
 #
 # Indexes
 #

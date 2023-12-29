@@ -3,11 +3,12 @@
 # Table name: whatsapp_campaigns
 #
 #  id               :bigint           not null, primary key
-#  campaign_status  :integer          default(0), not null
+#  campaign_status  :integer          default("active"), not null
 #  contacts         :jsonb
 #  enabled          :boolean          default(TRUE)
 #  message          :text             not null
 #  message_template :jsonb
+#  scheduled_at     :datetime
 #  title            :string
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
@@ -21,7 +22,7 @@ class WhatsappCampaign < ApplicationRecord
   
   belongs_to :inbox
   before_create :set_display_id
-  after_save :send_message_to_contacts
+  # after_save :send_message_to_contacts
 
   belongs_to :account
   belongs_to :inbox
@@ -29,11 +30,15 @@ class WhatsappCampaign < ApplicationRecord
 
   has_many :conversations, dependent: :nullify, autosave: true
 
+  enum campaign_status: { active: 0, completed: 1 }
+
   def set_display_id
     self.display_id = self.account_id
   end
 
-  def send_message_to_contacts
+  def trigger!
+    return if completed?
+
     ActiveRecord::Base.transaction do
       CampaignConversationWorker.perform_async(self.id)
     end
