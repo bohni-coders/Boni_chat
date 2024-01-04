@@ -526,6 +526,6 @@ export default {
 .left-wrap {
   display: flex;
   flex-direction: column;
-  height: 700px;
+  height: 100%;
 }
 </style>

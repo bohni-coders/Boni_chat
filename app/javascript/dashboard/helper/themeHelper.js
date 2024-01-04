@@ -10,8 +10,10 @@ export const setColorTheme = isOSOnDarkMode => {
   ) {
     document.body.classList.add('dark');
     document.documentElement.setAttribute('style', 'color-scheme: dark;');
+    LocalStorage.set(LOCAL_STORAGE_KEYS.COLOR_SCHEME, 'dark');
   } else {
     document.body.classList.remove('dark');
     document.documentElement.setAttribute('style', 'color-scheme: light;');
+    LocalStorage.set(LOCAL_STORAGE_KEYS.COLOR_SCHEME, 'light');
   }
 };

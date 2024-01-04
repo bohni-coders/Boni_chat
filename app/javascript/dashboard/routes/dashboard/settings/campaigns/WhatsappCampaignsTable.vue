@@ -3,9 +3,9 @@
     <empty-state v-if="showEmptyResult" :title="emptyMessage" />
     <ve-table
       v-else
-      class="h-[600px] w-[1550px] overflow-auto"
+      class="h-[600px] overflow-auto w-80vw"
       :columns="columns"
-      scroll-width="190rem"
+      scroll-width="310px"
       :table-data="tableData"
       :border-around="true"
     />
@@ -122,6 +122,7 @@ export default {
           title: this.$t('CAMPAIGN.LIST.TABLE_HEADER.TITLE'),
           fixed: 'left',
           align: this.isRTLView ? 'right' : 'left',
+          width: 310,
           renderBodyCell: ({ row }) => (
             <div class="flex block title">
               <span>{row.title}</span>
@@ -134,11 +135,11 @@ export default {
           key: 'message',
           title: this.$t('CAMPAIGN.LIST.TABLE_HEADER.MESSAGE'),
           align: this.isRTLView ? 'right' : 'left',
-          width: 350,
+          width: 410,
           renderBodyCell: ({ row }) => {
             if (row.message) {
               return (
-                <div class="text-truncate">
+                <div class="">
                   <span
                     domPropsInnerHTML={this.formatMessage(row.message)}
                   ></span>
@@ -153,10 +154,8 @@ export default {
           key: 'inbox',
           title: this.$t('CAMPAIGN.LIST.TABLE_HEADER.INBOX'),
           align: this.isRTLView ? 'right' : 'left',
+          width: 310,
           renderBodyCell: ({ row }) => {
-            const inbox = this.inboxes.filter(inb => row.inbox_id == inb.id)[0];
-
-            return <InboxName inbox={{name: inbox.name, phone_number: inbox.phone_number, channel_type: inbox.channel_type}} />;
           },
         },
       ];
@@ -168,6 +167,7 @@ export default {
             key: 'enabled',
             title: this.$t('CAMPAIGN.LIST.TABLE_HEADER.STATUS'),
             align: this.isRTLView ? 'right' : 'left',
+            width: 310,
             renderBodyCell: ({ row }) => {
               const labelText = row.enabled
                 ? this.$t('CAMPAIGN.LIST.STATUS.ENABLED')
@@ -181,6 +181,7 @@ export default {
             key: 'sender',
             title: this.$t('CAMPAIGN.LIST.TABLE_HEADER.SENDER'),
             align: this.isRTLView ? 'right' : 'left',
+            width: 310,
             renderBodyCell: ({ row }) => {
               if (row.sender) return <UserAvatarWithName user={row.sender} />;
               return this.$t('CAMPAIGN.LIST.SENDER.BOT');
@@ -191,6 +192,7 @@ export default {
             key: 'url',
             title: this.$t('CAMPAIGN.LIST.TABLE_HEADER.URL'),
             align: this.isRTLView ? 'right' : 'left',
+            width: 310,
             renderBodyCell: ({ row }) => (
               <div class="text-truncate">
                 <a
@@ -209,35 +211,36 @@ export default {
             key: 'timeOnPage',
             title: this.$t('CAMPAIGN.LIST.TABLE_HEADER.TIME_ON_PAGE'),
             align: this.isRTLView ? 'right' : 'left',
+            width: 310,
           },
 
-          {
-            field: 'buttons',
-            key: 'buttons',
-            title: '',
-            align: this.isRTLView ? 'right' : 'left',
-            renderBodyCell: row => (
-              <div class="button-wrapper">
-                <WootButton
-                  variant="clear"
-                  icon="edit"
-                  color-scheme="secondary"
-                  classNames="grey-btn"
-                  onClick={() => this.$emit('on-edit-click', row)}
-                >
-                  {this.$t('CAMPAIGN.LIST.BUTTONS.EDIT')}
-                </WootButton>
-                <WootButton
-                  variant="link"
-                  icon="dismiss-circle"
-                  color-scheme="secondary"
-                  onClick={() => this.$emit('on-delete-click', row)}
-                >
-                  {this.$t('CAMPAIGN.LIST.BUTTONS.DELETE')}
-                </WootButton>
-              </div>
-            ),
-          },
+          // {
+          //   field: 'buttons',
+          //   key: 'buttons',
+          //   title: '',
+          //   align: this.isRTLView ? 'right' : 'left',
+          //   renderBodyCell: row => (
+          //     <div class="button-wrapper">
+          //       <WootButton
+          //         variant="clear"
+          //         icon="edit"
+          //         color-scheme="secondary"
+          //         classNames="grey-btn"
+          //         onClick={() => this.$emit('on-edit-click', row)}
+          //       >
+          //         {this.$t('CAMPAIGN.LIST.BUTTONS.EDIT')}
+          //       </WootButton>
+          //       <WootButton
+          //         variant="link"
+          //         icon="dismiss-circle"
+          //         color-scheme="secondary"
+          //         onClick={() => this.$emit('on-delete-click', row)}
+          //       >
+          //         {this.$t('CAMPAIGN.LIST.BUTTONS.DELETE')}
+          //       </WootButton>
+          //     </div>
+          //   ),
+          // },
         ];
       }
       return [
@@ -247,6 +250,7 @@ export default {
           key: 'campaign_status',
           title: this.$t('CAMPAIGN.LIST.TABLE_HEADER.STATUS'),
           align: this.isRTLView ? 'right' : 'left',
+          width: 310,
           renderBodyCell: ({ row }) => {
             const labelText =
               row.campaign_status === 'completed'
@@ -262,14 +266,45 @@ export default {
           key: 'scheduledAt',
           title: this.$t('CAMPAIGN.LIST.TABLE_HEADER.SCHEDULED_AT'),
           align: this.isRTLView ? 'right' : 'left',
+          width: 310,
         },
+        // {
+        //   field: 'buttons',
+        //   key: 'buttons',
+        //   title: '',
+        //   align: this.isRTLView ? 'right' : 'left',
+        //   renderBodyCell: row => (
+        //     <div class="button-wrapper">
+        //       <WootButton
+        //         variant="link"
+        //         icon="dismiss-circle"
+        //         color-scheme="secondary"
+        //         onClick={() => this.$emit('on-delete-click', row)}
+        //       >
+        //         {this.$t('CAMPAIGN.LIST.BUTTONS.DELETE')}
+        //       </WootButton>
+        //     </div>
+        //   ),
+        // },
         {
           field: 'buttons',
           key: 'buttons',
-          title: '',
+          title: `${this.$t('CAMPAIGN.LIST.BUTTONS.EDIT')} / ${this.$t(
+            'CAMPAIGN.LIST.BUTTONS.DELETE'
+          )}`,
           align: this.isRTLView ? 'right' : 'left',
+          width: 310,
           renderBodyCell: row => (
             <div class="button-wrapper">
+              <WootButton
+                variant="clear"
+                icon="edit"
+                color-scheme="secondary"
+                classNames="grey-btn"
+                onClick={() => this.$emit('on-edit-click', row)}
+              >
+                {this.$t('CAMPAIGN.LIST.BUTTONS.EDIT')}
+              </WootButton>
               <WootButton
                 variant="link"
                 icon="dismiss-circle"
@@ -282,30 +317,30 @@ export default {
           ),
         },
       ];
-      return [
-        ...visibleToAllTable,
-        // {
-        //   field: 'campaign_status',
-        //   key: 'campaign_status',
-        //   title: this.$t('CAMPAIGN.LIST.TABLE_HEADER.STATUS'),
-        //   align: this.isRTLView ? 'right' : 'left',
-        //   renderBodyCell: ({ row }) => {
-        //     const labelText =
-        //       row.campaign_status === 'completed'
-        //         ? this.$t('CAMPAIGN.LIST.STATUS.COMPLETED')
-        //         : this.$t('CAMPAIGN.LIST.STATUS.ACTIVE');
-        //     const colorScheme =
-        //       row.campaign_status === 'completed' ? 'secondary' : 'success';
-        //     return <Label title={labelText} colorScheme={colorScheme} />;
-        //   },
-        // },
-        // {
-        //   field: 'scheduledAt',
-        //   key: 'scheduledAt',
-        //   title: this.$t('CAMPAIGN.LIST.TABLE_HEADER.SCHEDULED_AT'),
-        //   align: this.isRTLView ? 'right' : 'left',
-        // },
-      ];
+      // return [
+      // ...visibleToAllTable,
+      // {
+      //   field: 'campaign_status',
+      //   key: 'campaign_status',
+      //   title: this.$t('CAMPAIGN.LIST.TABLE_HEADER.STATUS'),
+      //   align: this.isRTLView ? 'right' : 'left',
+      //   renderBodyCell: ({ row }) => {
+      //     const labelText =
+      //       row.campaign_status === 'completed'
+      //         ? this.$t('CAMPAIGN.LIST.STATUS.COMPLETED')
+      //         : this.$t('CAMPAIGN.LIST.STATUS.ACTIVE');
+      //     const colorScheme =
+      //       row.campaign_status === 'completed' ? 'secondary' : 'success';
+      //     return <Label title={labelText} colorScheme={colorScheme} />;
+      //   },
+      // },
+      // {
+      //   field: 'scheduledAt',
+      //   key: 'scheduledAt',
+      //   title: this.$t('CAMPAIGN.LIST.TABLE_HEADER.SCHEDULED_AT'),
+      //   align: this.isRTLView ? 'right' : 'left',
+      // },
+      // ];
     },
   },
 };
@@ -358,6 +393,10 @@ export default {
   justify-content: space-evenly;
   display: flex;
   flex-direction: row;
-  min-width: 20rem;
+}
+
+.w-80vw {
+  max-width: 1944px;
+  width: 80vw;
 }
 </style>

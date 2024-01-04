@@ -80,6 +80,7 @@ import {
   hasPressedArrowDownKey,
   isEnter,
 } from 'shared/helpers/KeyboardHelpers';
+import { DEFAULT_VALUES } from 'shared/constants/defaultValues';
 
 export default {
   mixins: [eventListenerMixins],
@@ -122,6 +123,7 @@ export default {
       activeCountryCode: '',
       activeDialCode: '',
       phoneNumber: this.value,
+      activeCountry: {},
     };
   },
   computed: {
@@ -136,14 +138,6 @@ export default {
         );
       });
     },
-    activeCountry() {
-      if (this.activeCountryCode) {
-        return this.countries.find(
-          country => country.id === this.activeCountryCode
-        );
-      }
-      return '';
-    },
   },
   watch: {
     value() {
@@ -156,6 +150,15 @@ export default {
           ''
         );
       }
+    },
+    activeCountryCode() {
+      if (this.activeCountryCode) {
+        this.activeCountry = this.countries.find(
+          country => country.id === this.activeCountryCode
+        );
+        return;
+      }
+      this.activeCountry = {};
     },
   },
   mounted() {
@@ -228,7 +231,19 @@ export default {
     },
     setActiveCountry() {
       const { phoneNumber } = this;
-      if (!phoneNumber) return;
+      if (!phoneNumber) {
+        const defaultCountry = this.countries.find(
+          country => country.id === DEFAULT_VALUES.COUNTRY_CODE
+        );
+
+        if (defaultCountry) {
+          this.activeCountryCode = defaultCountry.id;
+          this.activeDialCode = defaultCountry.dial_code;
+          return;
+        }
+        return;
+      }
+
       const number = parsePhoneNumber(phoneNumber);
       if (number) {
         this.activeCountryCode = number.country;

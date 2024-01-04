@@ -1,7 +1,9 @@
 <template>
   <aside class="h-full flex">
     <primary-sidebar
-      :logo-source="isDark ? '/brand-assets/logo_dark.svg' : globalConfig.logoThumbnail"
+      :logo-source="
+        isDark ? '/brand-assets/logo_dark.svg' : globalConfig.logoThumbnail
+      "
       :installation-name="globalConfig.installationName"
       :is-a-custom-branded-instance="isACustomBrandedInstance"
       :account-id="accountId"
@@ -69,6 +71,7 @@ export default {
   data() {
     return {
       showOptionsMenu: false,
+      // isDark: LocalStorage.get(LOCAL_STORAGE_KEYS.COLOR_SCHEME) === 'dark',
     };
   },
 
@@ -159,9 +162,9 @@ export default {
     activeCustomView() {
       this.fetchCustomViews();
     },
-    storage() {
-      console.log(LocalStorage.get(LOCAL_STORAGE_KEYS.COLOR_SCHEME));
-    }
+    storage(newVal, oldVal) {
+      if (newVal !== oldVal) this.isDark = newVal === 'dark';
+    },
   },
   mounted() {
     this.$store.dispatch('labels/get');

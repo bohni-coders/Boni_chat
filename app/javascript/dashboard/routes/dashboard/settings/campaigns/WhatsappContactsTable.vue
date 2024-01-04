@@ -2,7 +2,7 @@
   <section class="contacts-table-wrap">
     <ve-table
       :fixed-header="true"
-      max-height="calc(100vh - 11.4rem)"
+      max-height="100%"
       scroll-width="187rem"
       :columns="columns"
       :table-data="tableData"
@@ -325,7 +325,8 @@ export default {
 
 .contacts-table-wrap::v-deep {
   .ve-table {
-    padding-bottom: var(--space-large);
+    // padding-bottom: var(--space-large);
+    height: 80vh;
   }
   .row--user-block {
     align-items: center;
