@@ -63,7 +63,9 @@ class Api::V1::Accounts::WhatsappCampaignsController < Api::V1::Accounts::BaseCo
             inbox_id: campaign_params["inbox_id"],
             conversation_id: current_conversation["id"],
             # source_id: current_conversation["id"],
-            message_type: 'outgoing'
+            status: "sent"
+            message_type: "outgoing",
+            processed_message_content: text_to_send
           )
 
           message.save
