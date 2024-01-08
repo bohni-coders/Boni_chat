@@ -107,6 +107,9 @@
             <whatsapp-campaign-template
               v-if="hasWhatsappTemplates"
               :inbox-id="targetInbox.id"
+              :contact-list="contactList"
+              :selected-contacts="selectedContacts"
+              :current-user="currentUser"
               @on-select-template="toggleWaTemplate"
               @on-send="onSendWhatsAppReply"
             />

@@ -15,14 +15,14 @@
         :key="key"
         class="template__variable-item"
       >
-        <span class="variable-label">
-          {{ key }}
-        </span>
-        <woot-input
-          v-model="processedParams[key]"
-          type="text"
-          class="variable-input"
-          :styles="{ marginBottom: 0 }"
+        <wa-template-variables-item
+          :item-key="key"
+          :processed-params="processedParams"
+          :dropdown-options="dropdownOptions"
+          :contact-list="contactList"
+          :selected-contacts="selectedContacts"
+          :current-user="currentUser"
+          :edit-processed-params="editProcessedParams"
         />
       </div>
       <p v-if="$v.$dirty && $v.$invalid" class="error">
@@ -43,14 +43,31 @@
 </template>
 
 <script>
+import WaTemplateVariablesItem from 'dashboard/components/widgets/WaTemplateVariablesItem.vue';
+
 const allKeysRequired = value => {
   const keys = Object.keys(value);
   return keys.every(key => value[key]);
 };
 import { requiredIf } from 'vuelidate/lib/validators';
 export default {
+  components: {
+    WaTemplateVariablesItem,
+  },
   props: {
     template: {
+      type: Object,
+      default: () => {},
+    },
+    contactList: {
+      type: Array,
+      default: () => [],
+    },
+    selectedContacts: {
+      type: Array,
+      default: () => [],
+    },
+    currentUser: {
       type: Object,
       default: () => {},
     },
@@ -64,6 +81,14 @@ export default {
   data() {
     return {
       processedParams: {},
+      dropdownOptions: [
+        'Set your own',
+        'name',
+        'email',
+        'company',
+        'custom_attributes',
+      ],
+      targetOption: {},
     };
   },
   computed: {
@@ -117,6 +142,9 @@ export default {
         return acc;
       }, {});
     },
+    editProcessedParams(key, to) {
+      this.processedParams[key] = to;
+    },
   },
 };
 </script>
@@ -158,5 +186,9 @@ footer {
 }
 .template-input {
   @apply bg-slate-25 dark:bg-slate-900 text-slate-700 dark:text-slate-100;
+}
+
+.select-no-margin {
+  margin: 0;
 }
 </style>

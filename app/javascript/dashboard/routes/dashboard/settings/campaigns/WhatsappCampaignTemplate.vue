@@ -8,6 +8,9 @@
     <wa-template-parser
       v-else
       :template="selectedWaTemplate"
+      :contact-list="contactList"
+      :selected-contacts="selectedContacts"
+      :current-user="currentUser"
       @resetTemplate="onResetTemplate"
       @sendMessage="onSendMessage"
     />
@@ -31,6 +34,18 @@ export default {
     show: {
       type: Boolean,
       default: true,
+    },
+    contactList: {
+      type: Array,
+      default: () => [],
+    },
+    selectedContacts: {
+      type: Array,
+      default: () => [],
+    },
+    currentUser: {
+      type: Object,
+      default: () => {},
     },
   },
   data() {

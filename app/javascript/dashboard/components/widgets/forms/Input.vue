@@ -54,9 +54,14 @@ export default {
       type: Object,
       default: () => {},
     },
+    changeEvent: {
+      type: Function,
+      default: null,
+    },
   },
   methods: {
     onChange(e) {
+      if (this.changeEvent) this.changeEvent(e);
       this.$emit('input', e.target.value);
     },
     onBlur(e) {
