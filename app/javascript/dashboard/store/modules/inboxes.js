@@ -76,8 +76,10 @@ export const getters = {
   },
   getNewConversationInboxes($state) {
     return $state.records.filter(inbox => {
-      const { channel_type: channelType, phone_number: phoneNumber = '' } =
-        inbox;
+      const {
+        channel_type: channelType,
+        phone_number: phoneNumber = '',
+      } = inbox;
 
       const isEmailChannel = channelType === INBOX_TYPES.EMAIL;
       const isSmsChannel =
@@ -113,7 +115,7 @@ export const getters = {
   getWhatsAppInboxes($state) {
     return $state.records.filter(item => {
       return (
-        item.channel_type === INBOX_TYPES.WHATSAPP || item.channel_type === INBOX_TYPES.API
+        item.channel_type === INBOX_TYPES.WHATSAPP
       );
     });
   },
@@ -121,6 +123,13 @@ export const getters = {
     return $state.records.filter(
       item => item.channel_type !== INBOX_TYPES.EMAIL
     );
+  },
+  getOnOffInboxes($state) {
+    return $state.records.filter(item => {
+      return (
+        item.channel_type === INBOX_TYPES.WHATSAPP || item.channel_type === INBOX_TYPES.API
+      );
+    });
   },
 };
 
