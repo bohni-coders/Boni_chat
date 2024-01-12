@@ -30,6 +30,7 @@ const translationKeys = {
   'accountuser:create': `AUDIT_LOGS.ACCOUNT_USER.ADD`,
   'accountuser:update:self': `AUDIT_LOGS.ACCOUNT_USER.EDIT.SELF`,
   'accountuser:update:other': `AUDIT_LOGS.ACCOUNT_USER.EDIT.OTHER`,
+  'accountuser:delete': `AUDIT_LOGS.ACCOUNT_USER.DELETE`,
   'inboxmember:create': `AUDIT_LOGS.INBOX_MEMBER.ADD`,
   'inboxmember:destroy': `AUDIT_LOGS.INBOX_MEMBER.REMOVE`,
   'teammember:create': `AUDIT_LOGS.TEAM_MEMBER.ADD`,
@@ -106,6 +107,11 @@ function handleAccountUserUpdate(auditLogItem, translationPayload, agentList) {
   return translationPayload;
 }
 
+function handleAccountUserDelete(auditLogItem, translationPayload, agentList) {
+  translationPayload.user = getAgentName(auditLogItem.user_id, agentList);
+  translationPayload.id = auditLogItem.audited_changes.id || '';
+  return translationPayload;
+}
 function setUserInPayload(auditLogItem, translationPayload, agentList) {
   const userIdChange = auditLogItem.audited_changes.user_id;
   if (userIdChange && userIdChange !== undefined) {
@@ -156,6 +162,9 @@ function handleAccountUser(
   }
 
   return translationPayload;
+}
+if (action === 'delete') {
+  return handleAccountUserDelete(auditLogItem, translationPayload, agentList);
 }
 
 export function generateTranslationPayload(auditLogItem, agentList) {
