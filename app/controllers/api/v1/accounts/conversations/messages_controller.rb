@@ -21,12 +21,6 @@ class Api::V1::Accounts::Conversations::MessagesController < Api::V1::Accounts::
     render json: { error: e.message }, status: :unprocessable_entity
   end
 
-  private
-
-  def message_params
-    params.require(:message).permit(:content)
-  end
-
   def destroy
     ActiveRecord::Base.transaction do
       current_message = Message.find_by(id: params[:id].to_i)
@@ -86,6 +80,10 @@ class Api::V1::Accounts::Conversations::MessagesController < Api::V1::Accounts::
   end
 
   private
+
+  def message_params
+    params.require(:message).permit(:content)
+  end
 
   def message
     @message ||= @conversation.messages.find(permitted_params[:id])
