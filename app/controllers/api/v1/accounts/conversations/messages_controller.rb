@@ -11,6 +11,22 @@ class Api::V1::Accounts::Conversations::MessagesController < Api::V1::Accounts::
     render_could_not_create_error(e.message)
   end
 
+  def update
+    ActiveSupport::Logger
+    logger.debug "message update api called"
+    message = @conversation.messages.find(params[:id])
+    message.update!(message_params)
+    render json: { success: true }
+  rescue StandardError => e
+    render json: { error: e.message }, status: :unprocessable_entity
+  end
+
+  private
+
+  def message_params
+    params.require(:message).permit(:content)
+  end
+
   def destroy
     ActiveRecord::Base.transaction do
       current_message = Message.find_by(id: params[:id].to_i)
