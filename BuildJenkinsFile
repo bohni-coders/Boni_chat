@@ -1,19 +1,22 @@
 pipeline {
     agent any
-
+    parameters {
+        string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Branch to build')
+        string(name: 'VERSION', description: 'Version to build')
+    }
     stages {
         stage('Checkout') {
             steps {
                 // Step 1: Developer Commits Code to GitHub
                 // Jenkins automatically fetches the code from GitHub
-                checkout scm
+              checkout([$class: 'GitSCM', branches: [[name: "${params.BRANCH_NAME}"]], userRemoteConfigs: [[url: 'REPO_URL']]])
             }
         }
         stage('Build') {
             steps {
                 // Step 3: Building the Docker Image
                 // Replace 'your-docker-image-name' with your Docker image name
-                sh 'docker build -t 335448355144.dkr.ecr.ap-south-1.amazonaws.com/bow_chat:${GIT_COMMIT} .'
+                sh 'docker build -t 335448355144.dkr.ecr.ap-south-1.amazonaws.com/bow_chat:${params.VERSION} .'
             }
         }
         stage('Push to ECR') {
@@ -23,7 +26,7 @@ pipeline {
                 AWS_REGION = 'ap-south-1'
                 ECR_REPO_NAME = 'bow_chat'
                 ECR_REGISTRY_ID = '335448355144'
-                DOCKER_IMAGE_TAG = "${ECR_REGISTRY_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}:${GIT_COMMIT}"
+                DOCKER_IMAGE_TAG = "${ECR_REGISTRY_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}:${params.VERSION}"
             }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'aws-credentials-id', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
@@ -31,7 +34,7 @@ pipeline {
                     sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
                     
                     // Tag and Push the Docker image to ECR
-                    sh "docker tag your-docker-image-name:${GIT_COMMIT} ${DOCKER_IMAGE_TAG}"
+                    sh "docker tag your-docker-image-name:${VERSION} ${DOCKER_IMAGE_TAG}"
                     sh "docker push ${DOCKER_IMAGE_TAG}"
                 }
             }
