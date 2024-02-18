@@ -9,7 +9,11 @@ class Api::V1::Accounts::WhatsappCampaignsController < Api::V1::Accounts::BaseCo
     def show; end
   
     def create
-      @whatsapp_campaign = Current.account.whatsapp_campaigns.create!(campaign_params)
+      @whatsapp_campaign = Current.account.whatsapp_campaigns.new(campaign_params)
+      if @whatsapp_campaign.save
+        CampaignConversationWorker.perform_async(@whatsapp_campaign.id)
+      end
+      head :ok
     end
   
     def update
@@ -28,9 +32,10 @@ class Api::V1::Accounts::WhatsappCampaignsController < Api::V1::Accounts::BaseCo
     end
   
     def campaign_params
-      params.require(:whatsapp_campaign).permit(:message, :enabled, 
-        :inbox_id, :sender_id, :contacts, :message_template
+      params.require(:whatsapp_campaign).permit(:message, :enabled, :inbox_id, :sender_id, :message_template => {}, 
+        :contacts => [:availability_status, :email, :id, :name, :phone_number, :identifier, :thumbnail, :conversations_count, :last_activity_at, :created_at, :additional_attributes => {}, :custom_attributes => {}]
       )
     end
+
   end
   

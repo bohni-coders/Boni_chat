@@ -18,5 +18,16 @@
 class WhatsappCampaign < ApplicationRecord
   include UrlHelper
   
-  
+  belongs_to :inbox
+  before_create :set_display_id
+  # after_create :sent_message_to_contacts
+
+  def set_display_id
+    self.display_id = self.account_id
+  end
+
+  # def sent_message_to_contacts
+  #   CampaignConversationWorker.perform_async(id)
+  # end
+
 end

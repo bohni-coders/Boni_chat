@@ -3,10 +3,10 @@ current directory: /home/onkar/projects/Boni_chat/vendor/bundle/ruby/3.2.0/gems/
 creating Makefile
 
 current directory: /home/onkar/projects/Boni_chat/vendor/bundle/ruby/3.2.0/gems/scout_apm-5.3.3/ext/rusage
-make DESTDIR\= sitearchdir\=./.gem.20231015-816751-70i84p sitelibdir\=./.gem.20231015-816751-70i84p clean
+make DESTDIR\= sitearchdir\=./.gem.20231212-160499-bwkfsb sitelibdir\=./.gem.20231212-160499-bwkfsb clean
 
 current directory: /home/onkar/projects/Boni_chat/vendor/bundle/ruby/3.2.0/gems/scout_apm-5.3.3/ext/rusage
-make DESTDIR\= sitearchdir\=./.gem.20231015-816751-70i84p sitelibdir\=./.gem.20231015-816751-70i84p
+make DESTDIR\= sitearchdir\=./.gem.20231212-160499-bwkfsb sitelibdir\=./.gem.20231212-160499-bwkfsb
 compiling rusage.c
 rusage.c: In function ‘Init_rusage’:
 rusage.c:69:6: warning: old-style function definition [-Wold-style-definition]
@@ -19,8 +19,8 @@ cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ 
 linking shared-object rusage.so
 
 current directory: /home/onkar/projects/Boni_chat/vendor/bundle/ruby/3.2.0/gems/scout_apm-5.3.3/ext/rusage
-make DESTDIR\= sitearchdir\=./.gem.20231015-816751-70i84p sitelibdir\=./.gem.20231015-816751-70i84p install
-/usr/bin/install -m 0755 rusage.so ./.gem.20231015-816751-70i84p
+make DESTDIR\= sitearchdir\=./.gem.20231212-160499-bwkfsb sitelibdir\=./.gem.20231212-160499-bwkfsb install
+/usr/bin/install -m 0755 rusage.so ./.gem.20231212-160499-bwkfsb
 
 current directory: /home/onkar/projects/Boni_chat/vendor/bundle/ruby/3.2.0/gems/scout_apm-5.3.3/ext/rusage
-make DESTDIR\= sitearchdir\=./.gem.20231015-816751-70i84p sitelibdir\=./.gem.20231015-816751-70i84p clean
+make DESTDIR\= sitearchdir\=./.gem.20231212-160499-bwkfsb sitelibdir\=./.gem.20231212-160499-bwkfsb clean

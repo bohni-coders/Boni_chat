@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   end
 
   get '/get-qrcode', to: 'qr_code#get_hash_code', as: 'qr_code_getter_proxy'
+  post '/direct-upload', to: 'direct_upload#create'
 
   get '/api', to: 'api#index'
   namespace :api, defaults: { format: 'json' } do
